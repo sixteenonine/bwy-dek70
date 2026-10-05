@@ -3,7 +3,7 @@
 // ⚠️ เปลี่ยน version ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
 // ธีม: Bold Black + Honey LED
 
-module.exports.version = "2.0.0";
+module.exports.version = "2.0.1";
 
 module.exports.build = function (FAMILY, PARAM) {
   const LINK = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
@@ -14,17 +14,17 @@ module.exports.build = function (FAMILY, PARAM) {
   const EXAMS = [
     { key: "tgat", name: "TGAT", short: "TGAT", sub: "ส. 30 ม.ค. 70  13:00",
       date: new Date(2027, 0, 30, 13, 0), end: new Date(2027, 0, 30, 16, 0) },
-    { key: "alevel", name: "A-Level Eng", short: "A-Level", sub: "อา. 14 มี.ค. 70  11:00",
+    { key: "alevel", name: "E-Level Eng", short: "E-Level", sub: "อา. 14 มี.ค. 70  11:00",
       date: new Date(2027, 2, 14, 11, 0), end: new Date(2027, 2, 14, 12, 30) },
   ];
 
   const MILESTONES = [
     { name: "สมัคร TGAT/TPAT", label: "4–10 พ.ย. 69", start: new Date(2026, 10, 4), end: new Date(2026, 10, 10, 23, 59) },
-    { name: "สมัคร A-Level", label: "14–20 ม.ค. 70", start: new Date(2027, 0, 14), end: new Date(2027, 0, 20, 23, 59) },
+    { name: "สมัคร E-Level", label: "14–20 ม.ค. 70", start: new Date(2027, 0, 14), end: new Date(2027, 0, 20, 23, 59) },
     { name: "สอบ TGAT", label: "30 ม.ค. 70", start: new Date(2027, 0, 30, 13), end: new Date(2027, 0, 30, 16) },
     { name: "ประกาศผล TGAT", label: "28 ก.พ. 70", start: new Date(2027, 1, 28), end: new Date(2027, 1, 28, 23, 59) },
-    { name: "สอบ A-Level", label: "14 มี.ค. 70", start: new Date(2027, 2, 14, 11), end: new Date(2027, 2, 14, 12, 30) },
-    { name: "ประกาศผล A-Level", label: "20 เม.ย. 70", start: new Date(2027, 3, 20), end: new Date(2027, 3, 20, 23, 59) },
+    { name: "สอบ E-Level", label: "14 มี.ค. 70", start: new Date(2027, 2, 14, 11), end: new Date(2027, 2, 14, 12, 30) },
+    { name: "ประกาศผล E-Level", label: "20 เม.ย. 70", start: new Date(2027, 3, 20), end: new Date(2027, 3, 20, 23, 59) },
     { name: "สมัครรอบ 3", label: "7–11 พ.ค. 70", start: new Date(2027, 4, 7), end: new Date(2027, 4, 11, 23, 59) },
   ];
 
