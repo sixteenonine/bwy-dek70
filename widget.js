@@ -1,43 +1,62 @@
 // 🐻 Dek70 Countdown by BearWithYou (@WeBearTogether) — ไฟล์หลักบนเว็บ
 // แก้ไฟล์นี้แล้วอัปขึ้นเว็บ = widget ของทุกคนอัปเดตตาม
-// ⚠️ เปลี่ยน VERSION ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
+// ⚠️ เปลี่ยน version ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
+// ธีม: ADMiSSIM Soft UI
 
-module.exports.version = "1.0.3";
+module.exports.version = "1.1.0";
 
 module.exports.build = function (FAMILY, PARAM) {
   const LINK = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
   const HANDLE = "@WeBearTogether";
+  const START = new Date(2026, 4, 16); // จุดเริ่มวงแหวน (เปิดเทอม ม.6)
 
   // ---------- วันสอบ (อ้างอิงปฏิทิน TCAS70 จาก mytcas) ----------
   const EXAMS = [
-    { key: "tgat", emoji: "🧠", name: "TGAT", sub: "ส. 30 ม.ค. 70  13:00",
+    { key: "tgat", name: "TGAT", sub: "ส. 30 ม.ค. 70",
       date: new Date(2027, 0, 30, 13, 0), end: new Date(2027, 0, 30, 16, 0) },
-    { key: "alevel", emoji: "📚", name: "A-Level Eng", sub: "อา. 14 มี.ค. 70  11:00",
+    { key: "alevel", name: "A-LEVEL ENG", sub: "อา. 14 มี.ค. 70",
       date: new Date(2027, 2, 14, 11, 0), end: new Date(2027, 2, 14, 12, 30) },
   ];
 
   const MILESTONES = [
-    { emoji: "✍️", name: "สมัครสอบ TGAT/TPAT", label: "4–10 พ.ย. 69", start: new Date(2026, 10, 4), end: new Date(2026, 10, 10, 23, 59) },
-    { emoji: "✍️", name: "สมัครสอบ A-Level", label: "14–20 ม.ค. 70", start: new Date(2027, 0, 14), end: new Date(2027, 0, 20, 23, 59) },
-    { emoji: "🧠", name: "สอบ TGAT", label: "30 ม.ค. 70", start: new Date(2027, 0, 30, 13), end: new Date(2027, 0, 30, 16) },
-    { emoji: "📊", name: "ประกาศผล TGAT", label: "28 ก.พ. 70", start: new Date(2027, 1, 28), end: new Date(2027, 1, 28, 23, 59) },
-    { emoji: "📚", name: "สอบ A-Level Eng", label: "14 มี.ค. 70", start: new Date(2027, 2, 14, 11), end: new Date(2027, 2, 14, 12, 30) },
-    { emoji: "📊", name: "ประกาศผล A-Level", label: "20 เม.ย. 70", start: new Date(2027, 3, 20), end: new Date(2027, 3, 20, 23, 59) },
-    { emoji: "🎯", name: "สมัครรอบ 3 Admission", label: "7–11 พ.ค. 70", start: new Date(2027, 4, 7), end: new Date(2027, 4, 11, 23, 59) },
+    { name: "สมัครสอบ TGAT/TPAT", label: "4–10 พ.ย. 69", start: new Date(2026, 10, 4), end: new Date(2026, 10, 10, 23, 59) },
+    { name: "สมัครสอบ A-Level", label: "14–20 ม.ค. 70", start: new Date(2027, 0, 14), end: new Date(2027, 0, 20, 23, 59) },
+    { name: "สอบ TGAT", label: "30 ม.ค. 70", start: new Date(2027, 0, 30, 13), end: new Date(2027, 0, 30, 16) },
+    { name: "ประกาศผล TGAT", label: "28 ก.พ. 70", start: new Date(2027, 1, 28), end: new Date(2027, 1, 28, 23, 59) },
+    { name: "สอบ A-Level Eng", label: "14 มี.ค. 70", start: new Date(2027, 2, 14, 11), end: new Date(2027, 2, 14, 12, 30) },
+    { name: "ประกาศผล A-Level", label: "20 เม.ย. 70", start: new Date(2027, 3, 20), end: new Date(2027, 3, 20, 23, 59) },
+    { name: "สมัครรอบ 3 Admission", label: "7–11 พ.ค. 70", start: new Date(2027, 4, 7), end: new Date(2027, 4, 11, 23, 59) },
   ];
 
-  // ทิปเปลี่ยนวันละอัน
+  // ทิปเปลี่ยนวันละอัน (โชว์บนจอ LCD)
   const TIPS = [
-    "ทดสอบอัปเดตGG 🐻",
+    "ศัพท์วันละ 10 คำ × 100 วัน = 1,000 คำ",
+    "Reading: อ่านคำถามก่อน แล้วค่อย scan หา keyword",
+    "ทำ mock จับเวลาจริงอย่างน้อยสัปดาห์ละครั้ง",
+    "ข้อที่ทำผิดคือขุมทอง จดลง error log ทุกครั้ง",
+    "จำศัพท์เป็น collocation: make a decision ไม่ใช่ do",
+    "Conversation: ดูบริบทและน้ำเสียงคนพูด ไม่ใช่แค่แกรมมาร์",
+    "Paragraph organization: ใช้ pronoun กับคำเชื่อมเป็นตัวต่อ",
+    "ตัวเลือกที่เด็ดขาดเกินไป เช่น always, never ระวังไว้ก่อน",
+    "Text completion: อ่านประโยคหลังช่องว่างด้วย",
+    "ทบทวนศัพท์เก่า 5 นาทีก่อนเริ่มศัพท์ใหม่",
+    "นอนให้พอ สมองจัดเก็บสิ่งที่อ่านตอนหลับ",
+    "ข้อไหนติดเกิน 1 นาที ข้ามไปก่อนแล้ววนกลับมา",
   ];
 
-  // ---------- สี (ธีมหมีน้ำผึ้ง) ----------
-  const BG = Color.dynamic(new Color("#FFD54A"), new Color("#1E140D"));
-  const CARD = Color.dynamic(new Color("#FFE88F"), new Color("#2F2117"));
-  const TEXT = Color.dynamic(new Color("#2B1A0E"), new Color("#FFF1CC"));
-  const SUB = Color.dynamic(new Color("#6B4B2A"), new Color("#C9A77A"));
-  const ACCENT = Color.dynamic(new Color("#2B1A0E"), new Color("#FFC93C"));
-  const RED = Color.dynamic(new Color("#C62828"), new Color("#FF6B6B"));
+  // ---------- สี (ADMiSSIM) ----------
+  const D = (light, dark) => Color.dynamic(new Color(light), new Color(dark));
+  const BG = D("#eef2f6", "#1e2229");
+  const CARD = D("#ffffff", "#23272f");
+  const EDGE = D("#dce3ec", "#2a2f38");
+  const TEXT = D("#475569", "#e2e8f0");
+  const SUB = new Color("#94a3b8");
+  const NUM = D("#64748b", "#cbd5e1");
+  const RED = new Color("#ef4444");
+  const BLUE = new Color("#3b82f6");
+  const LCD_BG = D("#1b3f1c", "#0f2b10");
+  const LCD_TEXT = new Color("#4cfc23");
+  const TRACK = new Color("#94a3b8", 0.22);
 
   // ---------- เวลา ----------
   const now = new Date();
@@ -54,26 +73,71 @@ module.exports.build = function (FAMILY, PARAM) {
     const doy = Math.floor((startOfDay(now) - new Date(now.getFullYear(), 0, 1)) / 86400000);
     return TIPS[doy % TIPS.length];
   }
+  const progressOf = ex => (now - START) / (ex.date - START);
+
+  // ---------- วงแหวน (สีเดียวกับ getTipColor ของ ADMiSSIM) ----------
+  function mix(a, b, t) {
+    const h = s => [1, 3, 5].map(i => parseInt(s.substr(i, 2), 16));
+    const [x, y] = [h(a), h(b)];
+    const c = x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, "0"));
+    return new Color("#" + c.join(""));
+  }
+  function tipColor(p) {
+    if (p <= 0.4) return BLUE;
+    if (p <= 0.75) return mix("#3b82f6", "#f97316", (p - 0.4) / 0.35);
+    return mix("#f97316", "#ef4444", (p - 0.75) / 0.25);
+  }
+  function ringImage(progress, size) {
+    const s = size * 3, lw = s * 0.07, r = s / 2 - lw / 2 - 2, c = s / 2;
+    const ctx = new DrawContext();
+    ctx.size = new Size(s, s);
+    ctx.opaque = false;
+    ctx.respectScreenScale = false;
+    ctx.setStrokeColor(TRACK);
+    ctx.setLineWidth(lw);
+    ctx.strokeEllipse(new Rect(c - r, c - r, 2 * r, 2 * r));
+    const N = 180, k = Math.round(N * Math.max(0, Math.min(1, progress)));
+    const pt = i => { const a = -Math.PI / 2 + (2 * Math.PI * i) / N; return new Point(c + r * Math.cos(a), c + r * Math.sin(a)); };
+    for (let i = 0; i < k; i++) {
+      const path = new Path();
+      path.move(pt(i));
+      path.addLine(pt(Math.min(i + 1.4, k)));
+      ctx.addPath(path);
+      ctx.setStrokeColor(tipColor(i / N));
+      ctx.setLineWidth(lw);
+      ctx.strokePath();
+    }
+    if (k > 0) {
+      [[0, tipColor(0)], [k, tipColor(k / N)]].forEach(([i, col]) => {
+        const p = pt(i);
+        ctx.setFillColor(col);
+        ctx.fillEllipse(new Rect(p.x - lw / 2, p.y - lw / 2, lw, lw));
+      });
+    }
+    return ctx.getImage();
+  }
 
   // ---------- ตัวช่วยวาด ----------
   function txt(stack, s, size, o = {}) {
     const t = stack.addText(s);
-    t.font = o.round ? Font.boldRoundedSystemFont(size)
+    t.font = o.thin ? Font.thinSystemFont(size)
+      : o.light ? Font.lightSystemFont(size)
       : o.bold ? Font.boldSystemFont(size)
-      : o.semi ? Font.semiboldSystemFont(size) : Font.systemFont(size);
+      : o.semi ? Font.semiboldSystemFont(size)
+      : o.mono ? Font.mediumMonospacedSystemFont(size)
+      : Font.systemFont(size);
     if (o.color !== null) t.textColor = o.color || TEXT;
     t.lineLimit = o.lines || 1;
     t.minimumScaleFactor = o.scale || 0.7;
     return t;
   }
 
-  function fullRow(parent, fn) {
-    const row = parent.addStack();
-    row.layoutHorizontally();
-    row.centerAlignContent();
-    fn(row);
-    row.addSpacer();
-    return row;
+  function hRow(parent, center) {
+    const r = parent.addStack();
+    r.layoutHorizontally();
+    r.centerAlignContent();
+    if (center) r.addSpacer();
+    return r;
   }
 
   function baseWidget(p) {
@@ -83,156 +147,152 @@ module.exports.build = function (FAMILY, PARAM) {
     return w;
   }
 
+  function card(parent, pad) {
+    const c = parent.addStack();
+    c.layoutVertically();
+    c.backgroundColor = CARD;
+    c.borderColor = EDGE;
+    c.borderWidth = 1;
+    c.cornerRadius = 22;
+    c.setPadding(pad, pad + 2, pad, pad + 2);
+    return c;
+  }
+
   function header(w, size) {
-    const r = w.addStack();
-    r.layoutHorizontally();
-    r.centerAlignContent();
-    txt(r, "🐻 Dek70 Countdown", size, { bold: true });
+    const r = hRow(w);
+    txt(r, "DEK70 COUNTDOWN", size, { semi: true, color: SUB });
     r.addSpacer();
-    txt(r, HANDLE, size - 4, { semi: true, color: SUB });
+    txt(r, HANDLE, size - 1, { color: SUB });
   }
 
-  // ตัวเลขใหญ่ + "วัน"
-  function bigDays(parent, ex, size) {
+  // วงแหวน + ตัวเลขบางๆ ตรงกลาง
+  function ring(parent, ex, size) {
+    const box = parent.addStack();
+    box.size = new Size(size, size);
+    box.backgroundImage = ringImage(progressOf(ex), size);
+    box.layoutVertically();
+    box.centerAlignContent();
+    box.addSpacer();
     const d = daysUntil(ex.date);
-    if (now > ex.end) {
-      fullRow(parent, r => txt(r, "สอบเสร็จแล้ว ✓", size * 0.4, { bold: true }));
-      return;
+    const done = now > ex.end;
+    const main = done ? "✓" : d <= 0 ? "วันนี้" : String(d);
+    const r1 = hRow(box, true);
+    txt(r1, main, d <= 0 || done ? size * 0.2 : size * 0.33, { thin: !(d <= 0 || done), semi: d <= 0 || done, color: !done && d <= 14 ? RED : NUM, scale: 0.5 });
+    r1.addSpacer();
+    if (!done && d > 0) {
+      const r2 = hRow(box, true);
+      txt(r2, "วัน", size * 0.1, { color: SUB });
+      r2.addSpacer();
     }
-    if (d <= 0) {
-      fullRow(parent, r => txt(r, "วันนี้! สู้ๆ 💪", size * 0.4, { bold: true, color: RED }));
-      if (now < ex.date) {
-        fullRow(parent, r => {
-          txt(r, "เริ่มใน ", size * 0.22, { color: SUB });
-          const t = r.addDate(ex.date);
-          t.applyTimerStyle();
-          t.font = Font.boldMonospacedSystemFont(size * 0.3);
-          t.textColor = RED;
-        });
-      }
-      return;
-    }
-    fullRow(parent, r => {
-      r.bottomAlignContent();
-      txt(r, String(d), size, { round: true, color: d <= 14 ? RED : ACCENT, scale: 0.5 });
-      r.addSpacer(4);
-      txt(r, "วัน", size * 0.32, { bold: true, color: SUB });
-    });
+    box.addSpacer();
+    return box;
   }
 
-  function examCard(parent, ex, size, showWeeks) {
-    const card = parent.addStack();
-    card.layoutVertically();
-    card.backgroundColor = CARD;
-    card.cornerRadius = 18;
-    card.setPadding(10, 12, 10, 12);
-    fullRow(card, r => txt(r, `${ex.emoji} ${ex.name}`, size * 0.3, { bold: true, color: SUB }));
-    bigDays(card, ex, size);
-    const d = daysUntil(ex.date);
-    if (showWeeks && d >= 7 && now < ex.end) {
-      fullRow(card, r => txt(r, `ประมาณ ${Math.floor(d / 7)} สัปดาห์`, 11, { semi: true, color: SUB }));
-    }
-    fullRow(card, r => txt(r, ex.sub, 11, { color: SUB }));
-    return card;
+  function examColumn(parent, ex, size) {
+    const col = parent.addStack();
+    col.layoutVertically();
+    const t = hRow(col, true);
+    txt(t, ex.name, Math.max(10, size * 0.1), { semi: true, color: SUB });
+    t.addSpacer();
+    col.addSpacer(6);
+    const m = hRow(col, true);
+    ring(m, ex, size);
+    m.addSpacer();
+    col.addSpacer(6);
+    const b = hRow(col, true);
+    txt(b, ex.sub, Math.max(10, size * 0.095), { color: SUB });
+    b.addSpacer();
+    return col;
   }
 
-  function tipCard(parent, size) {
-    const card = parent.addStack();
-    card.layoutVertically();
-    card.backgroundColor = CARD;
-    card.cornerRadius = 14;
-    card.setPadding(8, 12, 8, 12);
-    fullRow(card, r => txt(r, `💡 ${todayTip()}`, size, { semi: true, lines: 2 }));
+  function lcd(parent, size) {
+    const s = parent.addStack();
+    s.layoutHorizontally();
+    s.centerAlignContent();
+    s.backgroundColor = LCD_BG;
+    s.cornerRadius = 14;
+    s.setPadding(9, 12, 9, 12);
+    txt(s, `> ${todayTip()}`, size, { mono: true, color: LCD_TEXT, lines: 2 });
+    s.addSpacer();
   }
 
-  function milestoneList(parent, max, size) {
+  function milestoneCard(parent, max, size) {
+    const c = card(parent, 12);
     const list = MILESTONES.filter(m => m.end >= now).slice(0, max);
-    fullRow(parent, r => txt(r, "ไทม์ไลน์ที่ห้ามพลาด", 12, { semi: true, color: SUB }));
-    parent.addSpacer(6);
     list.forEach((m, i) => {
-      if (i) parent.addSpacer(7);
+      if (i) c.addSpacer(8);
       const open = now >= m.start && now <= m.end;
       const d = daysUntil(m.start);
-      const row = parent.addStack();
-      row.layoutHorizontally();
-      row.centerAlignContent();
-      txt(row, m.emoji, size + 2);
-      row.addSpacer(8);
-      const col = row.addStack();
+      const r = hRow(c);
+      const dot = r.addStack();
+      dot.size = new Size(7, 7);
+      dot.cornerRadius = 3.5;
+      dot.backgroundColor = open ? BLUE : d <= 7 ? RED : TRACK;
+      r.addSpacer(10);
+      const col = r.addStack();
       col.layoutVertically();
-      txt(col, m.name, size, { semi: true });
+      txt(col, m.name, size, { color: TEXT });
       txt(col, m.label, size - 3, { color: SUB });
-      row.addSpacer();
-      txt(row, open ? "เปิดแล้ว!" : d === 0 ? "วันนี้!" : `${d} วัน`, size + 1,
-        { bold: true, color: open || d <= 7 ? RED : TEXT });
+      r.addSpacer();
+      txt(r, open ? "เปิดแล้ว" : d === 0 ? "วันนี้" : `${d} วัน`, size + 1,
+        { light: !open && d > 7, semi: open || d <= 7, color: open ? BLUE : d <= 7 ? RED : NUM });
     });
+    return c;
+  }
+
+  function examPair(parent, size, gap) {
+    const row = hRow(parent);
+    row.addSpacer();
+    EXAMS.forEach((ex, i) => {
+      if (i) row.addSpacer(gap);
+      examColumn(row, ex, size);
+    });
+    row.addSpacer();
+    return row;
   }
 
   // ---------- Layout แต่ละขนาด ----------
   function buildSmall() {
-    const w = baseWidget(14);
-    const ex = pickExam();
-    fullRow(w, r => txt(r, `${ex.emoji} ${ex.name}`, 13, { bold: true, color: SUB }));
-    w.addSpacer();
-    bigDays(w, ex, 50);
-    w.addSpacer();
-    fullRow(w, r => txt(r, ex.sub, 11, { color: SUB }));
-    w.addSpacer(2);
-    fullRow(w, r => txt(r, HANDLE, 9, { semi: true, color: SUB }));
+    const w = baseWidget(12);
+    examColumn(w, pickExam(), 100);
     return w;
   }
 
   function buildMedium() {
     const w = baseWidget(12);
-    header(w, 13);
-    w.addSpacer(8);
-    const row = w.addStack();
-    row.layoutHorizontally();
-    EXAMS.forEach((ex, i) => {
-      if (i) row.addSpacer(8);
-      examCard(row, ex, 34, false);
-    });
+    examPair(w, 92, 36);
     return w;
   }
 
   function buildLarge() {
-    const w = baseWidget(15);
-    header(w, 15);
+    const w = baseWidget(16);
+    header(w, 11);
     w.addSpacer(10);
-    const row = w.addStack();
-    row.layoutHorizontally();
-    EXAMS.forEach((ex, i) => {
-      if (i) row.addSpacer(10);
-      examCard(row, ex, 44, true);
-    });
+    examPair(w, 104, 28);
     w.addSpacer(12);
-    milestoneList(w, 3, 13);
+    milestoneCard(w, 3, 13);
     w.addSpacer();
-    tipCard(w, 12);
+    lcd(w, 11);
     return w;
   }
 
   function buildXL() {
-    const w = baseWidget(20);
-    header(w, 18);
+    const w = baseWidget(22);
+    header(w, 12);
     w.addSpacer(14);
-    const cols = w.addStack();
-    cols.layoutHorizontally();
+    const cols = hRow(w);
 
     const left = cols.addStack();
     left.layoutVertically();
-    EXAMS.forEach((ex, i) => {
-      if (i) left.addSpacer(10);
-      examCard(left, ex, 56, true);
-    });
-    left.addSpacer(10);
-    tipCard(left, 13);
+    examPair(left, 140, 30);
+    left.addSpacer();
+    lcd(left, 12);
 
-    cols.addSpacer(20);
+    cols.addSpacer(22);
 
     const right = cols.addStack();
     right.layoutVertically();
-    milestoneList(right, 7, 14);
+    milestoneCard(right, 7, 13);
     right.addSpacer();
     return w;
   }
@@ -240,21 +300,21 @@ module.exports.build = function (FAMILY, PARAM) {
   function buildInline() {
     const w = new ListWidget();
     const parts = activeExams().map(e => `${e.name} ${Math.max(daysUntil(e.date), 0)} วัน`);
-    w.addText(parts.length ? `🐻 ${parts.join(" | ")}` : "🐻 Dek70 สอบครบแล้ว!");
+    w.addText(parts.length ? parts.join(" | ") : "Dek70 สอบครบแล้ว!");
     return w;
   }
 
   function buildRect() {
     const w = new ListWidget();
-    txt(w, "🐻 Dek70 Countdown", 11, { semi: true, color: null });
+    txt(w, "DEK70 COUNTDOWN", 11, { semi: true, color: null });
     const list = activeExams();
-    if (!list.length) { txt(w, "สอบครบแล้ว เก่งมาก! 🎉", 13, { bold: true, color: null }); return w; }
+    if (!list.length) { txt(w, "สอบครบแล้ว เก่งมาก!", 13, { bold: true, color: null }); return w; }
     list.forEach(e => {
       const r = w.addStack();
       r.layoutHorizontally();
-      txt(r, `${e.emoji} ${e.name}`, 13, { semi: true, color: null });
+      txt(r, e.name, 13, { color: null });
       r.addSpacer();
-      txt(r, `${Math.max(daysUntil(e.date), 0)} วัน`, 13, { bold: true, color: null });
+      txt(r, `${Math.max(daysUntil(e.date), 0)} วัน`, 13, { semi: true, color: null });
     });
     return w;
   }
@@ -263,11 +323,11 @@ module.exports.build = function (FAMILY, PARAM) {
     const w = new ListWidget();
     w.addAccessoryWidgetBackground = true;
     const ex = pickExam();
-    const a = w.addText(ex.key === "tgat" ? "TGAT" : "A-Lv");
+    const a = w.addText(ex.key === "tgat" ? "TGAT" : "A-LV");
     a.font = Font.semiboldSystemFont(9);
     a.centerAlignText();
     const b = w.addText(String(Math.max(daysUntil(ex.date), 0)));
-    b.font = Font.boldRoundedSystemFont(20);
+    b.font = Font.lightSystemFont(20);
     b.minimumScaleFactor = 0.6;
     b.centerAlignText();
     const c = w.addText("วัน");
