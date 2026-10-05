@@ -2,7 +2,7 @@
 // แก้ไฟล์นี้แล้วอัปขึ้นเว็บ = widget ของทุกคนอัปเดตตาม
 // ⚠️ เปลี่ยน VERSION ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
 
-module.exports.version = "1.0.2";
+module.exports.version = "1.0.3";
 
 module.exports.build = function (FAMILY, PARAM) {
   const LINK = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
@@ -28,7 +28,7 @@ module.exports.build = function (FAMILY, PARAM) {
 
   // ทิปเปลี่ยนวันละอัน
   const TIPS = [
-    "ทดสอบอัปเดต 🐻",
+    "ทดสอบอัปเดตGG 🐻",
   ];
 
   // ---------- สี (ธีมหมีน้ำผึ้ง) ----------
