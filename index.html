@@ -148,40 +148,31 @@ try {
   }
 } catch (e) {}
 
-// ถ้าเวอร์ชันใหม่ error จะถอยกลับไปใช้เวอร์ชันที่เคยใช้ได้
-function build(family) {
-  const param = args.widgetParameter || "";
+// ลองเวอร์ชันล่าสุดก่อน ถ้า error ถอยไปใช้เวอร์ชันที่เคยใช้ได้
+async function attempt(fn) {
   for (const p of [LATEST, GOOD]) {
     try {
-      const w = importModule(p).build(family, param);
+      if (!fm.fileExists(p)) continue;
+      const result = await fn(importModule(p));
       if (p === LATEST) fm.writeString(GOOD, fm.readString(LATEST));
-      return w;
+      return result;
     } catch (e) {}
   }
+  return null;
+}
+
+function fallback() {
   const w = new ListWidget();
   w.addText("🐻 ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ");
   return w;
 }
 
 if (config.runsInWidget) {
-  Script.setWidget(build(config.widgetFamily));
+  const w = await attempt(m => m.build(config.widgetFamily, args.widgetParameter || ""));
+  Script.setWidget(w || fallback());
 } else {
-  const sizes = [["Small", "small"], ["Medium", "medium"], ["Large", "large"]];
-  if (Device.isPad()) sizes.push(["Extra Large", "extraLarge"]);
-  const a = new Alert();
-  a.title = "🐻 Dek70 Countdown";
-  a.message = "ติดตั้งสำเร็จ! เลือกขนาดเพื่อดูตัวอย่าง";
-  sizes.forEach(s => a.addAction(s[0]));
-  a.addCancelAction("ปิด");
-  const i = await a.presentSheet();
-  if (i !== -1) {
-    const fam = sizes[i][1];
-    const w = build(fam);
-    if (fam === "small") await w.presentSmall();
-    else if (fam === "medium") await w.presentMedium();
-    else if (fam === "extraLarge") await w.presentExtraLarge();
-    else await w.presentLarge();
-  }
+  const ok = await attempt(async m => { await m.runInApp(); return true; });
+  if (!ok) await fallback().presentSmall();
 }
 Script.complete();
 </script>

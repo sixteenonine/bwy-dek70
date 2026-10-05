@@ -3,7 +3,7 @@
 // ⚠️ เปลี่ยน version ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
 // ธีม: Clean White
 
-module.exports.version = "3.0.1";
+module.exports.version = "3.1.0";
 
 module.exports.build = function (FAMILY, PARAM) {
   const LINK = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
@@ -40,7 +40,10 @@ module.exports.build = function (FAMILY, PARAM) {
   const DAY = 86400000;
   const startOfDay = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
   const daysUntil = d => Math.round((startOfDay(d) - startOfDay(now)) / DAY);
-  const param = (PARAM || "").trim().toLowerCase();
+  // Parameter: ใส่ชื่อสอบ (tgat / alevel) และ/หรือ bar เช่น "alevel bar"
+  const tokens = (PARAM || "").toLowerCase().split(/[\s,]+/).filter(Boolean);
+  const param = tokens.find(t => EXAMS.some(e => e.key === t)) || "";
+  const BAR = tokens.includes("bar");
 
   const activeExams = () => EXAMS.filter(e => e.end > now);
   const pickExam = () => EXAMS.find(e => e.key === param) || activeExams()[0] || EXAMS[EXAMS.length - 1];
@@ -227,6 +230,80 @@ module.exports.build = function (FAMILY, PARAM) {
     return w;
   }
 
+  // ---------- progress bar + นับวินาที ----------
+  function bar(parent, ex, W, H, fill, track) {
+    const img = parent.addImage(barImage(progressOf(ex), W, H, fill, track));
+    img.resizable = true;
+    return img;
+  }
+  // วัน:ชม:นาที:วินาที (ส่วนชั่วโมง-วินาทีเดินเองแบบเรียลไทม์)
+  function timerRow(parent, ex, size, lock) {
+    const r = row(parent);
+    const color = lock ? null : (daysUntil(ex.date) <= 14 ? RED : INK);
+    if (now > ex.end) {
+      txt(r, "สอบเสร็จแล้ว ✓", size * 0.5, { color });
+    } else {
+      const left = ex.date - now;
+      const days = Math.max(0, Math.floor(left / DAY));
+      const target = new Date(ex.date.getTime() - days * DAY);
+      if (days > 0) txt(r, `${days}:`, size, { color, scale: 0.5 });
+      const t = r.addDate(target);
+      t.applyTimerStyle();
+      t.font = Font.systemFont(size);
+      if (color) t.textColor = color;
+      t.lineLimit = 1;
+      t.minimumScaleFactor = 0.5;
+    }
+    r.addSpacer();
+    return r;
+  }
+
+  // Small แบบ bar (ตาม mock ล่างซ้าย)
+  function buildSmallBar() {
+    const w = baseWidget(16);
+    const ex = pickExam();
+    const d = daysUntil(ex.date);
+    const done = now > ex.end;
+    const r1 = row(w);
+    txt(r1, ex.short, 16);
+    r1.addSpacer();
+    const r2 = row(w);
+    r2.bottomAlignContent();
+    if (done || d <= 0) {
+      txt(r2, done ? "จบแล้ว" : "วันนี้!", 30, { semi: true, color: done ? INK : RED });
+    } else {
+      txt(r2, String(d), 54, { color: d <= 14 ? RED : INK, scale: 0.5 });
+      r2.addSpacer(6);
+      const u = col(r2);
+      u.setPadding(0, 0, 6, 0);
+      txt(u, "วัน", 18);
+    }
+    r2.addSpacer();
+    if (!done && d > 0) {
+      const r3 = row(w);
+      txt(r3, "สอบ", 18);
+      r3.addSpacer();
+    }
+    w.addSpacer();
+    bar(w, ex, 130, 9, d <= 14 ? RED : INK, TRACK);
+    return w;
+  }
+
+  // Medium แบบ bar + นับวินาที (ตาม mock ล่างขวา)
+  function buildMediumBar() {
+    const w = baseWidget(18);
+    const ex = pickExam();
+    const r1 = row(w);
+    txt(r1, ex.short, 16, { bold: true });
+    r1.addSpacer();
+    txt(r1, ex.month, 15);
+    w.addSpacer();
+    timerRow(w, ex, 56, false);
+    w.addSpacer();
+    bar(w, ex, 310, 10, daysUntil(ex.date) <= 14 ? RED : INK, TRACK);
+    return w;
+  }
+
   // Lock Screen: แถบยาว + วินาทีเดินจริง
   function buildRect() {
     const w = new ListWidget();
@@ -235,24 +312,10 @@ module.exports.build = function (FAMILY, PARAM) {
     txt(top, ex.short, 12, { bold: true, color: null });
     top.addSpacer();
     txt(top, ex.month, 11, { color: null });
-    const r = row(w);
-    if (now > ex.end) {
-      txt(r, "สอบเสร็จแล้ว ✓", 20, { color: null });
-    } else {
-      const left = ex.date - now;
-      const days = Math.max(0, Math.floor(left / DAY));
-      const target = new Date(ex.date.getTime() - days * DAY);
-      if (days > 0) txt(r, `${days}:`, 26, { color: null });
-      const t = r.addDate(target);
-      t.applyTimerStyle();
-      t.font = Font.systemFont(26);
-      t.lineLimit = 1;
-      t.minimumScaleFactor = 0.5;
-    }
-    r.addSpacer();
+    timerRow(w, ex, 26, true);
     w.addSpacer(3);
-    const bar = w.addImage(barImage(progressOf(ex), 150, 6, WHITE, new Color("#FFFFFF", 0.3)));
-    bar.imageSize = new Size(150, 6);
+    const b = w.addImage(barImage(progressOf(ex), 150, 6, WHITE, new Color("#FFFFFF", 0.3)));
+    b.imageSize = new Size(150, 6);
     return w;
   }
 
@@ -272,9 +335,9 @@ module.exports.build = function (FAMILY, PARAM) {
     c.font = Font.systemFont(9);
     c.centerAlignText();
     w.addSpacer(2);
-    const bar = w.addImage(barImage(progressOf(ex), 36, 4, WHITE, new Color("#FFFFFF", 0.3)));
-    bar.imageSize = new Size(36, 4);
-    bar.centerAlignImage();
+    const img = w.addImage(barImage(progressOf(ex), 36, 4, WHITE, new Color("#FFFFFF", 0.3)));
+    img.imageSize = new Size(36, 4);
+    img.centerAlignImage();
     return w;
   }
 
@@ -287,7 +350,8 @@ module.exports.build = function (FAMILY, PARAM) {
 
   // ---------- สร้าง widget ----------
   const builders = {
-    small: buildSmall, medium: buildMedium, large: buildLarge, extraLarge: buildXL,
+    small: BAR ? buildSmallBar : buildSmall, medium: BAR ? buildMediumBar : buildMedium,
+    large: buildLarge, extraLarge: buildXL,
     accessoryInline: buildInline, accessoryRectangular: buildRect, accessoryCircular: buildCircle,
   };
   const w = (builders[FAMILY] || buildLarge)();
@@ -304,4 +368,29 @@ module.exports.build = function (FAMILY, PARAM) {
   });
   w.refreshAfterDate = times.filter(t => t > now).sort((a, b) => a - b)[0];
   return w;
+};
+
+// ---------- เมนูตอนรันในแอป Scriptable ----------
+module.exports.runInApp = async function () {
+  const opts = [
+    ["Small", "small", ""],
+    ["Small แบบ progress bar", "small", "bar"],
+    ["Medium", "medium", ""],
+    ["Medium แบบนับวินาที", "medium", "bar"],
+    ["Large", "large", ""],
+  ];
+  if (Device.isPad()) opts.push(["Extra Large", "extraLarge", ""]);
+  const a = new Alert();
+  a.title = "🐻 Dek70 Countdown";
+  a.message = "เลือกแบบเพื่อดูตัวอย่าง\n\nอยากได้แบบ progress bar: กดค้างที่ widget > Edit Widget > ช่อง Parameter พิมพ์ bar\nอยากนับ A-Level: พิมพ์ alevel (ใช้คู่กันได้ เช่น alevel bar)";
+  opts.forEach(o => a.addAction(o[0]));
+  a.addCancelAction("ปิด");
+  const i = await a.presentSheet();
+  if (i === -1) return;
+  const [, fam, prm] = opts[i];
+  const w = module.exports.build(fam, prm);
+  if (fam === "small") await w.presentSmall();
+  else if (fam === "medium") await w.presentMedium();
+  else if (fam === "extraLarge") await w.presentExtraLarge();
+  else await w.presentLarge();
 };
