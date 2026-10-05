@@ -3,7 +3,7 @@
 // ⚠️ เปลี่ยน version ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
 // ธีม: Clean White
 
-module.exports.version = "3.0.0";
+module.exports.version = "3.0.1";
 
 module.exports.build = function (FAMILY, PARAM) {
   const LINK = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
@@ -99,33 +99,35 @@ module.exports.build = function (FAMILY, PARAM) {
   }
 
   // ---------- บล็อกตัวเลขใหญ่ (ตาม mock) ----------
-  function hero(parent, ex, k) {
+  // k = ขนาดตัวหนังสือทั่วไป, num = ขนาดตัวเลขใหญ่
+  function hero(parent, ex, k, num) {
     const c = col(parent);
     const d = daysUntil(ex.date);
     const done = now > ex.end;
+    const unit = 22 * k;
     const r1 = row(c);
     txt(r1, ex.short, 18 * k);
     r1.addSpacer();
-    c.addSpacer(2 * k);
 
     const r2 = row(c);
     r2.bottomAlignContent();
     if (done || d <= 0) {
-      txt(r2, done ? "จบแล้ว" : "วันนี้!", 44 * k, { semi: true, color: done ? INK : RED });
-      r2.addSpacer();
+      txt(r2, done ? "จบแล้ว" : "วันนี้!", num * 0.5, { semi: true, color: done ? INK : RED });
     } else {
-      txt(r2, String(d), 84 * k, { color: d <= 14 ? RED : INK, scale: 0.45 });
-      r2.addSpacer(4);
-      txt(r2, "วัน", 22 * k);
-      r2.addSpacer();
+      txt(r2, String(d), num, { color: d <= 14 ? RED : INK, scale: 0.4 });
+      r2.addSpacer(5);
+      const u = col(r2);
+      u.setPadding(0, 0, Math.round((num - unit) * 0.13), 0); // ยก "วัน" ให้ตรงฐานตัวเลข
+      txt(u, "วัน", unit);
     }
+    r2.addSpacer();
     c.addSpacer();
 
     const r3 = row(c);
     r3.bottomAlignContent();
     txt(r3, ex.sub, 11 * k);
     r3.addSpacer();
-    if (!done && d > 0) txt(r3, "สอบ", 22 * k);
+    if (!done && d > 0) txt(r3, "สอบ", unit);
     return c;
   }
 
@@ -134,53 +136,49 @@ module.exports.build = function (FAMILY, PARAM) {
     const p = col(parent);
     p.backgroundColor = PANEL;
     p.cornerRadius = 14;
-    p.setPadding(7, 12, 7, 12);
+    p.setPadding(8, 12, 8, 12);
     return p;
   }
-  function item(parent, m, k) {
-    const r = row(parent);
+  function item(p, m, k) {
+    const r = row(p);
     const c = col(r);
     txt(c, m.name, 12 * k, { bold: true });
     txt(c, m.label, 11 * k);
-    r.addSpacer(6);
+    r.addSpacer(); // ดันตัวเลขไปชิดขวา
     const n = row(r);
     n.bottomAlignContent();
     if (isOpen(m)) {
       txt(n, "เปิดแล้ว", 15 * k, { bold: true, color: RED });
     } else {
       const d = daysUntil(m.start);
-      txt(n, d === 0 ? "วันนี้" : String(d), 20 * k, { bold: true, color: d <= 7 ? RED : INK });
+      txt(n, d === 0 ? "วันนี้" : String(d), 20 * k, { bold: true, color: d <= 7 ? RED : INK, scale: 0.8 });
       if (d !== 0) {
         n.addSpacer(3);
-        txt(n, "วัน", 12 * k, { bold: true });
+        const u = col(n);
+        u.setPadding(0, 0, 2, 0);
+        txt(u, "วัน", 12 * k, { bold: true });
       }
     }
   }
-  function divider(parent) {
-    parent.addSpacer(5);
-    const l = parent.addStack();
+  function divider(p) {
+    p.addSpacer(6);
+    const l = row(p);
     l.backgroundColor = LINE;
     l.size = new Size(0, 1);
-    const r = row(l);
-    r.addSpacer();
-    parent.addSpacer(5);
+    l.addSpacer();
+    p.addSpacer(6);
   }
   // กล่องแรก 1 รายการ กล่องที่สองรวมที่เหลือ
   function timeline(parent, count, k) {
     const list = upcoming().slice(0, count);
     if (!list.length) return;
-    const p1 = panel(parent);
-    const r1 = row(p1);
-    item(r1, list[0], k);
-    r1.addSpacer();
+    item(panel(parent), list[0], k);
     if (list.length > 1) {
-      parent.addSpacer(5);
+      parent.addSpacer(6);
       const p2 = panel(parent);
       list.slice(1).forEach((m, i) => {
         if (i) divider(p2);
-        const r = row(p2);
-        item(r, m, k);
-        r.addSpacer();
+        item(p2, m, k);
       });
     }
   }
@@ -188,7 +186,7 @@ module.exports.build = function (FAMILY, PARAM) {
   // ---------- Layout แต่ละขนาด ----------
   function buildSmall() {
     const w = baseWidget(16);
-    hero(w, pickExam(), 0.92);
+    hero(w, pickExam(), 0.92, 80);
     return w;
   }
 
@@ -196,38 +194,35 @@ module.exports.build = function (FAMILY, PARAM) {
     const w = baseWidget(12);
     const r = row(w);
     const left = col(r);
-    left.size = new Size(130, 0);
-    left.setPadding(4, 6, 2, 0);
-    hero(left, pickExam(), 0.85);
-    r.addSpacer(10);
+    left.setPadding(4, 4, 2, 0);
+    hero(left, pickExam(), 0.85, 76);
+    r.addSpacer(12);
     const right = col(r);
+    right.size = new Size(185, 0);
     timeline(right, 3, 0.95);
     return w;
   }
 
   function buildLarge() {
     const w = baseWidget(18);
-    const top = col(w);
-    top.size = new Size(0, 165);
-    hero(top, pickExam(), 1.05);
+    hero(w, pickExam(), 1, 100);
     w.addSpacer(14);
-    timeline(w, 4, 1);
-    w.addSpacer();
+    timeline(w, 3, 1);
     return w;
   }
 
   function buildXL() {
-    const w = baseWidget(22);
+    const w = baseWidget(24);
     const r = row(w);
     const exams = activeExams().length ? activeExams() : EXAMS;
-    exams.forEach(ex => {
-      const c = col(r);
-      c.size = new Size(190, 0);
-      hero(c, ex, 1.1);
-      r.addSpacer(18);
+    exams.forEach((ex, i) => {
+      if (i) r.addSpacer(20);
+      hero(r, ex, 1.1, 130);
     });
+    r.addSpacer(24);
     const right = col(r);
-    timeline(right, 6, 1.05);
+    right.size = new Size(280, 0);
+    timeline(right, 6, 1);
     right.addSpacer();
     return w;
   }
