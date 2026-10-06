@@ -1,11 +1,30 @@
 // 🐻 Dek70 Countdown by BearWithYou (@WeBearTogether) — ไฟล์หลักบนเว็บ
 // แก้ไฟล์นี้แล้วอัปขึ้นเว็บ = widget ของทุกคนอัปเดตตาม
 // ⚠️ เปลี่ยน version ทุกครั้งที่อัปเดต และลองบนเครื่องตัวเองก่อนเสมอ
-// ธีม: Clean White
+// ปรับหน้าตาได้ที่ Widget Studio แล้ววางก้อน DESIGN ทับด้านล่าง
 
-module.exports.version = "3.1.0";
+module.exports.version = "3.2.0";
+
+// ==== DESIGN START ====
+const DESIGN = {
+  bg: "#FFFFFF", bgDepth: 0,
+  ink: "#000000", red: "#E5484D",
+  panel: "#F2F2F2", panelDepth: 0, panelRadius: 14, panelPadX: 12, panelPadY: 8,
+  line: "#DADADA", track: "#EFEFEF",
+  padSmall: 16, padMedium: 12, padLarge: 18, padXL: 24,
+  labelSize: 18, labelWeight: 400,
+  numSmall: 80, numMedium: 76, numLarge: 100, numXL: 130, numSmallBar: 54, numWeight: 400,
+  unitSize: 22, unitWeight: 400, unitLift: 13,
+  dateSize: 11, dateWeight: 400,
+  itemNameSize: 12, itemNameWeight: 700, itemDateSize: 11, itemNumSize: 20, itemNumWeight: 700, itemGap: 6,
+  timelineMedium: 185, timelineXL: 280,
+  timerSize: 56, timerWeight: 400, barHeight: 9,
+  urgentDays: 14,
+};
+// ==== DESIGN END ====
 
 module.exports.build = function (FAMILY, PARAM) {
+  const D = DESIGN;
   const LINK = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
   const START = new Date(2026, 4, 16); // จุดเริ่มแถบ progress (เปิดเทอม ม.6)
 
@@ -27,14 +46,6 @@ module.exports.build = function (FAMILY, PARAM) {
     { name: "สมัครรอบ 3", label: "7–11 พ.ค. 70", start: new Date(2027, 4, 7), end: new Date(2027, 4, 11, 23, 59) },
   ];
 
-  // ---------- สี ----------
-  const WHITE = new Color("#FFFFFF");
-  const INK = new Color("#000000");
-  const PANEL = new Color("#F2F2F2");
-  const LINE = new Color("#DADADA");
-  const TRACK = new Color("#EFEFEF");
-  const RED = new Color("#E5484D");
-
   // ---------- เวลา ----------
   const now = new Date();
   const DAY = 86400000;
@@ -50,17 +61,37 @@ module.exports.build = function (FAMILY, PARAM) {
   const upcoming = () => MILESTONES.filter(m => m.end >= now);
   const progressOf = ex => Math.max(0, Math.min(1, (now - START) / (ex.date - START)));
   const isOpen = m => now >= m.start && now <= m.end;
+  const urgent = ex => daysUntil(ex.date) <= D.urgentDays;
+
+  // ---------- สี ----------
+  const C = h => new Color(h);
+  const INK = C(D.ink), RED = C(D.red), WHITE = C("#FFFFFF");
+  function shade(hex, pct) {
+    const n = parseInt(hex.slice(1), 16);
+    const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(c =>
+      Math.round(pct >= 0 ? c + (255 - c) * pct / 100 : c * (1 + pct / 100)));
+    return "#" + ch.map(c => c.toString(16).padStart(2, "0")).join("");
+  }
+  function fill(target, hex, depth) {
+    if (depth > 0) {
+      const g = new LinearGradient();
+      g.colors = [C(shade(hex, depth)), C(shade(hex, -depth))];
+      g.locations = [0, 1];
+      target.backgroundGradient = g;
+    } else {
+      target.backgroundColor = C(hex);
+    }
+  }
 
   // ---------- ตัวช่วยวาด ----------
-  function txt(stack, s, size, o = {}) {
+  const WEIGHTS = { 100: "ultraLight", 200: "thin", 300: "light", 400: "regular", 500: "medium", 600: "semibold", 700: "bold", 800: "heavy", 900: "black" };
+  const font = (size, w) => Font[(WEIGHTS[Math.round(w / 100) * 100] || "regular") + "SystemFont"](size);
+  function txt(stack, s, size, weight, color, scale) {
     const t = stack.addText(s);
-    t.font = o.bold ? Font.boldSystemFont(size)
-      : o.semi ? Font.semiboldSystemFont(size)
-      : o.medium ? Font.mediumSystemFont(size)
-      : Font.systemFont(size);
-    if (o.color !== null) t.textColor = o.color || INK;
+    t.font = font(size, weight);
+    if (color !== null) t.textColor = color || INK;
     t.lineLimit = 1;
-    t.minimumScaleFactor = o.scale || 0.6;
+    t.minimumScaleFactor = scale || 0.6;
     return t;
   }
   function row(parent) {
@@ -76,11 +107,11 @@ module.exports.build = function (FAMILY, PARAM) {
   }
   function baseWidget(p) {
     const w = new ListWidget();
-    w.backgroundColor = WHITE;
+    fill(w, D.bg, D.bgDepth);
     w.setPadding(p, p, p, p);
     return w;
   }
-  function barImage(p, W, H, fill, track) {
+  function barImage(p, W, H, fillC, trackC) {
     const s = 3, w = W * s, h = H * s;
     const ctx = new DrawContext();
     ctx.size = new Size(w, h);
@@ -89,95 +120,100 @@ module.exports.build = function (FAMILY, PARAM) {
     const t = new Path();
     t.addRoundedRect(new Rect(0, 0, w, h), h / 2, h / 2);
     ctx.addPath(t);
-    ctx.setFillColor(track);
+    ctx.setFillColor(trackC);
     ctx.fillPath();
     if (p > 0) {
       const f = new Path();
       f.addRoundedRect(new Rect(0, 0, Math.max(h, w * p), h), h / 2, h / 2);
       ctx.addPath(f);
-      ctx.setFillColor(fill);
+      ctx.setFillColor(fillC);
       ctx.fillPath();
     }
     return ctx.getImage();
   }
+  function bar(parent, ex, W) {
+    const img = parent.addImage(barImage(progressOf(ex), W, D.barHeight, urgent(ex) ? RED : INK, C(D.track)));
+    img.resizable = true;
+    return img;
+  }
+  function unitText(parent, label, num, size, weight) {
+    const u = col(parent);
+    u.setPadding(0, 0, Math.max(0, Math.round((num - size) * D.unitLift / 100)), 0);
+    txt(u, label, size, weight);
+  }
 
-  // ---------- บล็อกตัวเลขใหญ่ (ตาม mock) ----------
-  // k = ขนาดตัวหนังสือทั่วไป, num = ขนาดตัวเลขใหญ่
+  // ---------- บล็อกตัวเลขใหญ่ ----------
   function hero(parent, ex, k, num) {
     const c = col(parent);
     const d = daysUntil(ex.date);
     const done = now > ex.end;
-    const unit = 22 * k;
+    const unit = D.unitSize * k;
     const r1 = row(c);
-    txt(r1, ex.short, 18 * k);
+    txt(r1, ex.short, D.labelSize * k, D.labelWeight);
     r1.addSpacer();
 
     const r2 = row(c);
     r2.bottomAlignContent();
     if (done || d <= 0) {
-      txt(r2, done ? "จบแล้ว" : "วันนี้!", num * 0.5, { semi: true, color: done ? INK : RED });
+      txt(r2, done ? "จบแล้ว" : "วันนี้!", num * 0.5, 600, done ? INK : RED);
     } else {
-      txt(r2, String(d), num, { color: d <= 14 ? RED : INK, scale: 0.4 });
+      txt(r2, String(d), num, D.numWeight, urgent(ex) ? RED : INK, 0.4);
       r2.addSpacer(5);
-      const u = col(r2);
-      u.setPadding(0, 0, Math.round((num - unit) * 0.13), 0); // ยก "วัน" ให้ตรงฐานตัวเลข
-      txt(u, "วัน", unit);
+      unitText(r2, "วัน", num, unit, D.unitWeight);
     }
     r2.addSpacer();
     c.addSpacer();
 
     const r3 = row(c);
     r3.bottomAlignContent();
-    txt(r3, ex.sub, 11 * k);
+    txt(r3, ex.sub, D.dateSize * k, D.dateWeight);
     r3.addSpacer();
-    if (!done && d > 0) txt(r3, "สอบ", unit);
+    if (!done && d > 0) txt(r3, "สอบ", unit, D.unitWeight);
     return c;
   }
 
-  // ---------- รายการไทม์ไลน์ (กล่องเทา) ----------
+  // ---------- ไทม์ไลน์ ----------
   function panel(parent) {
     const p = col(parent);
-    p.backgroundColor = PANEL;
-    p.cornerRadius = 14;
-    p.setPadding(8, 12, 8, 12);
+    fill(p, D.panel, D.panelDepth);
+    p.cornerRadius = D.panelRadius;
+    p.setPadding(D.panelPadY, D.panelPadX, D.panelPadY, D.panelPadX);
     return p;
   }
   function item(p, m, k) {
     const r = row(p);
     const c = col(r);
-    txt(c, m.name, 12 * k, { bold: true });
-    txt(c, m.label, 11 * k);
-    r.addSpacer(); // ดันตัวเลขไปชิดขวา
+    txt(c, m.name, D.itemNameSize * k, D.itemNameWeight);
+    txt(c, m.label, D.itemDateSize * k, 400);
+    r.addSpacer();
     const n = row(r);
     n.bottomAlignContent();
     if (isOpen(m)) {
-      txt(n, "เปิดแล้ว", 15 * k, { bold: true, color: RED });
+      txt(n, "เปิดแล้ว", D.itemNumSize * 0.75 * k, D.itemNumWeight, RED);
     } else {
       const d = daysUntil(m.start);
-      txt(n, d === 0 ? "วันนี้" : String(d), 20 * k, { bold: true, color: d <= 7 ? RED : INK, scale: 0.8 });
+      const size = D.itemNumSize * k;
+      txt(n, d === 0 ? "วันนี้" : String(d), size, D.itemNumWeight, d <= 7 ? RED : INK, 0.8);
       if (d !== 0) {
         n.addSpacer(3);
-        const u = col(n);
-        u.setPadding(0, 0, 2, 0);
-        txt(u, "วัน", 12 * k, { bold: true });
+        unitText(n, "วัน", size, D.itemNameSize * k, D.itemNumWeight);
       }
     }
   }
   function divider(p) {
-    p.addSpacer(6);
+    p.addSpacer(D.itemGap);
     const l = row(p);
-    l.backgroundColor = LINE;
+    l.backgroundColor = C(D.line);
     l.size = new Size(0, 1);
     l.addSpacer();
-    p.addSpacer(6);
+    p.addSpacer(D.itemGap);
   }
-  // กล่องแรก 1 รายการ กล่องที่สองรวมที่เหลือ
   function timeline(parent, count, k) {
     const list = upcoming().slice(0, count);
     if (!list.length) return;
     item(panel(parent), list[0], k);
     if (list.length > 1) {
-      parent.addSpacer(6);
+      parent.addSpacer(D.itemGap);
       const p2 = panel(parent);
       list.slice(1).forEach((m, i) => {
         if (i) divider(p2);
@@ -186,70 +222,20 @@ module.exports.build = function (FAMILY, PARAM) {
     }
   }
 
-  // ---------- Layout แต่ละขนาด ----------
-  function buildSmall() {
-    const w = baseWidget(16);
-    hero(w, pickExam(), 0.92, 80);
-    return w;
-  }
-
-  function buildMedium() {
-    const w = baseWidget(12);
-    const r = row(w);
-    const left = col(r);
-    left.setPadding(4, 4, 2, 0);
-    hero(left, pickExam(), 0.85, 76);
-    r.addSpacer(12);
-    const right = col(r);
-    right.size = new Size(185, 0);
-    timeline(right, 3, 0.95);
-    return w;
-  }
-
-  function buildLarge() {
-    const w = baseWidget(18);
-    hero(w, pickExam(), 1, 100);
-    w.addSpacer(14);
-    timeline(w, 3, 1);
-    return w;
-  }
-
-  function buildXL() {
-    const w = baseWidget(24);
-    const r = row(w);
-    const exams = activeExams().length ? activeExams() : EXAMS;
-    exams.forEach((ex, i) => {
-      if (i) r.addSpacer(20);
-      hero(r, ex, 1.1, 130);
-    });
-    r.addSpacer(24);
-    const right = col(r);
-    right.size = new Size(280, 0);
-    timeline(right, 6, 1);
-    right.addSpacer();
-    return w;
-  }
-
-  // ---------- progress bar + นับวินาที ----------
-  function bar(parent, ex, W, H, fill, track) {
-    const img = parent.addImage(barImage(progressOf(ex), W, H, fill, track));
-    img.resizable = true;
-    return img;
-  }
-  // วัน:ชม:นาที:วินาที (ส่วนชั่วโมง-วินาทีเดินเองแบบเรียลไทม์)
-  function timerRow(parent, ex, size, lock) {
+  // ---------- นับวินาที ----------
+  function timerRow(parent, ex, size, weight, lock) {
     const r = row(parent);
-    const color = lock ? null : (daysUntil(ex.date) <= 14 ? RED : INK);
+    const color = lock ? null : (urgent(ex) ? RED : INK);
     if (now > ex.end) {
-      txt(r, "สอบเสร็จแล้ว ✓", size * 0.5, { color });
+      txt(r, "สอบเสร็จแล้ว ✓", size * 0.5, weight, color);
     } else {
       const left = ex.date - now;
       const days = Math.max(0, Math.floor(left / DAY));
       const target = new Date(ex.date.getTime() - days * DAY);
-      if (days > 0) txt(r, `${days}:`, size, { color, scale: 0.5 });
+      if (days > 0) txt(r, `${days}:`, size, weight, color, 0.5);
       const t = r.addDate(target);
       t.applyTimerStyle();
-      t.font = Font.systemFont(size);
+      t.font = font(size, weight);
       if (color) t.textColor = color;
       t.lineLimit = 1;
       t.minimumScaleFactor = 0.5;
@@ -258,49 +244,90 @@ module.exports.build = function (FAMILY, PARAM) {
     return r;
   }
 
-  // Small แบบ bar (ตาม mock ล่างซ้าย)
+  // ---------- Layout ----------
+  function buildSmall() {
+    const w = baseWidget(D.padSmall);
+    hero(w, pickExam(), 0.92, D.numSmall);
+    return w;
+  }
+
   function buildSmallBar() {
-    const w = baseWidget(16);
+    const w = baseWidget(D.padSmall);
     const ex = pickExam();
     const d = daysUntil(ex.date);
     const done = now > ex.end;
+    const k = 0.82;
     const r1 = row(w);
-    txt(r1, ex.short, 16);
+    txt(r1, ex.short, D.labelSize * 0.9, D.labelWeight);
     r1.addSpacer();
     const r2 = row(w);
     r2.bottomAlignContent();
     if (done || d <= 0) {
-      txt(r2, done ? "จบแล้ว" : "วันนี้!", 30, { semi: true, color: done ? INK : RED });
+      txt(r2, done ? "จบแล้ว" : "วันนี้!", D.numSmallBar * 0.55, 600, done ? INK : RED);
     } else {
-      txt(r2, String(d), 54, { color: d <= 14 ? RED : INK, scale: 0.5 });
+      txt(r2, String(d), D.numSmallBar, D.numWeight, urgent(ex) ? RED : INK, 0.5);
       r2.addSpacer(6);
-      const u = col(r2);
-      u.setPadding(0, 0, 6, 0);
-      txt(u, "วัน", 18);
+      unitText(r2, "วัน", D.numSmallBar, D.unitSize * k, D.unitWeight);
     }
     r2.addSpacer();
     if (!done && d > 0) {
       const r3 = row(w);
-      txt(r3, "สอบ", 18);
+      txt(r3, "สอบ", D.unitSize * k, D.unitWeight);
       r3.addSpacer();
     }
     w.addSpacer();
-    bar(w, ex, 130, 9, d <= 14 ? RED : INK, TRACK);
+    bar(w, ex, 130);
     return w;
   }
 
-  // Medium แบบ bar + นับวินาที (ตาม mock ล่างขวา)
+  function buildMedium() {
+    const w = baseWidget(D.padMedium);
+    const r = row(w);
+    const left = col(r);
+    left.setPadding(4, 4, 2, 0);
+    hero(left, pickExam(), 0.85, D.numMedium);
+    r.addSpacer(12);
+    const right = col(r);
+    right.size = new Size(D.timelineMedium, 0);
+    timeline(right, 3, 0.95);
+    return w;
+  }
+
   function buildMediumBar() {
-    const w = baseWidget(18);
+    const w = baseWidget(D.padMedium + 6);
     const ex = pickExam();
     const r1 = row(w);
-    txt(r1, ex.short, 16, { bold: true });
+    txt(r1, ex.short, D.labelSize * 0.9, 700);
     r1.addSpacer();
-    txt(r1, ex.month, 15);
+    txt(r1, ex.month, D.labelSize * 0.85, D.labelWeight);
     w.addSpacer();
-    timerRow(w, ex, 56, false);
+    timerRow(w, ex, D.timerSize, D.timerWeight, false);
     w.addSpacer();
-    bar(w, ex, 310, 10, daysUntil(ex.date) <= 14 ? RED : INK, TRACK);
+    bar(w, ex, 310);
+    return w;
+  }
+
+  function buildLarge() {
+    const w = baseWidget(D.padLarge);
+    hero(w, pickExam(), 1, D.numLarge);
+    w.addSpacer(14);
+    timeline(w, 3, 1);
+    return w;
+  }
+
+  function buildXL() {
+    const w = baseWidget(D.padXL);
+    const r = row(w);
+    const exams = activeExams().length ? activeExams() : EXAMS;
+    exams.forEach((ex, i) => {
+      if (i) r.addSpacer(20);
+      hero(r, ex, 1.1, D.numXL);
+    });
+    r.addSpacer(24);
+    const right = col(r);
+    right.size = new Size(D.timelineXL, 0);
+    timeline(right, 6, 1);
+    right.addSpacer();
     return w;
   }
 
@@ -309,10 +336,10 @@ module.exports.build = function (FAMILY, PARAM) {
     const w = new ListWidget();
     const ex = pickExam();
     const top = row(w);
-    txt(top, ex.short, 12, { bold: true, color: null });
+    txt(top, ex.short, 12, 700, null);
     top.addSpacer();
-    txt(top, ex.month, 11, { color: null });
-    timerRow(w, ex, 26, true);
+    txt(top, ex.month, 11, 400, null);
+    timerRow(w, ex, 26, 400, true);
     w.addSpacer(3);
     const b = w.addImage(barImage(progressOf(ex), 150, 6, WHITE, new Color("#FFFFFF", 0.3)));
     b.imageSize = new Size(150, 6);
