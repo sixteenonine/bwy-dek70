@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.3.1";
+module.exports.version = "7.3.2";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -13,7 +13,7 @@ const DESIGN = {
   bgGrad: 0, bgN: 3, bg2: "#FF5E7E", bg3: "#7B5CFF", bg4: "#FFD6E7",
   bgAngle: 135, bgPos: 50, bgSize: 110, bgIntensity: 100, startDays: 120,
   changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barDir: "fill", useSmall: 1,
-  useMedium: 1, useMediumBar: 1, useLarge: 1, useXL: 1, lightAngle: 225,
+  useMedium: 0, useMediumBar: 1, useLarge: 1, useXL: 1, lightAngle: 225,
   lightMain: 100, lightReflect: 55, lightWidth: 18, lightBase: 11, wgOn: 1,
   wgRadius: 22, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 10, wgSheenSize: 45,
   wgRim: 85, wgRimW: 1, wgInner: 38, wgInnerSize: 30, panelGlass: 0,
@@ -513,7 +513,11 @@ function widgetSize(fam) {
 }
 
 function scriptableG(W, H, D) {
-  const s = 3;
+  // วาดตามความละเอียดจริงของจอ (ไอแพด 2x, ไอโฟน 3x) และไม่ให้ภาพใหญ่เกินพื้นที่ widget
+  // ไม่งั้น iOS จะปฏิเสธภาพ ขึ้น "Unsupported widget" บน Large / Extra Large
+  let native = 2;
+  try { native = Device.screenScale() || 2; } catch (e) {}
+  const s = Math.max(1, native * 0.94);
   const ctx = new DrawContext();
   ctx.size = new Size(W * s, H * s);
   ctx.opaque = false;
