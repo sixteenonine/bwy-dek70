@@ -4,14 +4,15 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "6.4.2";
+module.exports.version = "6.5.1";
 
 // ==== DESIGN START ====
 const DESIGN = {
   bg: "#0B0B0C", ink: "#FFFFFF", dateColor: "#A1A1AA", red: "#FF453A", panel: "#1C1C1E",
   panelRadius: 14, line: "#2C2C2E", track: "#2C2C2E", urgentDays: 14, itemUrgentDays: 7,
   bgGrad: 0, bgN: 2, bg2: "#B51A00", bg3: "#C9D6FF", bg4: "#FFD6E7",
-  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, lightAngle: 64,
+  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, useSmall: 1,
+  useMedium: 1, useMediumBar: 1, useLarge: 1, useXL: 1, lightAngle: 64,
   lightMain: 100, lightReflect: 100, lightWidth: 19, lightBase: 15, wgOn: 1,
   wgRadius: 26, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 12, wgSheenSize: 79,
   wgRim: 100, wgRimW: 1.1, wgInner: 0, wgInnerSize: 30, panelGlass: 0,
@@ -27,7 +28,7 @@ const DESIGN = {
   shBarOn: 0, shBarColor: "#000000", shBarX: 0, shBarY: 2, shBarBlur: 4,
   shBarOpacity: 20, shBarStyle: "soft", shBarSpread: 0, shBarSX: 100, shBarSY: 100,
   shBarRound: 0,
-  emNum: [0.582,0.39,0.557,0.558,0.575,0.571,0.579,0.529,0.58,0.579, 0.59,0.408,0.56,0.569,0.585,0.576,0.592,0.535,0.586,0.592, 0.598,0.426,0.563,0.581,0.595,0.58,0.605,0.541,0.593,0.605, 0.606,0.443,0.566,0.592,0.604,0.585,0.617,0.547,0.6,0.617, 0.623,0.456,0.578,0.604,0.619,0.598,0.629,0.555,0.616,0.629, 0.639,0.468,0.591,0.617,0.633,0.612,0.64,0.564,0.632,0.64, 0.656,0.48,0.603,0.63,0.647,0.625,0.652,0.572,0.649,0.652, 0.672,0.492,0.615,0.642,0.662,0.638,0.664,0.58,0.665,0.664, 0.689,0.504,0.628,0.655,0.676,0.652,0.675,0.589,0.682,0.675], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
+  emNum: [[0.582, 0.39, 0.557, 0.558, 0.575, 0.571, 0.579, 0.529, 0.58, 0.579], [0.59, 0.408, 0.56, 0.569, 0.585, 0.576, 0.592, 0.535, 0.586, 0.592], [0.598, 0.426, 0.563, 0.581, 0.595, 0.58, 0.605, 0.541, 0.593, 0.605], [0.606, 0.443, 0.566, 0.592, 0.604, 0.585, 0.617, 0.547, 0.6, 0.617], [0.623, 0.456, 0.578, 0.604, 0.619, 0.598, 0.629, 0.555, 0.616, 0.629], [0.639, 0.468, 0.591, 0.617, 0.633, 0.612, 0.64, 0.564, 0.632, 0.64], [0.656, 0.48, 0.603, 0.63, 0.647, 0.625, 0.652, 0.572, 0.649, 0.652], [0.672, 0.492, 0.615, 0.642, 0.662, 0.638, 0.664, 0.58, 0.665, 0.664], [0.689, 0.504, 0.628, 0.655, 0.676, 0.652, 0.675, 0.589, 0.682, 0.675]], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
   sLabelX: 9, sLabelY: 9, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
   sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 400, sNumAlign: "l",
@@ -129,6 +130,16 @@ function rimAlpha(a, D, mult) {
   return Math.max(0, Math.min(1, (D.lightBase / 100 + D.lightMain / 100 * main + D.lightReflect / 100 * refl) * mult));
 }
 module.exports.rimPath = rimPath;
+// ความกว้างตัวเลข (หน่วย em) อ่านได้ทั้งตารางซ้อน 9×10 และแถวเดียว 90 ตัว กันไฟล์ที่คัดลอกผิดรูปแบบ
+function emOf(D, wi, digit) {
+  const t = D.emNum || [];
+  const row = Array.isArray(t[0]) ? t[wi] : t.slice(wi * 10, wi * 10 + 10);
+  const v = row ? Number(row[digit]) : NaN;
+  return isFinite(v) && v > 0 ? v : 0.6;
+}
+function emWanOf(D, wi) { const v = Number((D.emWan || [])[wi]); return isFinite(v) && v > 0 ? v : 1.1; }
+module.exports.emOf = emOf;
+module.exports.emWanOf = emWanOf;
 module.exports.rimAlpha = rimAlpha;
 // มุมไล่สีพื้นหลัง → จุดเริ่ม/จบในกรอบ 0-1 (0° = ซ้าย→ขวา, 90° = บน→ล่าง)
 function gradPoints(angle) {
@@ -480,11 +491,11 @@ function scriptableG(W, H, D) {
     measure(str, size, weight) {
       let w = 0;
       for (const ch of str) {
-        if (/[0-9]/.test(ch)) w += D.emNum[wi(weight)][+ch] * size; // ความกว้างแยกทีละตัวเลข
+        if (/[0-9]/.test(ch)) w += emOf(D, wi(weight), +ch) * size; // ความกว้างแยกทีละตัวเลข
         else if (ch === ":") w += 0.3 * size;
         else w += 0.55 * size;
       }
-      if (str === "วัน") w = D.emWan[wi(weight)] * size;
+      if (str === "วัน") w = emWanOf(D, wi(weight)) * size;
       return w;
     },
     text(id, str, x, y, size, weight, color, align, alpha) {
@@ -609,10 +620,34 @@ function buildLock(FAMILY, PARAM) {
   return { w, S };
 }
 
-module.exports.build = function (FAMILY, PARAM) {
+// เลือกแบบที่จะใช้จริงตามที่ตั้งใน Studio (use...)
+function pickFam(FAMILY, PARAM) {
+  const D = DESIGN;
   const bar = (PARAM || "").toLowerCase().split(/[\s,]+/).includes("bar");
-  const fam = { small: "small", medium: bar ? "mediumBar" : "medium", large: "large", extraLarge: "xl" }[FAMILY];
-  const { w, S } = fam ? buildPainted(fam, PARAM) : FAMILY && FAMILY.startsWith("accessory") ? buildLock(FAMILY, PARAM) : buildPainted("large", PARAM);
+  if (FAMILY === "small") return D.useSmall ? "small" : null;
+  if (FAMILY === "medium") {
+    if (bar && D.useMediumBar) return "mediumBar";
+    if (D.useMedium) return "medium";
+    return D.useMediumBar ? "mediumBar" : null;
+  }
+  if (FAMILY === "large") return D.useLarge ? "large" : null;
+  if (FAMILY === "extraLarge") return D.useXL ? "xl" : D.useLarge ? "large" : null;
+  return null;
+}
+function notUsed() {
+  const w = new ListWidget();
+  w.backgroundColor = new Color("#1C1C1E");
+  const t = w.addText("🐻 ขนาดนี้ยังไม่เปิดใช้\nลองเลือกขนาดอื่นนะ");
+  t.font = Font.mediumSystemFont(13);
+  t.textColor = new Color("#FFFFFF");
+  t.centerAlignText();
+  return { w, S: makeState(Date.now(), "", DESIGN) };
+}
+
+module.exports.build = function (FAMILY, PARAM) {
+  const lock = FAMILY && FAMILY.startsWith("accessory");
+  const fam = lock ? null : pickFam(FAMILY || "large", PARAM);
+  const { w, S } = lock ? buildLock(FAMILY, PARAM) : fam ? buildPainted(fam, PARAM) : notUsed();
   w.url = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
   // รีเฟรชทุก ~1 ชม. / เที่ยงคืน / ตอนวินาทีวิ่งครบวัน (แบบไหนถึงก่อน)
   const now = Date.now();
@@ -628,13 +663,13 @@ module.exports.build = function (FAMILY, PARAM) {
 
 // ---------- เมนูตอนรันในแอป Scriptable ----------
 module.exports.runInApp = async function () {
-  const opts = [
-    ["Small", "small", ""],
-    ["Medium", "medium", ""],
-    ["Medium แบบนับวินาที", "medium", "bar"],
-    ["Large", "large", ""],
-  ];
-  if (Device.isPad()) opts.push(["Extra Large", "extraLarge", ""]);
+  const D = DESIGN;
+  const opts = [];
+  if (D.useSmall) opts.push(["Small", "small", ""]);
+  if (D.useMedium) opts.push(["Medium", "medium", ""]);
+  if (D.useMediumBar) opts.push(["Medium แบบนับวินาที", "medium", "bar"]);
+  if (D.useLarge) opts.push(["Large", "large", ""]);
+  if (Device.isPad() && D.useXL) opts.push(["Extra Large", "extraLarge", ""]);
   const a = new Alert();
   a.title = "🐻 Dek70 Countdown";
   a.message = "เลือกแบบเพื่อดูตัวอย่าง\n\nMedium แบบนับวินาที: กดค้างที่ widget > Edit Widget > ช่อง Parameter พิมพ์ bar\nอยากล็อกที่วันสอบ: พิมพ์ tgat หรือ alevel (ใช้คู่กันได้ เช่น tgat bar)";
