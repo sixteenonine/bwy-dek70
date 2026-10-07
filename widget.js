@@ -4,27 +4,27 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "6.4.1";
+module.exports.version = "6.4.2";
 
 // ==== DESIGN START ====
 const DESIGN = {
-  bg: "#FF4015", ink: "#000000", dateColor: "#FFFFFF", red: "#000000", panel: "#000000",
-  panelRadius: 14, line: "#2C2C2E", track: "#7B2900", urgentDays: 14, itemUrgentDays: 7,
-  bgGrad: 1, bgN: 2, bg2: "#B51A00", bg3: "#C9D6FF", bg4: "#FFD6E7",
-  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, lightAngle: 305,
-  lightMain: 100, lightReflect: 100, lightWidth: 18, lightBase: 14, wgOn: 1,
-  wgRadius: 26, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 6, wgSheenSize: 40,
-  wgRim: 95, wgRimW: 0.9, wgInner: 0, wgInnerSize: 30, panelGlass: 1,
+  bg: "#0B0B0C", ink: "#FFFFFF", dateColor: "#A1A1AA", red: "#FF453A", panel: "#1C1C1E",
+  panelRadius: 14, line: "#2C2C2E", track: "#2C2C2E", urgentDays: 14, itemUrgentDays: 7,
+  bgGrad: 0, bgN: 2, bg2: "#B51A00", bg3: "#C9D6FF", bg4: "#FFD6E7",
+  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, lightAngle: 64,
+  lightMain: 100, lightReflect: 100, lightWidth: 19, lightBase: 15, wgOn: 1,
+  wgRadius: 26, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 12, wgSheenSize: 79,
+  wgRim: 100, wgRimW: 1.1, wgInner: 0, wgInnerSize: 30, panelGlass: 0,
   barGlass: 1, glassTint: "#FFFFFF", glassOpacity: 21, glassSheen: 8, glassSheenSize: 34,
   glassRim: 80, glassRimW: 0.7, glassInner: 6, glassInnerSize: 97, panelGrad: 0,
   panelN: 2, panel2: "#E2E2E8", panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v",
   panelPos: 50, panelSize: 100, panelIntensity: 100, shNumOn: 0, shNumColor: "#000000",
   shNumX: 0, shNumY: 3, shNumBlur: 5, shNumOpacity: 55, shNumStyle: "soft",
   shNumSpread: 0, shTextOn: 0, shTextColor: "#000000", shTextX: 0, shTextY: 1,
-  shTextBlur: 3, shTextOpacity: 20, shTextStyle: "soft", shTextSpread: 0, shPanelOn: 1,
+  shTextBlur: 3, shTextOpacity: 20, shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0,
   shPanelColor: "#000000", shPanelX: 0, shPanelY: 3.5, shPanelBlur: 3.5, shPanelOpacity: 14,
-  shPanelStyle: "soft", shPanelSpread: 1.5, shPanelSX: 99, shPanelSY: 98, shPanelRound: 0,
-  shBarOn: 1, shBarColor: "#000000", shBarX: 0, shBarY: 2, shBarBlur: 4,
+  shPanelStyle: "soft", shPanelSpread: 0, shPanelSX: 100, shPanelSY: 100, shPanelRound: 0,
+  shBarOn: 0, shBarColor: "#000000", shBarX: 0, shBarY: 2, shBarBlur: 4,
   shBarOpacity: 20, shBarStyle: "soft", shBarSpread: 0, shBarSX: 100, shBarSY: 100,
   shBarRound: 0,
   emNum: [0.582,0.39,0.557,0.558,0.575,0.571,0.579,0.529,0.58,0.579, 0.59,0.408,0.56,0.569,0.585,0.576,0.592,0.535,0.586,0.592, 0.598,0.426,0.563,0.581,0.595,0.58,0.605,0.541,0.593,0.605, 0.606,0.443,0.566,0.592,0.604,0.585,0.617,0.547,0.6,0.617, 0.623,0.456,0.578,0.604,0.619,0.598,0.629,0.555,0.616,0.629, 0.639,0.468,0.591,0.617,0.633,0.612,0.64,0.564,0.632,0.64, 0.656,0.48,0.603,0.63,0.647,0.625,0.652,0.572,0.649,0.652, 0.672,0.492,0.615,0.642,0.662,0.638,0.664,0.58,0.665,0.664, 0.689,0.504,0.628,0.655,0.676,0.652,0.675,0.589,0.682,0.675], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
