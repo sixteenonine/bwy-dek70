@@ -4,49 +4,49 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.0.2";
+module.exports.version = "7.3.1";
 
 // ==== DESIGN START ====
 const DESIGN = {
   bg: "#0B0B0C", ink: "#FFFFFF", dateColor: "#A1A1AA", red: "#FF453A", panel: "#1C1C1E",
   panelRadius: 14, line: "#2C2C2E", track: "#2C2C2E", urgentDays: 14, itemUrgentDays: 7,
-  bgGrad: 0, bgN: 2, bg2: "#B51A00", bg3: "#C9D6FF", bg4: "#FFD6E7",
-  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, startDays: 120,
-  changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barMode: "scale", barScale: 90,
-  barDir: "drain", barTicks: 0, useSmall: 1, useMedium: 0, useMediumBar: 1,
-  useLarge: 1, useXL: 1, lightAngle: 64, lightMain: 100, lightReflect: 100,
-  lightWidth: 19, lightBase: 15, wgOn: 1, wgRadius: 26, wgTint: "#FFFFFF",
-  wgOpacity: 0, wgSheen: 12, wgSheenSize: 79, wgRim: 100, wgRimW: 1.1,
-  wgInner: 0, wgInnerSize: 30, panelGlass: 0, barGlass: 1, glassTint: "#FFFFFF",
-  glassOpacity: 21, glassSheen: 8, glassSheenSize: 34, glassRim: 80, glassRimW: 0.7,
-  glassInner: 6, glassInnerSize: 97, panelGrad: 0, panelN: 2, panel2: "#E2E2E8",
-  panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v", panelPos: 50, panelSize: 100,
-  panelIntensity: 100, shNumOn: 0, shNumColor: "#000000", shNumX: 0, shNumY: 3,
-  shNumBlur: 5, shNumOpacity: 55, shNumStyle: "soft", shNumSpread: 0, shTextOn: 0,
-  shTextColor: "#000000", shTextX: 0, shTextY: 1, shTextBlur: 3, shTextOpacity: 20,
-  shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0, shPanelColor: "#000000", shPanelX: 0,
-  shPanelY: 3.5, shPanelBlur: 3.5, shPanelOpacity: 14, shPanelStyle: "soft", shPanelSpread: 0,
-  shPanelSX: 100, shPanelSY: 100, shPanelRound: 0, shBarOn: 0, shBarColor: "#000000",
-  shBarX: 0, shBarY: 2, shBarBlur: 4, shBarOpacity: 20, shBarStyle: "soft",
-  shBarSpread: 0, shBarSX: 100, shBarSY: 100, shBarRound: 0,
+  bgGrad: 0, bgN: 3, bg2: "#FF5E7E", bg3: "#7B5CFF", bg4: "#FFD6E7",
+  bgAngle: 135, bgPos: 50, bgSize: 110, bgIntensity: 100, startDays: 120,
+  changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barDir: "fill", useSmall: 1,
+  useMedium: 1, useMediumBar: 1, useLarge: 1, useXL: 1, lightAngle: 225,
+  lightMain: 100, lightReflect: 55, lightWidth: 18, lightBase: 11, wgOn: 1,
+  wgRadius: 22, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 10, wgSheenSize: 45,
+  wgRim: 85, wgRimW: 1, wgInner: 38, wgInnerSize: 30, panelGlass: 0,
+  barGlass: 0, glassTint: "#FFFFFF", glassOpacity: 22, glassSheen: 45, glassSheenSize: 55,
+  glassRim: 70, glassRimW: 1.2, glassInner: 12, glassInnerSize: 35, panelGrad: 0,
+  panelN: 2, panel2: "#24194A", panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v",
+  panelPos: 50, panelSize: 100, panelIntensity: 100, shNumOn: 0, shNumColor: "#3A0F3F",
+  shNumX: 0, shNumY: 3, shNumBlur: 8, shNumOpacity: 35, shNumStyle: "soft",
+  shNumSpread: 0, shTextOn: 0, shTextColor: "#000000", shTextX: 0, shTextY: 1,
+  shTextBlur: 3, shTextOpacity: 20, shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0,
+  shPanelColor: "#2A0E3A", shPanelX: 0, shPanelY: 5, shPanelBlur: 12, shPanelOpacity: 30,
+  shPanelStyle: "soft", shPanelSpread: 0, shPanelSX: 100, shPanelSY: 100, shPanelRound: 0,
+  shBarOn: 0, shBarColor: "#000000", shBarX: 0, shBarY: 2, shBarBlur: 4,
+  shBarOpacity: 20, shBarStyle: "soft", shBarSpread: 0, shBarSX: 100, shBarSY: 100,
+  shBarRound: 0,
   emNum: [[0.582, 0.39, 0.557, 0.558, 0.575, 0.571, 0.579, 0.529, 0.58, 0.579], [0.59, 0.408, 0.56, 0.569, 0.585, 0.576, 0.592, 0.535, 0.586, 0.592], [0.598, 0.426, 0.563, 0.581, 0.595, 0.58, 0.605, 0.541, 0.593, 0.605], [0.606, 0.443, 0.566, 0.592, 0.604, 0.585, 0.617, 0.547, 0.6, 0.617], [0.623, 0.456, 0.578, 0.604, 0.619, 0.598, 0.629, 0.555, 0.616, 0.629], [0.639, 0.468, 0.591, 0.617, 0.633, 0.612, 0.64, 0.564, 0.632, 0.64], [0.656, 0.48, 0.603, 0.63, 0.647, 0.625, 0.652, 0.572, 0.649, 0.652], [0.672, 0.492, 0.615, 0.642, 0.662, 0.638, 0.664, 0.58, 0.665, 0.664], [0.689, 0.504, 0.628, 0.655, 0.676, 0.652, 0.675, 0.589, 0.682, 0.675]], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
   sLabelX: 9, sLabelY: 9, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
   sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 400, sNumAlign: "l",
   sUnitFollow: 1, sUnitX: 60, sUnitY: 40, sUnitGap: 6, sUnitLift: 6, sUnitSize: 18, sUnitWeight: 400,
-  sDateX: 9, sDateY: 64, sDateSize: 12, sDateWeight: 400, sDateAlign: "l",
-  sBarX: 9, sBarY: 82, sBarW: 82, sBarH: 9,
+  sDateX: 10.5, sDateY: 86, sDateSize: 12, sDateWeight: 400, sDateAlign: "l",
+  sBarX: 9, sBarY: 60, sBarW: 82, sBarH: 31,
   mCardOn: 0, mCardX: 3, mCardY: 6, mCardW: 36, mCardH: 88, mCardR: 18,
   mLabelX: 4.5, mLabelY: 10, mLabelSize: 14, mLabelWeight: 400, mLabelAlign: "l",
   mNumX: 4, mNumY: 23, mNumSize: 64, mNumWeight: 400, mNumAlign: "l",
-  mUnitFollow: 1, mUnitX: 30, mUnitY: 50, mUnitGap: 5, mUnitLift: 1, mUnitSize: 19, mUnitWeight: 400,
+  mUnitFollow: 1, mUnitX: 30, mUnitY: 50, mUnitGap: 5, mUnitLift: 8, mUnitSize: 19, mUnitWeight: 400,
   mDateX: 4.5, mDateY: 78, mDateSize: 11, mDateWeight: 400, mDateAlign: "l",
-  mTlX: 41, mTlY: 8, mTlW: 55, mCount: 3, mItemNameSize: 12, mItemNameWeight: 700, mItemDateSize: 10, mItemNumSize: 19, mItemNumWeight: 700, mItemUnitSize: 11, mItemGap: 6, mPanelPadX: 14, mPanelPadY: 8,
+  mTlX: 40, mTlY: 8, mTlW: 55, mCount: 3, mItemNameSize: 11, mItemNameWeight: 700, mItemDateSize: 10, mItemNumSize: 19, mItemNumWeight: 700, mItemUnitSize: 11, mItemGap: 6, mPanelPadX: 12, mPanelPadY: 8,
   tCardOn: 0, tCardX: 3, tCardY: 8, tCardW: 94, tCardH: 84, tCardR: 18,
   tLabelX: 5.3, tLabelY: 13, tLabelSize: 16, tLabelWeight: 700, tLabelAlign: "l",
-  tDateX: 66.5, tDateY: 14, tDateSize: 15, tDateWeight: 400, tDateAlign: "r",
-  tTimerX: 5, tTimerY: 28, tTimerSize: 59, tTimerWeight: 400,
-  tBarX: 5.3, tBarY: 78, tBarW: 89.4, tBarH: 10,
+  tDateX: 67, tDateY: 13, tDateSize: 15, tDateWeight: 400, tDateAlign: "l",
+  tTimerX: 5, tTimerY: 28, tTimerSize: 59, tTimerWeight: 200,
+  tBarX: 5.3, tBarY: 74, tBarW: 89.4, tBarH: 24,
   lCardOn: 0, lCardX: 4, lCardY: 3, lCardW: 92, lCardH: 46, lCardR: 18,
   lLabelX: 5.3, lLabelY: 5, lLabelSize: 18, lLabelWeight: 400, lLabelAlign: "l",
   lNumX: 4.5, lNumY: 10, lNumSize: 100, lNumWeight: 400, lNumAlign: "l",
@@ -56,7 +56,7 @@ const DESIGN = {
   xCardOn: 0, xCardX: 2.5, xCardY: 5, xCardW: 48, xCardH: 90, xCardR: 18,
   xLabelX: 3.4, xLabelY: 7, xLabelSize: 22, xLabelWeight: 400, xLabelAlign: "l",
   xNumX: 3, xNumY: 15, xNumSize: 160, xNumWeight: 400, xNumAlign: "l",
-  xUnitFollow: 0, xUnitX: 30, xUnitY: 46.5, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
+  xUnitFollow: 1, xUnitX: 40, xUnitY: 50, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
   xDateX: 3.4, xDateY: 84, xDateSize: 14, xDateWeight: 400, xDateAlign: "l",
   xTlX: 54, xTlY: 7, xTlW: 42.6, xCount: 6, xItemNameSize: 12, xItemNameWeight: 700, xItemDateSize: 11, xItemNumSize: 20, xItemNumWeight: 700, xItemUnitSize: 12, xItemGap: 6, xPanelPadX: 12, xPanelPadY: 8,
 };
@@ -71,9 +71,9 @@ const EVENT_LIST = [
   { key: "reg-tgat", name: "สมัคร TGAT/TPAT", short: "สมัคร", start: [2026, 11, 4], end: [2026, 11, 10, 23, 59] },
   { key: "reg-alevel", name: "สมัคร A-Level", short: "สมัคร", start: [2027, 1, 14], end: [2027, 1, 20, 23, 59] },
   { key: "tgat", name: "สอบ TGAT", short: "TGAT", start: [2027, 1, 30, 13, 0], end: [2027, 1, 30, 16, 0] },
-  { key: "res-tgat", name: "ประกาศผล TGAT", short: "ผล", start: [2027, 2, 28], end: [2027, 2, 28, 23, 59] },
+  { key: "res-tgat", name: "ประกาศผล TGAT", short: "ผล", start: [2027, 2, 28], end: [2027, 2, 28, 23, 59], minor: true },
   { key: "alevel", name: "สอบ A-Level", short: "A-Lv", start: [2027, 3, 14, 11, 0], end: [2027, 3, 14, 12, 30] },
-  { key: "res-alevel", name: "ประกาศผล A-Level", short: "ผล", start: [2027, 4, 20], end: [2027, 4, 20, 23, 59] },
+  { key: "res-alevel", name: "ประกาศผล A-Level", short: "ผล", start: [2027, 4, 20], end: [2027, 4, 20, 23, 59], minor: true },
   { key: "round3", name: "สมัครรอบ 3", short: "รอบ 3", start: [2027, 5, 7], end: [2027, 5, 11, 23, 59] },
 ];
 // อ่าน events.csv → รายการเหตุการณ์ (แถวที่ผิดรูปแบบจะถูกข้าม)
@@ -112,7 +112,7 @@ function parseEventsCSV(text) {
     const end = dt(g("end"), true) || (start.length > 3 ? start.slice() : [...start, 23, 59]);
     const st = g("status");
     out.push({ key: g("key") || name, name, short: g("short") || name.slice(0, 5), start, end,
-      estimate: /ประมาณ|estimate|~/.test(st), changed: dt(g("changed"), false) });
+      estimate: /ประมาณ|estimate|~/.test(st), minor: /รอง|minor|low/i.test(g("priority")), changed: dt(g("changed"), false) });
   });
   if (!out.length) return null;
   const ms = a => new Date(a[0], a[1] - 1, a[2], a[3] || 0, a[4] || 0).getTime();
@@ -221,7 +221,9 @@ function makeState(nowMs, param, D, list) {
   }
   const tokens = (param || "").toLowerCase().split(/[\s,]+/).filter(Boolean);
   const up = events.filter(e => e.end >= now);
-  const hero = events.find(e => tokens.includes(e.key) && e.end >= now) || up[0] || null;
+  // ตัวเลขใหญ่ = เหตุการณ์ "หลัก" ที่ใกล้ที่สุด เหตุการณ์ "รอง" ขึ้นตัวเลขใหญ่เฉพาะวันที่เกิดขึ้นจริง
+  const minorToday = up.find(e => e.minor && (isOpen(e) || sameDay(e.start, now)));
+  const hero = events.find(e => tokens.includes(e.key) && e.end >= now) || minorToday || up.find(e => !e.minor) || up[0] || null;
   const rest = up.filter(e => e !== hero);
   let st;
   const monthsTo = d => Math.max(1, Math.round(daysUntil(d) / 30));
@@ -235,25 +237,32 @@ function makeState(nowMs, param, D, list) {
     if (hero.estimate || d > D.startDays) st = { kind: "prep", text: `~${monthsTo(hero.start)}`, sub: "เดือน" };
     else st = d <= 0 ? { kind: "today", target: hero.start } : { kind: "wait", days: d, target: hero.start };
   }
-  // แถบ progress: "scale" = สเกลวันคงที่ (หลอดเท่ากันทุกเหตุการณ์), "phase" = ตามช่วงห่างของเหตุการณ์
-  let progress = 1;
-  if (st.kind === "prep") progress = D.barDir === "drain" && D.barMode !== "phase" ? 1 : 0;
-  else if (hero) {
-    if (D.barMode === "phase") {
-      if (isOpen(hero)) progress = (now - hero.start) / Math.max(1, hero.end - hero.start);
-      else {
-        const i = events.indexOf(hero);
-        const from = i > 0 ? events[i - 1].end.getTime() : START_MS;
-        progress = (now - from) / Math.max(1, hero.start - from);
-      }
-    } else {
-      const tgt = st.target || (isOpen(hero) ? hero.end : hero.start);
-      const left = Math.max(0, tgt - now);
-      const r = Math.min(1, left / (Math.max(1, D.barScale) * DAY));
-      progress = D.barDir === "drain" ? r : 1 - r;
+  // แถบ progress แบบ 2 ช่วง (รีเซ็ตทุกเหตุการณ์):
+  //  - ช่วงแรก 0 → 75%: จากเริ่มเหตุการณ์ใหม่ ถึงตอนเหลือ urgentDays วัน
+  //  - ช่วงท้าย 75 → 100%: urgentDays วันสุดท้าย (ช่วงสีแดง) ทุกเหตุการณ์ตำแหน่งเดียวกัน ความเร็วเดียวกัน
+  const ZONE = 0.75;
+  let progress = 0;
+  if (st.kind !== "prep" && hero) {
+    let from, tgt;
+    if (isOpen(hero)) { from = hero.start.getTime(); tgt = hero.end.getTime(); }
+    else {
+      tgt = (st.target || hero.start).getTime();
+      // จุดเริ่มหลอด = จบเหตุการณ์หลักก่อนหน้า (เหตุการณ์รองไม่ทำให้หลอดรีเซ็ต)
+      const before = events.filter(e => e.end < hero.start && (hero.minor || !e.minor));
+      const prevEnd = before.length ? before[before.length - 1].end.getTime() : -Infinity;
+      from = Math.max(prevEnd, tgt - Math.max(1, D.startDays) * DAY);
     }
-    progress = Math.max(0, Math.min(1, progress));
+    const U = Math.max(1, D.urgentDays) * DAY;
+    const left = Math.max(0, tgt - now);
+    const early = (tgt - from) - U;
+    // ช่วงแรกห้ามเร็วเกิน 3 เท่าของช่วงท้าย: เหตุการณ์ที่ห่างกันสั้นมากจะเริ่มกลางหลอด แทนการวิ่ง 0→75% ในไม่กี่วัน
+    const maxEarly = 3 * (1 - ZONE) / U;
+    const p0 = early > 0 ? Math.max(0, ZONE - early * maxEarly) : ZONE;
+    if (left <= U || early <= 0) progress = ZONE + (1 - ZONE) * (1 - Math.min(1, left / U));
+    else progress = p0 + (ZONE - p0) * (1 - Math.min(1, (left - U) / early));
   }
+  if (D.barDir === "drain") progress = 1 - progress;
+  progress = Math.max(0, Math.min(1, progress));
   const prep = st.kind === "prep";
   let heroDate = "";
   if (prep) heroDate = D.prepNote;
@@ -398,17 +407,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
     R("bar", x, y, w, h, h / 2, D.barGlass ? { glass: 1 } : { solid: D.track }, "shBar");
     // แบบ "หดตามเวลาที่เหลือ" ชิดขวา หดเข้าหาฝั่งขวา (ปลายขวา = วันจริง)
     const fw = Math.max(h, w * S.progress);
-    const drainRight = D.barMode !== "phase" && D.barDir === "drain";
-    if (S.progress > 0) G.rect(null, drainRight ? x + w - fw : x, y, fw, h, h / 2, { solid: mainColor });
-    // ขีดแบ่งทุก 7 วัน (ตำแหน่ง = เหลืออีก 1, 2, 3... สัปดาห์)
-    if (D.barMode !== "phase" && D.barTicks && S.st.kind !== "prep") {
-      const n = Math.floor(D.barScale / 7);
-      for (let k = 1; k <= n; k++) {
-        const f = k * 7 / D.barScale;
-        const tx = x + w * (1 - f);
-        if (tx > x + h / 2 && tx < x + w - h / 2) G.rect(null, tx - 0.6 * sc, y, 1.2 * sc, h, 0, { solid: D.bg, alpha: 0.75 });
-      }
-    }
+    if (S.progress > 0) G.rect(null, D.barDir === "drain" ? x + w - fw : x, y, fw, h, h / 2, { solid: mainColor });
   }
   function timeline() {
     const list = S.rest.slice(0, P("Count"));
