@@ -4,30 +4,31 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "6.5.1";
+module.exports.version = "7.0.2";
 
 // ==== DESIGN START ====
 const DESIGN = {
   bg: "#0B0B0C", ink: "#FFFFFF", dateColor: "#A1A1AA", red: "#FF453A", panel: "#1C1C1E",
   panelRadius: 14, line: "#2C2C2E", track: "#2C2C2E", urgentDays: 14, itemUrgentDays: 7,
   bgGrad: 0, bgN: 2, bg2: "#B51A00", bg3: "#C9D6FF", bg4: "#FFD6E7",
-  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, useSmall: 1,
-  useMedium: 1, useMediumBar: 1, useLarge: 1, useXL: 1, lightAngle: 64,
-  lightMain: 100, lightReflect: 100, lightWidth: 19, lightBase: 15, wgOn: 1,
-  wgRadius: 26, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 12, wgSheenSize: 79,
-  wgRim: 100, wgRimW: 1.1, wgInner: 0, wgInnerSize: 30, panelGlass: 0,
-  barGlass: 1, glassTint: "#FFFFFF", glassOpacity: 21, glassSheen: 8, glassSheenSize: 34,
-  glassRim: 80, glassRimW: 0.7, glassInner: 6, glassInnerSize: 97, panelGrad: 0,
-  panelN: 2, panel2: "#E2E2E8", panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v",
-  panelPos: 50, panelSize: 100, panelIntensity: 100, shNumOn: 0, shNumColor: "#000000",
-  shNumX: 0, shNumY: 3, shNumBlur: 5, shNumOpacity: 55, shNumStyle: "soft",
-  shNumSpread: 0, shTextOn: 0, shTextColor: "#000000", shTextX: 0, shTextY: 1,
-  shTextBlur: 3, shTextOpacity: 20, shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0,
-  shPanelColor: "#000000", shPanelX: 0, shPanelY: 3.5, shPanelBlur: 3.5, shPanelOpacity: 14,
-  shPanelStyle: "soft", shPanelSpread: 0, shPanelSX: 100, shPanelSY: 100, shPanelRound: 0,
-  shBarOn: 0, shBarColor: "#000000", shBarX: 0, shBarY: 2, shBarBlur: 4,
-  shBarOpacity: 20, shBarStyle: "soft", shBarSpread: 0, shBarSX: 100, shBarSY: 100,
-  shBarRound: 0,
+  bgAngle: 98, bgPos: 50, bgSize: 100, bgIntensity: 100, startDays: 120,
+  changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barMode: "scale", barScale: 90,
+  barDir: "drain", barTicks: 0, useSmall: 1, useMedium: 0, useMediumBar: 1,
+  useLarge: 1, useXL: 1, lightAngle: 64, lightMain: 100, lightReflect: 100,
+  lightWidth: 19, lightBase: 15, wgOn: 1, wgRadius: 26, wgTint: "#FFFFFF",
+  wgOpacity: 0, wgSheen: 12, wgSheenSize: 79, wgRim: 100, wgRimW: 1.1,
+  wgInner: 0, wgInnerSize: 30, panelGlass: 0, barGlass: 1, glassTint: "#FFFFFF",
+  glassOpacity: 21, glassSheen: 8, glassSheenSize: 34, glassRim: 80, glassRimW: 0.7,
+  glassInner: 6, glassInnerSize: 97, panelGrad: 0, panelN: 2, panel2: "#E2E2E8",
+  panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v", panelPos: 50, panelSize: 100,
+  panelIntensity: 100, shNumOn: 0, shNumColor: "#000000", shNumX: 0, shNumY: 3,
+  shNumBlur: 5, shNumOpacity: 55, shNumStyle: "soft", shNumSpread: 0, shTextOn: 0,
+  shTextColor: "#000000", shTextX: 0, shTextY: 1, shTextBlur: 3, shTextOpacity: 20,
+  shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0, shPanelColor: "#000000", shPanelX: 0,
+  shPanelY: 3.5, shPanelBlur: 3.5, shPanelOpacity: 14, shPanelStyle: "soft", shPanelSpread: 0,
+  shPanelSX: 100, shPanelSY: 100, shPanelRound: 0, shBarOn: 0, shBarColor: "#000000",
+  shBarX: 0, shBarY: 2, shBarBlur: 4, shBarOpacity: 20, shBarStyle: "soft",
+  shBarSpread: 0, shBarSX: 100, shBarSY: 100, shBarRound: 0,
   emNum: [[0.582, 0.39, 0.557, 0.558, 0.575, 0.571, 0.579, 0.529, 0.58, 0.579], [0.59, 0.408, 0.56, 0.569, 0.585, 0.576, 0.592, 0.535, 0.586, 0.592], [0.598, 0.426, 0.563, 0.581, 0.595, 0.58, 0.605, 0.541, 0.593, 0.605], [0.606, 0.443, 0.566, 0.592, 0.604, 0.585, 0.617, 0.547, 0.6, 0.617], [0.623, 0.456, 0.578, 0.604, 0.619, 0.598, 0.629, 0.555, 0.616, 0.629], [0.639, 0.468, 0.591, 0.617, 0.633, 0.612, 0.64, 0.564, 0.632, 0.64], [0.656, 0.48, 0.603, 0.63, 0.647, 0.625, 0.652, 0.572, 0.649, 0.652], [0.672, 0.492, 0.615, 0.642, 0.662, 0.638, 0.664, 0.58, 0.665, 0.664], [0.689, 0.504, 0.628, 0.655, 0.676, 0.652, 0.675, 0.589, 0.682, 0.675]], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
   sLabelX: 9, sLabelY: 9, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
@@ -44,7 +45,7 @@ const DESIGN = {
   tCardOn: 0, tCardX: 3, tCardY: 8, tCardW: 94, tCardH: 84, tCardR: 18,
   tLabelX: 5.3, tLabelY: 13, tLabelSize: 16, tLabelWeight: 700, tLabelAlign: "l",
   tDateX: 66.5, tDateY: 14, tDateSize: 15, tDateWeight: 400, tDateAlign: "r",
-  tTimerX: 5, tTimerY: 35, tTimerSize: 42, tTimerWeight: 400,
+  tTimerX: 5, tTimerY: 28, tTimerSize: 59, tTimerWeight: 400,
   tBarX: 5.3, tBarY: 78, tBarW: 89.4, tBarH: 10,
   lCardOn: 0, lCardX: 4, lCardY: 3, lCardW: 92, lCardH: 46, lCardR: 18,
   lLabelX: 5.3, lLabelY: 5, lLabelSize: 18, lLabelWeight: 400, lLabelAlign: "l",
@@ -62,7 +63,9 @@ const DESIGN = {
 // ==== DESIGN END ====
 module.exports.DESIGN = DESIGN;
 
-// ---------- เหตุการณ์ (อ้างอิงปฏิทิน TCAS70 จาก mytcas) ----------
+// ---------- เหตุการณ์ ----------
+// ตารางวันจริงอยู่ที่ events.csv บนเว็บ (แก้ใน GitHub ได้เลย) รายการด้านล่างเป็นชุดสำรองตอนโหลดไม่ได้
+const EVENTS_URL = "https://bwy-dek70.pages.dev/events.csv";
 // key: ใช้ล็อกใน Parameter ได้ เช่น tgat, alevel  |  วันที่: [ปี, เดือน(1-12), วัน, ชม, นาที]
 const EVENT_LIST = [
   { key: "reg-tgat", name: "สมัคร TGAT/TPAT", short: "สมัคร", start: [2026, 11, 4], end: [2026, 11, 10, 23, 59] },
@@ -73,6 +76,51 @@ const EVENT_LIST = [
   { key: "res-alevel", name: "ประกาศผล A-Level", short: "ผล", start: [2027, 4, 20], end: [2027, 4, 20, 23, 59] },
   { key: "round3", name: "สมัครรอบ 3", short: "รอบ 3", start: [2027, 5, 7], end: [2027, 5, 11, 23, 59] },
 ];
+// อ่าน events.csv → รายการเหตุการณ์ (แถวที่ผิดรูปแบบจะถูกข้าม)
+function parseEventsCSV(text) {
+  const rows = [];
+  let row = [], cell = "", q = false;
+  const src = String(text || "").replace(/^\uFEFF/, "");
+  for (let i = 0; i < src.length; i++) {
+    const ch = src[i];
+    if (q) { if (ch === '"') { if (src[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ",") { row.push(cell); cell = ""; }
+    else if (ch === "\n" || ch === "\r") { if (ch === "\r" && src[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+    else cell += ch;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+  if (rows.length < 2) return null;
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  const col = n => head.indexOf(n);
+  const dt = (v, endOfDay) => {
+    const m = String(v || "").trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?$/);
+    if (!m) return null;
+    let y = +m[1]; if (y > 2400) y -= 543; // รับ พ.ศ. ได้
+    const mo = +m[2], d = +m[3], hh = m[4] === undefined ? 0 : +m[4], mi = m[5] === undefined ? 0 : +m[5];
+    const chk = new Date(y, mo - 1, d, hh, mi);
+    if (mo < 1 || mo > 12 || hh > 23 || mi > 59 || chk.getMonth() !== mo - 1 || chk.getDate() !== d) return null; // วันที่ไม่มีจริง
+    const t = [y, mo, d];
+    if (m[4] !== undefined) t.push(+m[4], +m[5]); else if (endOfDay) t.push(23, 59);
+    return t;
+  };
+  const out = [];
+  rows.slice(1).forEach(r => {
+    const g = n => (col(n) >= 0 ? (r[col(n)] || "").trim() : "");
+    const name = g("name"), start = dt(g("start"), false);
+    if (!name || !start) return;
+    const end = dt(g("end"), true) || (start.length > 3 ? start.slice() : [...start, 23, 59]);
+    const st = g("status");
+    out.push({ key: g("key") || name, name, short: g("short") || name.slice(0, 5), start, end,
+      estimate: /ประมาณ|estimate|~/.test(st), changed: dt(g("changed"), false) });
+  });
+  if (!out.length) return null;
+  const ms = a => new Date(a[0], a[1] - 1, a[2], a[3] || 0, a[4] || 0).getTime();
+  out.sort((x, y) => ms(x.start) - ms(y.start));
+  return out;
+}
+module.exports.parseEventsCSV = parseEventsCSV;
+module.exports.EVENT_LIST = EVENT_LIST;
 const START_MS = new Date(2026, 4, 16).getTime(); // จุดเริ่มแถบ progress อันแรก (เปิดเทอม ม.6)
 const MONTHS = ["มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา", "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"];
 const DAY = 86400000;
@@ -151,57 +199,80 @@ module.exports.colorAt = colorAt;
 module.exports.gradPoints = gradPoints;
 
 // ---------- สถานะ ณ เวลาหนึ่ง (ใช้ร่วมกันทั้ง widget และ Studio) ----------
-function makeState(nowMs, param, D) {
+function makeState(nowMs, param, D, list) {
   const mk = a => new Date(a[0], a[1] - 1, a[2], a[3] || 0, a[4] || 0);
-  const events = EVENT_LIST.map(e => ({ ...e, start: mk(e.start), end: mk(e.end) }));
+  const events = (list && list.length ? list : EVENT_LIST).map(e => ({ ...e, start: mk(e.start), end: mk(e.end), changed: e.changed ? mk(e.changed) : null }));
   const now = new Date(nowMs);
   const sod = d => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
   const daysUntil = d => Math.round((sod(d) - sod(now)) / DAY);
   const sameDay = (a, b) => sod(a).getTime() === sod(b).getTime();
   const isOpen = e => now >= e.start && now <= e.end;
   const dm = d => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+  const rough = d => `~${d.getDate() <= 10 ? "ต้น" : d.getDate() <= 20 ? "กลาง" : "ปลาย"} ${MONTHS[d.getMonth()]}`;
+  const isNew = e => !!e.changed && daysUntil(e.changed) <= 0 && daysUntil(e.changed) > -(D.changedDays || 0);
   function dateLabel(e) {
+    if (e.estimate) return rough(e.start);
     const a = e.start, b = e.end;
-    if (sameDay(a, b)) return dm(a);
-    if (a.getMonth() === b.getMonth()) return `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}`;
-    return `${dm(a)}–${dm(b)}`;
+    let t;
+    if (sameDay(a, b)) t = dm(a);
+    else if (a.getMonth() === b.getMonth()) t = `${a.getDate()}–${b.getDate()} ${MONTHS[a.getMonth()]}`;
+    else t = `${dm(a)}–${dm(b)}`;
+    return t;
   }
   const tokens = (param || "").toLowerCase().split(/[\s,]+/).filter(Boolean);
   const up = events.filter(e => e.end >= now);
   const hero = events.find(e => tokens.includes(e.key) && e.end >= now) || up[0] || null;
   const rest = up.filter(e => e !== hero);
   let st;
-  if (!hero) st = { kind: "done" };
+  const monthsTo = d => Math.max(1, Math.round(daysUntil(d) / 30));
+  if (!hero) st = { kind: "prep", text: "รอ", sub: "ปฏิทินรุ่นใหม่" };
   else if (isOpen(hero)) {
     if (sameDay(hero.start, hero.end)) st = { kind: "today" };
     else { const d = daysUntil(hero.end); st = d <= 0 ? { kind: "last" } : { kind: "open", days: d, target: hero.end }; }
   } else {
     const d = daysUntil(hero.start);
-    st = d <= 0 ? { kind: "today", target: hero.start } : { kind: "wait", days: d, target: hero.start };
+    // โหมดเตรียมตัว: วันยังเป็นค่าประมาณ หรือยังไกลเกินช่วงเริ่มนับถอยหลัง
+    if (hero.estimate || d > D.startDays) st = { kind: "prep", text: `~${monthsTo(hero.start)}`, sub: "เดือน" };
+    else st = d <= 0 ? { kind: "today", target: hero.start } : { kind: "wait", days: d, target: hero.start };
   }
+  // แถบ progress: "scale" = สเกลวันคงที่ (หลอดเท่ากันทุกเหตุการณ์), "phase" = ตามช่วงห่างของเหตุการณ์
   let progress = 1;
-  if (hero) {
-    if (isOpen(hero)) progress = (now - hero.start) / Math.max(1, hero.end - hero.start);
-    else {
-      const i = events.indexOf(hero);
-      const from = i > 0 ? events[i - 1].end.getTime() : START_MS;
-      progress = (now - from) / Math.max(1, hero.start - from);
+  if (st.kind === "prep") progress = D.barDir === "drain" && D.barMode !== "phase" ? 1 : 0;
+  else if (hero) {
+    if (D.barMode === "phase") {
+      if (isOpen(hero)) progress = (now - hero.start) / Math.max(1, hero.end - hero.start);
+      else {
+        const i = events.indexOf(hero);
+        const from = i > 0 ? events[i - 1].end.getTime() : START_MS;
+        progress = (now - from) / Math.max(1, hero.start - from);
+      }
+    } else {
+      const tgt = st.target || (isOpen(hero) ? hero.end : hero.start);
+      const left = Math.max(0, tgt - now);
+      const r = Math.min(1, left / (Math.max(1, D.barScale) * DAY));
+      progress = D.barDir === "drain" ? r : 1 - r;
     }
     progress = Math.max(0, Math.min(1, progress));
   }
+  const prep = st.kind === "prep";
+  let heroDate = "";
+  if (prep) heroDate = D.prepNote;
+  else if (hero) heroDate = st.kind === "open" ? `เปิดแล้ว ปิด ${dm(hero.end)}` : dateLabel(hero);
+  if (hero && !prep && isNew(hero)) heroDate += "  วันใหม่!";
   return {
-    now, hero, rest, st, progress, daysUntil, isOpen, dateLabel, bar: tokens.includes("bar"),
-    urgent: st.kind !== "wait" || st.days <= D.urgentDays,
-    heroName: hero ? hero.name : "Dek70",
-    heroDate: !hero ? "" : st.kind === "open" ? `เปิดแล้ว ปิด ${dm(hero.end)}` : dateLabel(hero),
+    now, hero, rest: prep && hero ? up : rest, st, progress, daysUntil, isOpen, dateLabel, isNew, bar: tokens.includes("bar"),
+    urgent: st.kind === "open" || st.kind === "today" || st.kind === "last" || (st.kind === "wait" && st.days <= D.urgentDays),
+    heroName: prep ? D.prepTitle : hero.name,
+    heroDate,
+    heroDateRed: !prep && hero && (st.kind === "open" || isNew(hero)),
   };
 }
 module.exports.makeState = makeState;
 
 // ---------- วาด widget (โค้ดชุดเดียวกับที่ Studio ใช้พรีวิว) ----------
 // G = ตัววาด (Scriptable หรือ canvas ใน Studio), W/H = ขนาดจริง (pt)
-module.exports.paint = function (G, fam, W, H, nowMs, param, D) {
-  const S = makeState(nowMs, param, D);
+module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
+  const S = makeState(nowMs, param, D, list);
   const sc = W / REF[fam][0];
   const X = v => (v / 100) * W, Y = v => (v / 100) * H;
   const p = { small: "s", medium: "m", mediumBar: "t", large: "l", xl: "x" }[fam];
@@ -295,12 +366,19 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D) {
   }
   function date() {
     T("date", S.heroDate, X(P("DateX")), Y(P("DateY")), P("DateSize") * sc, P("DateWeight"),
-      S.st.kind === "open" ? D.red : D.dateColor, P("DateAlign"), "shText");
+      S.heroDateRed ? D.red : D.dateColor, P("DateAlign"), "shText");
   }
   function number() {
     const x = X(P("NumX")), y = Y(P("NumY")), N = P("NumSize") * sc, wgt = P("NumWeight"), al = P("NumAlign");
     const k = S.st.kind;
-    if (k === "done") return T("num", "จบแล้ว ✓", x, y, N * 0.45, 600, D.ink, al, "shNum");
+    if (k === "prep") {
+      // โหมดเตรียมตัว: "~4 เดือน" แทนตัวเลขวัน
+      T("num", S.st.text, x, y, N, wgt, D.ink, al, "shNum");
+      const U = P("UnitSize") * sc, w = G.measure(S.st.text.replace("~", "0"), N, wgt);
+      const left = al === "r" ? x - w : al === "c" ? x - w / 2 : x;
+      const uy = y + 0.95 * N - 0.95 * U - P("UnitLift") * sc;
+      return T("unit", S.st.sub, P("UnitFollow") ? left + w + P("UnitGap") * sc : X(P("UnitX")), P("UnitFollow") ? uy : Y(P("UnitY")), U, P("UnitWeight"), D.ink, "l", "shNum");
+    }
     if (k === "today") return T("num", "วันนี้!", x, y, N * 0.5, 600, D.red, al, "shNum");
     if (k === "last") return T("num", "วันสุดท้าย!", x, y, N * 0.45, 600, D.red, al, "shNum");
     const str = String(S.st.days);
@@ -318,7 +396,19 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D) {
   function bar() {
     const x = X(P("BarX")), y = Y(P("BarY")), w = X(P("BarW")), h = P("BarH") * sc;
     R("bar", x, y, w, h, h / 2, D.barGlass ? { glass: 1 } : { solid: D.track }, "shBar");
-    if (S.progress > 0) G.rect(null, x, y, Math.max(h, w * S.progress), h, h / 2, { solid: mainColor });
+    // แบบ "หดตามเวลาที่เหลือ" ชิดขวา หดเข้าหาฝั่งขวา (ปลายขวา = วันจริง)
+    const fw = Math.max(h, w * S.progress);
+    const drainRight = D.barMode !== "phase" && D.barDir === "drain";
+    if (S.progress > 0) G.rect(null, drainRight ? x + w - fw : x, y, fw, h, h / 2, { solid: mainColor });
+    // ขีดแบ่งทุก 7 วัน (ตำแหน่ง = เหลืออีก 1, 2, 3... สัปดาห์)
+    if (D.barMode !== "phase" && D.barTicks && S.st.kind !== "prep") {
+      const n = Math.floor(D.barScale / 7);
+      for (let k = 1; k <= n; k++) {
+        const f = k * 7 / D.barScale;
+        const tx = x + w * (1 - f);
+        if (tx > x + h / 2 && tx < x + w - h / 2) G.rect(null, tx - 0.6 * sc, y, 1.2 * sc, h, 0, { solid: D.bg, alpha: 0.75 });
+      }
+    }
   }
   function timeline() {
     const list = S.rest.slice(0, P("Count"));
@@ -329,12 +419,13 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D) {
     const rowH = Math.max(nameS * 1.2 + dateS * 1.2, numS * 1.2);
     function row(e, top) {
       T(null, e.name, x + padX, top, nameS, P("ItemNameWeight"), D.ink, "l", "shText");
-      T(null, S.dateLabel(e), x + padX, top + nameS * 1.2, dateS, 400, D.dateColor, "l", "shText");
+      T(null, S.dateLabel(e) + (S.isNew(e) ? "  วันใหม่!" : ""), x + padX, top + nameS * 1.2, dateS, 400, S.isNew(e) ? D.red : D.dateColor, "l", "shText");
       const right = x + w - padX;
       if (S.isOpen(e)) {
         T(null, "เปิดแล้ว", right, top + (rowH - numS * 0.9) / 2, numS * 0.75, P("ItemNumWeight"), D.red, "r", "shText");
         return;
       }
+      if (e.estimate) return T(null, "ประมาณการ", right, top + (rowH - numS * 0.9) / 2, numS * 0.6, 400, D.dateColor, "r", "shText");
       const d = S.daysUntil(e.start);
       const ny = top + (rowH - numS * 1.2) / 2;
       const color = d <= D.itemUrgentDays ? D.red : D.ink;
@@ -368,8 +459,9 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D) {
   function timer() {
     const x = X(P("TimerX")), y = Y(P("TimerY")), size = P("TimerSize") * sc, wgt = P("TimerWeight");
     const k = S.st.kind;
-    if (!S.st.target || k === "last" || k === "done") {
-      return T("timer", k === "done" ? "จบแล้ว ✓" : "วันนี้!", x, y, size * 0.5, wgt, mainColor, "l", "shNum");
+    if (k === "prep") return T("timer", `${S.st.text} ${S.st.sub}`, x, y, size, wgt, D.ink, "l", "shNum");
+    if (!S.st.target || k === "last") {
+      return T("timer", "วันนี้!", x, y, size * 0.5, wgt, mainColor, "l", "shNum");
     }
     const left = S.st.target - S.now;
     const days = Math.max(0, Math.floor(left / DAY));
@@ -518,11 +610,28 @@ function scriptableG(W, H, D) {
   };
 }
 
-function buildPainted(fam, PARAM) {
+// โหลด events.csv จากเว็บ เก็บสำเนาไว้ในเครื่อง ถ้าโหลดไม่ได้/ไฟล์เสีย ใช้สำเนาล่าสุด แล้วค่อยใช้ชุดสำรองในโค้ด
+async function loadEvents() {
+  const fm = FileManager.local();
+  const dir = fm.joinPath(fm.documentsDirectory(), "bwy-dek70");
+  if (!fm.fileExists(dir)) fm.createDirectory(dir);
+  const cache = fm.joinPath(dir, "events.csv");
+  try {
+    const req = new Request(EVENTS_URL + "?t=" + Date.now());
+    req.timeoutInterval = 6;
+    const text = await req.loadString();
+    const list = req.response.statusCode === 200 ? parseEventsCSV(text) : null;
+    if (list) { fm.writeString(cache, text); return list; }
+  } catch (e) {}
+  try { if (fm.fileExists(cache)) { const list = parseEventsCSV(fm.readString(cache)); if (list) return list; } } catch (e) {}
+  return EVENT_LIST;
+}
+
+function buildPainted(fam, PARAM, list) {
   const D = DESIGN;
   const [W, H] = widgetSize(fam);
   const G = scriptableG(W, H, D);
-  const S = module.exports.paint(G, fam, W, H, Date.now(), PARAM, D);
+  const S = module.exports.paint(G, fam, W, H, Date.now(), PARAM, D, list);
   const w = new ListWidget();
   const bg = G.background();
   if (bg.stops) {
@@ -566,15 +675,15 @@ function buildPainted(fam, PARAM) {
   return { w, S };
 }
 
-function buildLock(FAMILY, PARAM) {
-  const S = makeState(Date.now(), PARAM, DESIGN);
+function buildLock(FAMILY, PARAM, list) {
+  const S = makeState(Date.now(), PARAM, DESIGN, list);
   const w = new ListWidget();
   const k = S.st.kind;
   if (FAMILY === "accessoryInline") {
-    let s = "Dek70 จบทุกด่านแล้ว!";
+    let s = `${S.heroName} ${S.st.text || ""} ${S.st.sub || ""}`.trim();
     if (k === "wait") s = `${S.heroName} อีก ${S.st.days} วัน`;
     else if (k === "open") s = `${S.heroName} ปิดใน ${S.st.days} วัน`;
-    else if (k !== "done") s = `${S.heroName} วันนี้!`;
+    else if (k !== "prep") s = `${S.heroName} วันนี้!`;
     w.addText(s);
     return { w, S };
   }
@@ -592,9 +701,9 @@ function buildLock(FAMILY, PARAM) {
   if (FAMILY === "accessoryCircular") {
     w.addAccessoryWidgetBackground = true;
     const a = w.addText(S.hero ? S.hero.short : "Dek70"); a.font = Font.systemFont(9); a.centerAlignText();
-    const b = w.addText(k === "wait" || k === "open" ? String(S.st.days) : k === "done" ? "✓" : "!");
+    const b = w.addText(k === "wait" || k === "open" ? String(S.st.days) : k === "prep" ? S.st.text : "!");
     b.font = Font.mediumSystemFont(20); b.minimumScaleFactor = 0.6; b.centerAlignText();
-    const c = w.addText("วัน"); c.font = Font.systemFont(9); c.centerAlignText();
+    const c = w.addText(k === "prep" ? S.st.sub : "วัน"); c.font = Font.systemFont(9); c.centerAlignText();
     w.addSpacer(2);
     const img = w.addImage(barImg(36, 4)); img.imageSize = new Size(36, 4); img.centerAlignImage();
     return { w, S };
@@ -603,10 +712,10 @@ function buildLock(FAMILY, PARAM) {
   const top = w.addStack(); top.layoutHorizontally();
   const n = top.addText(S.heroName); n.font = Font.boldSystemFont(12);
   top.addSpacer();
-  const dt = top.addText(S.hero ? S.dateLabel(S.hero) : ""); dt.font = Font.systemFont(11);
+  const dt = top.addText(S.hero && k !== "prep" ? S.dateLabel(S.hero) : ""); dt.font = Font.systemFont(11);
   const r = w.addStack(); r.layoutHorizontally();
-  if (!S.st.target || k === "last" || k === "done") {
-    const t = r.addText(k === "done" ? "จบแล้ว ✓" : "วันนี้!"); t.font = Font.systemFont(20);
+  if (!S.st.target || k === "last" || k === "prep") {
+    const t = r.addText(k === "prep" ? `${S.st.text} ${S.st.sub}` : "วันนี้!"); t.font = Font.systemFont(20);
   } else {
     const left = S.st.target - S.now;
     const days = Math.max(0, Math.floor(left / DAY));
@@ -641,13 +750,14 @@ function notUsed() {
   t.font = Font.mediumSystemFont(13);
   t.textColor = new Color("#FFFFFF");
   t.centerAlignText();
-  return { w, S: makeState(Date.now(), "", DESIGN) };
+  return { w, S: makeState(Date.now(), "", DESIGN, null) };
 }
 
-module.exports.build = function (FAMILY, PARAM) {
+module.exports.build = async function (FAMILY, PARAM) {
   const lock = FAMILY && FAMILY.startsWith("accessory");
   const fam = lock ? null : pickFam(FAMILY || "large", PARAM);
-  const { w, S } = lock ? buildLock(FAMILY, PARAM) : fam ? buildPainted(fam, PARAM) : notUsed();
+  const list = await loadEvents();
+  const { w, S } = lock ? buildLock(FAMILY, PARAM, list) : fam ? buildPainted(fam, PARAM, list) : notUsed();
   w.url = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
   // รีเฟรชทุก ~1 ชม. / เที่ยงคืน / ตอนวินาทีวิ่งครบวัน (แบบไหนถึงก่อน)
   const now = Date.now();
@@ -678,7 +788,7 @@ module.exports.runInApp = async function () {
   const i = await a.presentSheet();
   if (i === -1) return;
   const [, fam, prm] = opts[i];
-  const w = module.exports.build(fam, prm);
+  const w = await module.exports.build(fam, prm);
   if (fam === "small") await w.presentSmall();
   else if (fam === "medium") await w.presentMedium();
   else if (fam === "extraLarge") await w.presentExtraLarge();
