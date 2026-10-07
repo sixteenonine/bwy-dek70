@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.3.3";
+module.exports.version = "7.4.1";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -197,6 +197,26 @@ function gradPoints(angle) {
 module.exports.gradStops = gradStops;
 module.exports.colorAt = colorAt;
 module.exports.gradPoints = gradPoints;
+// ชั้นกระจกทั้งตัว widget: ผสมสีกระจก (คงที่) + แสงวาวขาวด้านบน + เงาดำด้านล่าง เป็นจุดสีโปร่งแสงชุดเดียว
+function wgStops(D) {
+  const ss = Math.max(0.02, Math.min(1, D.wgSheenSize / 100)), is = Math.max(0.02, Math.min(1, D.wgInnerSize / 100));
+  const over = (dst, c, a) => {
+    if (a <= 0) return dst;
+    const oa = a + dst.a * (1 - a);
+    const sc = rgb(c), dc = rgb(dst.c);
+    return { c: hex(sc.map((v, i) => (v * a + dc[i] * dst.a * (1 - a)) / Math.max(1e-6, oa))), a: oa };
+  };
+  const ts = new Set([0, 1]);
+  for (let i = 0; i <= 8; i++) { ts.add(ss * i / 8); ts.add(1 - is + is * i / 8); }
+  return [...ts].filter(t => t >= 0 && t <= 1).sort((a, b) => a - b).map(t => {
+    let px = { c: "#000000", a: 0 };
+    px = over(px, D.wgTint, D.wgOpacity / 100);
+    if (t < ss) px = over(px, "#FFFFFF", D.wgSheen / 100 * (1 - t / ss));
+    if (t > 1 - is) px = over(px, "#000000", D.wgInner / 100 * ((t - (1 - is)) / is));
+    return { t, c: px.c, a: px.a };
+  });
+}
+module.exports.wgStops = wgStops;
 
 // ---------- สถานะ ณ เวลาหนึ่ง (ใช้ร่วมกันทั้ง widget และ Studio) ----------
 function makeState(nowMs, param, D, list) {
@@ -470,9 +490,10 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
   // ---------- กระจกทั้งตัว widget: ชั้นล่าง (สีกระจก + แสงวาว) อยู่ใต้เนื้อหา ----------
   const WR = D.wgRadius;
   if (D.wgOn) {
-    if (D.wgOpacity > 0) G.rect(null, 0, 0, W, H, WR, { solid: D.wgTint, alpha: D.wgOpacity / 100 });
-    const ss = Math.max(0.02, Math.min(1, D.wgSheenSize / 100));
-    if (D.wgSheen > 0) G.rect(null, 0, 0, W, H, WR, { dir: "v", stops: [{ t: 0, c: "#FFFFFF", a: D.wgSheen / 100 }, { t: ss, c: "#FFFFFF", a: 0 }, { t: 1, c: "#FFFFFF", a: 0 }] });
+    // สีกระจก + แสงวาว + เงามืดด้านใน รวมเป็นชั้นไล่สีเดียว (บน iOS ใช้ระบบไล่สีของเครื่อง ไม่วาดลงภาพ ภาพจะได้ไม่หนัก)
+    const st = wgStops(D);
+    if (G.overlay) G.overlay(st);
+    else G.rect(null, 0, 0, W, H, WR, { dir: "v", stops: st });
   }
   card();
   if (fam === "small") { label(); number(); date(); bar(); }
@@ -481,8 +502,6 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
   else { label(); number(); date(); timeline(); }
   // ชั้นบน (เงามืดด้านใน + ขอบเรืองแสง) ทับขอบ widget
   if (D.wgOn) {
-    const is = Math.max(0.02, Math.min(1, D.wgInnerSize / 100));
-    if (D.wgInner > 0) G.rect(null, 0, 0, W, H, WR, { dir: "v", stops: [{ t: 0, c: "#000000", a: 0 }, { t: 1 - is, c: "#000000", a: 0 }, { t: 1, c: "#000000", a: D.wgInner / 100 }] });
     if (D.wgRim > 0) {
       rim(0.3, 0.3, W - 0.6, H - 0.6, Math.max(0, WR - 0.3), D.wgRimW, D.wgRim / 100);
     }
@@ -523,6 +542,7 @@ function scriptableG(W, H, D, forceScale) {
   ctx.respectScreenScale = false;
   const overlays = [];
   let bgSpec = { solid: "#FFFFFF" };
+  let overlaySpec = null;
   const WEIGHTS = { 100: "ultraLight", 200: "thin", 300: "light", 400: "regular", 500: "medium", 600: "semibold", 700: "bold", 800: "heavy", 900: "black" };
   const wi = w => Math.max(0, Math.min(8, Math.round(w / 100) - 1));
   const font = (size, w) => Font[(WEIGHTS[(wi(w) + 1) * 100]) + "SystemFont"](size);
@@ -580,6 +600,8 @@ function scriptableG(W, H, D, forceScale) {
       ctx.strokePath();
     },
     bg(spec) { bgSpec = spec; },
+    overlay(stops) { overlaySpec = stops; },
+    overlaySpec: () => overlaySpec,
     rect(id, x, y, w, h, r, f) { fillRound(x, y, w, h, r, f); },
     group() {},
     measure(str, size, weight) {
@@ -660,8 +682,22 @@ function buildPainted(fam, PARAM, list) {
     w.backgroundColor = new Color(bg.solid);
   }
   w.setPadding(0, 0, 0, 0);
+  // ชั้นกระจกทั้งตัว widget (ไล่สีโปร่งแสงของ iOS)
+  let host = w;
+  const ov = G.overlaySpec();
+  if (ov) {
+    const mid = w.addStack();
+    mid.layoutVertically();
+    const g = new LinearGradient();
+    g.colors = ov.map(x => new Color(x.c, x.a));
+    g.locations = ov.map(x => x.t);
+    g.startPoint = new Point(0, 0);
+    g.endPoint = new Point(0, 1);
+    mid.backgroundGradient = g;
+    host = mid;
+  }
   // ภาพชิ้นส่วนทั้งหมด (พื้นใส) วางทับพื้นหลัง เต็มพื้นที่ widget
-  const layer = w.addStack();
+  const layer = host.addStack();
   layer.layoutVertically();
   layer.backgroundImage = G.image();
   const o = G.overlays[0];
