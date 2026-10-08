@@ -4,17 +4,17 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.6.1";
+module.exports.version = "7.6.2";
 
 // ==== DESIGN START ====
 const DESIGN = {
-  bg: "#F9D3E0", ink: "#000000", dateColor: "#000000", red: "#E5484D", panel: "#F2F2F2",
+  bg: "#D6D6D6", ink: "#000000", dateColor: "#000000", red: "#E5484D", panel: "#F2F2F2",
   panelRadius: 14, line: "#FFFFFF", track: "#C2C2C2", urgentDays: 14, itemUrgentDays: 7,
   bgGrad: 1, bgN: 4, bg2: "#FFFFFF", bg3: "#FFFFFF", bg4: "#D6D6D6",
   bgAngle: 90, bgPos: 2, bgSize: 122, bgIntensity: 52, bgShape: "linear",
   bgCX: 52, bgCY: 37, bgR: 49, bgRW: 93, bgRH: 136,
   startDays: 120, changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barDir: "fill",
-  useSmall: 1, useMedium: 1, useMediumBar: 1, useLarge: 1, useXL: 1,
+  useSmall: 1, useMedium: 0, useMediumBar: 1, useLarge: 1, useXL: 1,
   fxBlobs: 0, b1Color: "#1EC8FF", b1X: 52, b1Y: 55, b1W: 75,
   b1H: 55, b1I: 85, b1Soft: 65, b2Color: "#FF8A3D", b2X: 50,
   b2Y: 25, b2W: 40, b2H: 30, b2I: 60, b2Soft: 70,
