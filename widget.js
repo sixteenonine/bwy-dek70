@@ -4,49 +4,55 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.4.1";
+module.exports.version = "7.6.1";
 
 // ==== DESIGN START ====
 const DESIGN = {
-  bg: "#0B0B0C", ink: "#FFFFFF", dateColor: "#A1A1AA", red: "#FF453A", panel: "#1C1C1E",
-  panelRadius: 14, line: "#2C2C2E", track: "#2C2C2E", urgentDays: 14, itemUrgentDays: 7,
-  bgGrad: 0, bgN: 3, bg2: "#FF5E7E", bg3: "#7B5CFF", bg4: "#FFD6E7",
-  bgAngle: 135, bgPos: 50, bgSize: 110, bgIntensity: 100, startDays: 120,
-  changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barDir: "fill", useSmall: 1,
-  useMedium: 0, useMediumBar: 1, useLarge: 1, useXL: 1, lightAngle: 225,
-  lightMain: 100, lightReflect: 55, lightWidth: 18, lightBase: 11, wgOn: 1,
-  wgRadius: 22, wgTint: "#FFFFFF", wgOpacity: 0, wgSheen: 10, wgSheenSize: 45,
-  wgRim: 85, wgRimW: 1, wgInner: 38, wgInnerSize: 30, panelGlass: 0,
-  barGlass: 0, glassTint: "#FFFFFF", glassOpacity: 22, glassSheen: 45, glassSheenSize: 55,
-  glassRim: 70, glassRimW: 1.2, glassInner: 12, glassInnerSize: 35, panelGrad: 0,
-  panelN: 2, panel2: "#24194A", panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v",
-  panelPos: 50, panelSize: 100, panelIntensity: 100, shNumOn: 0, shNumColor: "#3A0F3F",
-  shNumX: 0, shNumY: 3, shNumBlur: 8, shNumOpacity: 35, shNumStyle: "soft",
-  shNumSpread: 0, shTextOn: 0, shTextColor: "#000000", shTextX: 0, shTextY: 1,
-  shTextBlur: 3, shTextOpacity: 20, shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0,
-  shPanelColor: "#2A0E3A", shPanelX: 0, shPanelY: 5, shPanelBlur: 12, shPanelOpacity: 30,
-  shPanelStyle: "soft", shPanelSpread: 0, shPanelSX: 100, shPanelSY: 100, shPanelRound: 0,
-  shBarOn: 0, shBarColor: "#000000", shBarX: 0, shBarY: 2, shBarBlur: 4,
-  shBarOpacity: 20, shBarStyle: "soft", shBarSpread: 0, shBarSX: 100, shBarSY: 100,
-  shBarRound: 0,
+  bg: "#F9D3E0", ink: "#000000", dateColor: "#000000", red: "#E5484D", panel: "#F2F2F2",
+  panelRadius: 14, line: "#FFFFFF", track: "#C2C2C2", urgentDays: 14, itemUrgentDays: 7,
+  bgGrad: 1, bgN: 4, bg2: "#FFFFFF", bg3: "#FFFFFF", bg4: "#D6D6D6",
+  bgAngle: 90, bgPos: 2, bgSize: 122, bgIntensity: 52, bgShape: "linear",
+  bgCX: 52, bgCY: 37, bgR: 49, bgRW: 93, bgRH: 136,
+  startDays: 120, changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ", barDir: "fill",
+  useSmall: 1, useMedium: 1, useMediumBar: 1, useLarge: 1, useXL: 1,
+  fxBlobs: 0, b1Color: "#1EC8FF", b1X: 52, b1Y: 55, b1W: 75,
+  b1H: 55, b1I: 85, b1Soft: 65, b2Color: "#FF8A3D", b2X: 50,
+  b2Y: 25, b2W: 40, b2H: 30, b2I: 60, b2Soft: 70,
+  b3Color: "#FFB020", b3X: 20, b3Y: 90, b3W: 60, b3H: 50,
+  b3I: 50, b3Soft: 60, egOn: 1, egColor: "#FFFFFF", egWidth: 14,
+  egIntensity: 47, egFalloff: 32, lightAngle: 225, lightMain: 100, lightReflect: 60,
+  lightWidth: 22, lightBase: 14, wgOn: 0, wgRadius: 22, wgTint: "#FFFFFF",
+  wgOpacity: 0, wgSheen: 8, wgSheenSize: 35, wgRim: 60, wgRimW: 1,
+  wgInner: 0, wgInnerSize: 30, panelGlass: 0, barGlass: 1, glassTint: "#FFFFFF",
+  glassOpacity: 0, glassSheen: 12, glassSheenSize: 50, glassRim: 80, glassRimW: 0.8,
+  glassInner: 0, glassInnerSize: 35, panelGrad: 0, panelN: 2, panel2: "#E2E2E8",
+  panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v", panelPos: 50, panelSize: 100,
+  panelIntensity: 100, shNumOn: 0, shNumColor: "#000000", shNumX: 0, shNumY: 3,
+  shNumBlur: 5, shNumOpacity: 55, shNumStyle: "soft", shNumSpread: 0, shTextOn: 0,
+  shTextColor: "#000000", shTextX: 0, shTextY: 1, shTextBlur: 3, shTextOpacity: 20,
+  shTextStyle: "soft", shTextSpread: 0, shPanelOn: 0, shPanelColor: "#000000", shPanelX: 0,
+  shPanelY: 10, shPanelBlur: 8, shPanelOpacity: 22, shPanelStyle: "soft", shPanelSpread: 0,
+  shPanelSX: 100, shPanelSY: 100, shPanelRound: 0, shBarOn: 0, shBarColor: "#000000",
+  shBarX: 0, shBarY: 2, shBarBlur: 4, shBarOpacity: 20, shBarStyle: "soft",
+  shBarSpread: 0, shBarSX: 100, shBarSY: 100, shBarRound: 0,
   emNum: [[0.582, 0.39, 0.557, 0.558, 0.575, 0.571, 0.579, 0.529, 0.58, 0.579], [0.59, 0.408, 0.56, 0.569, 0.585, 0.576, 0.592, 0.535, 0.586, 0.592], [0.598, 0.426, 0.563, 0.581, 0.595, 0.58, 0.605, 0.541, 0.593, 0.605], [0.606, 0.443, 0.566, 0.592, 0.604, 0.585, 0.617, 0.547, 0.6, 0.617], [0.623, 0.456, 0.578, 0.604, 0.619, 0.598, 0.629, 0.555, 0.616, 0.629], [0.639, 0.468, 0.591, 0.617, 0.633, 0.612, 0.64, 0.564, 0.632, 0.64], [0.656, 0.48, 0.603, 0.63, 0.647, 0.625, 0.652, 0.572, 0.649, 0.652], [0.672, 0.492, 0.615, 0.642, 0.662, 0.638, 0.664, 0.58, 0.665, 0.664], [0.689, 0.504, 0.628, 0.655, 0.676, 0.652, 0.675, 0.589, 0.682, 0.675]], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
   sLabelX: 9, sLabelY: 9, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
-  sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 400, sNumAlign: "l",
+  sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 200, sNumAlign: "l",
   sUnitFollow: 1, sUnitX: 60, sUnitY: 40, sUnitGap: 6, sUnitLift: 6, sUnitSize: 18, sUnitWeight: 400,
-  sDateX: 10.5, sDateY: 86, sDateSize: 12, sDateWeight: 400, sDateAlign: "l",
-  sBarX: 9, sBarY: 60, sBarW: 82, sBarH: 31,
+  sDateX: 9, sDateY: 64, sDateSize: 12, sDateWeight: 400, sDateAlign: "l",
+  sBarX: 9, sBarY: 82, sBarW: 82, sBarH: 4,
   mCardOn: 0, mCardX: 3, mCardY: 6, mCardW: 36, mCardH: 88, mCardR: 18,
   mLabelX: 4.5, mLabelY: 10, mLabelSize: 14, mLabelWeight: 400, mLabelAlign: "l",
   mNumX: 4, mNumY: 23, mNumSize: 64, mNumWeight: 400, mNumAlign: "l",
   mUnitFollow: 1, mUnitX: 30, mUnitY: 50, mUnitGap: 5, mUnitLift: 8, mUnitSize: 19, mUnitWeight: 400,
   mDateX: 4.5, mDateY: 78, mDateSize: 11, mDateWeight: 400, mDateAlign: "l",
-  mTlX: 40, mTlY: 8, mTlW: 55, mCount: 3, mItemNameSize: 11, mItemNameWeight: 700, mItemDateSize: 10, mItemNumSize: 19, mItemNumWeight: 700, mItemUnitSize: 11, mItemGap: 6, mPanelPadX: 12, mPanelPadY: 8,
+  mTlX: 41, mTlY: 8, mTlW: 55, mCount: 3, mItemNameSize: 11, mItemNameWeight: 700, mItemDateSize: 10, mItemNumSize: 19, mItemNumWeight: 700, mItemUnitSize: 11, mItemGap: 6, mPanelPadX: 12, mPanelPadY: 8,
   tCardOn: 0, tCardX: 3, tCardY: 8, tCardW: 94, tCardH: 84, tCardR: 18,
-  tLabelX: 5.3, tLabelY: 13, tLabelSize: 16, tLabelWeight: 700, tLabelAlign: "l",
+  tLabelX: 5.3, tLabelY: 13, tLabelSize: 16, tLabelWeight: 400, tLabelAlign: "l",
   tDateX: 67, tDateY: 13, tDateSize: 15, tDateWeight: 400, tDateAlign: "l",
-  tTimerX: 5, tTimerY: 28, tTimerSize: 59, tTimerWeight: 200,
-  tBarX: 5.3, tBarY: 74, tBarW: 89.4, tBarH: 24,
+  tTimerX: 6.5, tTimerY: 66, tTimerSize: 63, tTimerWeight: 200,
+  tBarX: 5.3, tBarY: 47.5, tBarW: 89.4, tBarH: 4,
   lCardOn: 0, lCardX: 4, lCardY: 3, lCardW: 92, lCardH: 46, lCardR: 18,
   lLabelX: 5.3, lLabelY: 5, lLabelSize: 18, lLabelWeight: 400, lLabelAlign: "l",
   lNumX: 4.5, lNumY: 10, lNumSize: 100, lNumWeight: 400, lNumAlign: "l",
@@ -58,7 +64,7 @@ const DESIGN = {
   xNumX: 3, xNumY: 15, xNumSize: 160, xNumWeight: 400, xNumAlign: "l",
   xUnitFollow: 1, xUnitX: 40, xUnitY: 50, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
   xDateX: 3.4, xDateY: 84, xDateSize: 14, xDateWeight: 400, xDateAlign: "l",
-  xTlX: 54, xTlY: 7, xTlW: 42.6, xCount: 6, xItemNameSize: 12, xItemNameWeight: 700, xItemDateSize: 11, xItemNumSize: 20, xItemNumWeight: 700, xItemUnitSize: 12, xItemGap: 6, xPanelPadX: 12, xPanelPadY: 8,
+  xTlX: 56.5, xTlY: 7, xTlW: 42.6, xCount: 6, xItemNameSize: 12, xItemNameWeight: 700, xItemDateSize: 11, xItemNumSize: 20, xItemNumWeight: 700, xItemUnitSize: 12, xItemGap: 6, xPanelPadX: 12, xPanelPadY: 8,
 };
 // ==== DESIGN END ====
 module.exports.DESIGN = DESIGN;
@@ -308,7 +314,41 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
   const P = k => D[p + k];
   const mainColor = S.urgent ? D.red : D.ink;
 
-  G.bg(D.bgGrad ? { stops: gradStops(D, "bg"), points: gradPoints(D.bgAngle) } : { solid: D.bg });
+  // พื้นหลัง: เส้นตรงใช้ไล่สีของ iOS, วงกลม/วงรีวาดเป็นวงซ้อนในชั้นภาพนุ่ม (ด้านนอกวงใช้สีสุดท้าย)
+  const radial = D.bgGrad && D.bgShape && D.bgShape !== "linear";
+  if (D.bgGrad && !radial) G.bg({ stops: gradStops(D, "bg"), points: gradPoints(D.bgAngle) });
+  else G.bg({ solid: radial ? colorAt(gradStops(D, "bg"), 1) : D.bg });
+  if (radial) {
+    const st = gradStops(D, "bg"), cx = X(D.bgCX), cy = Y(D.bgCY);
+    const circle = D.bgShape === "circle";
+    const rw = circle ? Math.max(W, H) * D.bgR / 100 : W * D.bgRW / 100;
+    const rh = circle ? Math.max(W, H) * D.bgR / 100 : H * D.bgRH / 100;
+    const N = 72;
+    for (let k = N; k >= 1; k--) {
+      const t = k / N;
+      G.fxEllipse(cx - rw * t, cy - rh * t, rw * t * 2, rh * t * 2, colorAt(st, t), 1);
+    }
+  }
+
+  // ---------- หยดแสง (mesh) + ขอบเรืองแสงด้านใน: ภาพนุ่ม วาดแยกความละเอียดต่ำ ----------
+  for (let i = 1; i <= (D.fxBlobs || 0); i++) {
+    const b = k => D["b" + i + k];
+    const cx = X(b("X")), cy = Y(b("Y")), rw = X(b("W")) / 2, rh = Y(b("H")) / 2;
+    const N = 28, e = 0.5 + (b("Soft") / 100) * 2.5;
+    const a = 1 - Math.pow(1 - Math.min(0.99, b("I") / 100), 1 / N);
+    for (let k = N; k >= 1; k--) {
+      const f = Math.pow(k / N, 1 / e);
+      G.fxEllipse(cx - rw * f, cy - rh * f, rw * f * 2, rh * f * 2, b("Color"), a);
+    }
+  }
+  if (D.egOn && D.egWidth > 0) {
+    const N = 24, wd = D.egWidth * sc, I = D.egIntensity / 100;
+    for (let i = 0; i < N; i++) {
+      const d = wd * i / N, lw = wd / N + 0.6;
+      const al = I * Math.pow(1 - i / N, 0.6 + D.egFalloff / 40);
+      G.fxRing(d + lw / 2, d + lw / 2, W - d * 2 - lw, H - d * 2 - lw, Math.max(0, D.wgRadius - d - lw / 2), lw, D.egColor, al);
+    }
+  }
 
   // ---------- เงา (วาดซ้อนหลายชั้นให้ฟุ้ง หรือซ้อนเป็นแนวยาว) ----------
   const SH = k => D[k + "On"] ? {
@@ -543,6 +583,12 @@ function scriptableG(W, H, D, forceScale) {
   const overlays = [];
   let bgSpec = { solid: "#FFFFFF" };
   let overlaySpec = null;
+  let fx = null;
+  const FS = 1; // ภาพนุ่มใช้ความละเอียดต่ำพอ (ไฟล์เล็ก ไม่ติดเพดานของ iOS)
+  const fxc = () => {
+    if (!fx) { fx = new DrawContext(); fx.size = new Size(Math.round(W * FS), Math.round(H * FS)); fx.opaque = false; fx.respectScreenScale = false; }
+    return fx;
+  };
   const WEIGHTS = { 100: "ultraLight", 200: "thin", 300: "light", 400: "regular", 500: "medium", 600: "semibold", 700: "bold", 800: "heavy", 900: "black" };
   const wi = w => Math.max(0, Math.min(8, Math.round(w / 100) - 1));
   const font = (size, w) => Font[(WEIGHTS[(wi(w) + 1) * 100]) + "SystemFont"](size);
@@ -601,6 +647,15 @@ function scriptableG(W, H, D, forceScale) {
     },
     bg(spec) { bgSpec = spec; },
     overlay(stops) { overlaySpec = stops; },
+    fxEllipse(x, y, w, h, color, alpha) {
+      const c = fxc(); c.setFillColor(new Color(color, alpha)); c.fillEllipse(new Rect(x * FS, y * FS, w * FS, h * FS));
+    },
+    fxRing(x, y, w, h, r, lw, color, alpha) {
+      const c = fxc(); const pth = new Path();
+      pth.addRoundedRect(new Rect(x * FS, y * FS, w * FS, h * FS), r * FS, r * FS);
+      c.addPath(pth); c.setStrokeColor(new Color(color, alpha)); c.setLineWidth(lw * FS); c.strokePath();
+    },
+    fxImage: () => (fx ? fx.getImage() : null),
     overlaySpec: () => overlaySpec,
     rect(id, x, y, w, h, r, f) { fillRound(x, y, w, h, r, f); },
     group() {},
@@ -682,11 +737,19 @@ function buildPainted(fam, PARAM, list) {
     w.backgroundColor = new Color(bg.solid);
   }
   w.setPadding(0, 0, 0, 0);
-  // ชั้นกระจกทั้งตัว widget (ไล่สีโปร่งแสงของ iOS)
   let host = w;
+  // ชั้นหยดแสง/ขอบเรืองแสง (ภาพความละเอียดต่ำ)
+  const fxImg = G.fxImage();
+  if (fxImg) {
+    const fs = w.addStack();
+    fs.layoutVertically();
+    fs.backgroundImage = fxImg;
+    host = fs;
+  }
+  // ชั้นกระจกทั้งตัว widget (ไล่สีโปร่งแสงของ iOS)
   const ov = G.overlaySpec();
   if (ov) {
-    const mid = w.addStack();
+    const mid = host.addStack();
     mid.layoutVertically();
     const g = new LinearGradient();
     g.colors = ov.map(x => new Color(x.c, x.a));
