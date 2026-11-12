@@ -1,0 +1,19 @@
+name: check
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TZ: Asia/Bangkok
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: widget.js + events.csv (ทุกขนาด ทุกวันตลอดปฏิทิน)
+        run: node test/run.js
+      - name: loader.js (เน็ตล่ม / ไฟล์พัง / ปกติ)
+        run: node test/check-loader.js

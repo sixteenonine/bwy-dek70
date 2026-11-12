@@ -52,7 +52,7 @@ async function run(file, label, { net, inWidget = true, expect }) {
   // โค้ดในปุ่ม "ก๊อปโค้ด" ของ index.html ต้องเป็นตัวเดียวกับ loader.js
   const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
   const m = html.match(/<script type="text\/plain" id="loader">([\s\S]*?)<\/script>/);
-  const same = m && m[1].trim() === fs.readFileSync(path.join(root, "loader.js"), "utf8").replace(/\r\n/g, "\n").trim();
+  const same = m && m[1].replace(/\r\n/g, "\n").trim() ===fs.readFileSync(path.join(root, "loader.js"), "utf8").replace(/\r\n/g, "\n").trim();
   if (!same) failed++;
   console.log(`${same ? "✅" : "❌"} index.html: โค้ดในปุ่มก๊อป ${same ? "ตรงกับ" : "ไม่ตรงกับ"} loader.js`);
   if (failed) { console.log(`\n❌ ไม่ผ่าน ${failed} กรณี`); process.exit(1); }
