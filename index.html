@@ -6,74 +6,74 @@
 <title>Dek70 Countdown by BearWithYou</title>
 <meta name="description" content="widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --honey: #FFD54A; --honey-2: #FFE88F; --cocoa: #2B1A0E; --bark: #6B4B2A;
-    --red: #C62828; --paper: #FFF8E1;
-    --bg: var(--honey); --card: var(--honey-2); --ink: var(--cocoa); --sub: var(--bark); --num: var(--cocoa);
+    --bg: #ECECEC; --card: #FFFFFF; --ink: #000000; --sub: #5F5F64; --line: #DADADA; --track: #C2C2C2; --red: #E5484D; --soft: #F2F2F2;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #1E140D; --card: #2F2117; --ink: #FFF1CC; --sub: #C9A77A; --num: #FFC93C; --red: #FF6B6B; }
+    :root { --bg: #0F0F11; --card: #1C1C1E; --ink: #F5F5F7; --sub: #A1A1A6; --line: #2C2C2E; --track: #3A3A3C; --red: #FF6369; --soft: #2C2C2E; }
   }
   *, *::before, *::after { box-sizing: inherit; }
   html, body { margin: 0; }
   body {
     background: var(--bg); color: var(--ink);
-    font-family: "IBM Plex Sans Thai", -apple-system, "Sukhumvit Set", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif;
     line-height: 1.6; -webkit-font-smoothing: antialiased;
   }
-  main { max-width: 480px; margin: 0 auto; padding: 32px 20px 48px; }
-  h1, h2, .num { font-family: "Mitr", "IBM Plex Sans Thai", sans-serif; font-weight: 600; }
-  h1 { font-size: 2.1rem; line-height: 1.15; margin: 0 0 8px; }
-  .lead { color: var(--sub); margin: 0 0 28px; font-size: 1.05rem; }
+  main { max-width: 480px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 8px; font-weight: 700; letter-spacing: -.01em; }
+  h2 { font-size: 1.3rem; margin: 36px 0 16px; font-weight: 700; }
+  .lead { color: var(--sub); margin: 0 0 24px; font-size: 1.05rem; }
 
-  .widget {
-    background: var(--card); border-radius: 26px; padding: 16px;
-    box-shadow: 0 10px 0 var(--cocoa); border: 2px solid var(--cocoa);
-    margin-bottom: 36px;
+  .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .w {
+    aspect-ratio: 1; border-radius: 22px; padding: 9% 9%; position: relative;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 45%, #DFDFDF 100%); color: #000;
+    box-shadow: 0 10px 30px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.7);
   }
-  @media (prefers-color-scheme: dark) { .widget { box-shadow: 0 10px 0 #000; border-color: #000; } }
-  .widget-top { display: flex; justify-content: space-between; font-weight: 600; font-size: .9rem; }
-  .widget-top span:last-child { color: var(--sub); }
-  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-  .exam { background: var(--bg); border-radius: 18px; padding: 10px 12px; }
-  .exam-name { color: var(--sub); font-weight: 600; font-size: .85rem; }
-  .num { font-size: 3rem; line-height: 1; color: var(--num); }
-  .num small { font-size: 1rem; color: var(--sub); margin-left: 4px; }
-  .exam-date { color: var(--sub); font-size: .78rem; }
+  .w .name { font-size: clamp(12px, 3.6vw, 15px); }
+  .w .num { font-size: clamp(40px, 14vw, 62px); font-weight: 200; line-height: 1.05; letter-spacing: -.02em; }
+  .w .num small { font-size: .32em; font-weight: 400; margin-left: 5px; letter-spacing: 0; }
+  .w .date { font-size: clamp(11px, 3.1vw, 13px); }
+  .w .bar { position: absolute; left: 9%; right: 9%; bottom: 13%; height: 4px; border-radius: 2px; background: #C2C2C2; overflow: hidden; }
+  .w .bar i { display: block; height: 100%; width: 30%; border-radius: 2px; background: #000; }
+  .w.urgent .num, .w.urgent .num small { color: #E5484D; } .w.urgent .bar i { background: #E5484D; }
 
-  h2 { font-size: 1.35rem; margin: 0 0 16px; }
   ol { list-style: none; padding: 0; margin: 0; counter-reset: step; }
-  li { counter-increment: step; position: relative; padding: 0 0 22px 52px; }
-  li::before {
+  ol > li { counter-increment: step; position: relative; padding: 0 0 22px 48px; }
+  ol > li::before {
     content: counter(step); position: absolute; left: 0; top: 0;
-    width: 36px; height: 36px; border-radius: 50%;
-    background: var(--cocoa); color: var(--honey);
-    display: grid; place-items: center; font-family: "Mitr", sans-serif; font-weight: 600;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--ink); color: var(--bg);
+    display: grid; place-items: center; font-weight: 700;
   }
-  @media (prefers-color-scheme: dark) { li::before { background: var(--num); color: var(--cocoa); } }
   li strong { display: block; font-size: 1.05rem; }
   li p { margin: 2px 0 10px; color: var(--sub); }
 
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     min-height: 48px; padding: 0 20px; border-radius: 14px;
-    font: 600 1rem "IBM Plex Sans Thai", sans-serif; text-decoration: none; cursor: pointer;
-    background: var(--cocoa); color: var(--honey); border: 2px solid var(--cocoa);
+    font: 600 1rem inherit; font-family: inherit; text-decoration: none; cursor: pointer;
+    background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink);
   }
-  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
-  @media (prefers-color-scheme: dark) { .btn { background: var(--num); color: var(--cocoa); border-color: var(--num); } }
+  .btn.ghost { background: transparent; color: var(--ink); }
   .btn:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
   .btn.done { background: #2E7D32; border-color: #2E7D32; color: #fff; }
 
-  .note { background: var(--card); border-radius: 16px; padding: 14px 16px; font-size: .95rem; margin: 8px 0 28px; }
-  footer { text-align: center; color: var(--sub); font-size: .9rem; }
+  .box { background: var(--card); border-radius: 16px; padding: 4px 16px; }
+  .opt { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .opt:last-child { border-bottom: 0; }
+  code { font: 600 .95rem ui-monospace, Menlo, Consolas, monospace; background: var(--soft); border-radius: 7px; padding: 2px 8px; white-space: nowrap; }
+  .opt span { color: var(--sub); font-size: .95rem; }
+  .hint { color: var(--sub); font-size: .92rem; margin: 10px 2px 0; }
+  details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+  details:last-child { border-bottom: 0; }
+  summary { font-weight: 600; cursor: pointer; }
+  details p { margin: 6px 0 0; color: var(--sub); font-size: .95rem; }
+  footer { text-align: center; color: var(--sub); font-size: .9rem; margin-top: 36px; }
   footer a { color: var(--ink); font-weight: 600; }
   textarea.fallback { width: 100%; height: 160px; margin-top: 10px; font-size: 12px; display: none; }
   @media (prefers-reduced-motion: no-preference) { .btn { transition: background .2s; } }
@@ -82,22 +82,11 @@
 <body>
 <main>
   <h1>🐻 Dek70 Countdown</h1>
-  <p class="lead">นับวันถึง TGAT และ A-Level บนหน้าจอโฮม พร้อมทิปภาษาอังกฤษเปลี่ยนทุกวัน ฟรีจาก BearWithYou</p>
+  <p class="lead">นับถอยหลังวันสำคัญ TCAS70 บนหน้าจอโฮม ติดตั้งครั้งเดียว อัปเดตวันให้เอง ฟรีจาก BearWithYou</p>
 
-  <div class="widget" aria-label="ตัวอย่าง widget">
-    <div class="widget-top"><span>🐻 Dek70 Countdown</span><span>@WeBearTogether</span></div>
-    <div class="pair">
-      <div class="exam">
-        <div class="exam-name">🧠 TGAT</div>
-        <div class="num" id="d-tgat">--<small>วัน</small></div>
-        <div class="exam-date">ส. 30 ม.ค. 70</div>
-      </div>
-      <div class="exam">
-        <div class="exam-name">📚 A-Level Eng</div>
-        <div class="num" id="d-alevel">--<small>วัน</small></div>
-        <div class="exam-date">อา. 14 มี.ค. 70</div>
-      </div>
-    </div>
+  <div class="demo" aria-label="ตัวอย่าง widget">
+    <div class="w" id="w-tgat"><div class="name">สอบ TGAT</div><div class="num"><span>--</span><small>วัน</small></div><div class="date">30 มกรา</div><div class="bar"><i></i></div></div>
+    <div class="w" id="w-alevel"><div class="name">สอบ A-Level</div><div class="num"><span>--</span><small>วัน</small></div><div class="date">13–15 มีนา</div><div class="bar"><i></i></div></div>
   </div>
 
   <h2>ติดตั้งใน 1 นาที</h2>
@@ -123,17 +112,35 @@
     </li>
   </ol>
 
-  <div class="note">ติดตั้งครั้งเดียวจบ widget จะอัปเดตวันสอบและทิปใหม่ให้อัตโนมัติ ตอนนี้ใช้ได้กับ iPhone และ iPad เท่านั้น</div>
+  <h2>ปรับแบบที่ชอบ</h2>
+  <div class="box">
+    <div class="opt"><code>bar</code><span>ขนาด Medium แบบนับถอยหลังเป็นวินาที</span></div>
+    <div class="opt"><code>tgat</code><span>ล็อกให้นับถึงวันสอบ TGAT ตลอด</span></div>
+    <div class="opt"><code>alevel</code><span>ล็อกให้นับถึงวันสอบ A-Level ตลอด</span></div>
+    <div class="opt"><code>tgat bar</code><span>ใช้คู่กันได้ เว้นวรรคระหว่างคำ</span></div>
+  </div>
+  <p class="hint">วิธีใส่: กดค้างที่ widget เลือก Edit Widget แล้วพิมพ์ในช่อง Parameter ถ้าไม่ใส่อะไร widget จะนับถึงวันสำคัญที่ใกล้ที่สุดให้เอง</p>
+
+  <h2>คำถามที่เจอบ่อย</h2>
+  <div class="box">
+    <details><summary>ต้องอัปเดตเองไหม</summary><p>ไม่ต้อง ติดตั้งครั้งเดียวจบ ถ้า ทปอ. เลื่อนวัน widget จะเปลี่ยนตามให้เอง</p></details>
+    <details><summary>ทำไมตัวเลขยังไม่เปลี่ยน</summary><p>iPhone รีเฟรช widget เองประมาณชั่วโมงละครั้ง ถ้าอยากให้เปลี่ยนทันที เปิดแอป Scriptable แล้วกดรัน Dek70 หนึ่งรอบ</p></details>
+    <details><summary>ขึ้นว่า Unsupported widget หรือเป็นกล่องว่าง</summary><p>กดค้างที่ widget เลือก Edit Widget แล้วเช็กว่าตรง Script เลือก Dek70 อยู่</p></details>
+    <details><summary>ขึ้นว่า "ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ"</summary><p>ครั้งแรกต้องมีเน็ตเพื่อโหลด widget ต่อเน็ตแล้วเปิดแอป Scriptable รัน Dek70 หนึ่งรอบ หลังจากนั้นไม่มีเน็ตก็ยังใช้ได้</p></details>
+    <details><summary>กินแบตหรือเก็บข้อมูลอะไรไหม</summary><p>ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช widget และไม่เก็บข้อมูลส่วนตัวใดๆ</p></details>
+    <details><summary>ใช้กับ Android ได้ไหม</summary><p>ตอนนี้ใช้ได้เฉพาะ iPhone และ iPad</p></details>
+  </div>
 
   <footer>ติดตามเทคนิคพิชิตสอบได้ที่ <a href="https://x.com/WeBearTogether">@WeBearTogether</a></footer>
 </main>
 
-<script type="text/plain" id="loader">// 🐻 Dek70 Countdown by BearWithYou (@WeBearTogether)
+<script type="text/plain" id="loader">// 🐻 Countdown Widget by BearWithYou (@WeBearTogether)
 // ติดตั้งครั้งเดียว อัปเดตอัตโนมัติ ไม่ต้องแก้อะไรในนี้
-const SOURCE = "https://bwy-dek70.pages.dev/widget.js";
+const SOURCE = "https://bwy-widget.pages.dev/widget.js";
+const INFO = { loader: 3 };
 
 const fm = FileManager.local();
-const dir = fm.joinPath(fm.documentsDirectory(), "bwy-dek70");
+const dir = fm.joinPath(fm.documentsDirectory(), "bwy-widget");
 if (!fm.fileExists(dir)) fm.createDirectory(dir);
 const LATEST = fm.joinPath(dir, "latest.js");
 const GOOD = fm.joinPath(dir, "good.js");
@@ -168,22 +175,42 @@ function fallback() {
 }
 
 if (config.runsInWidget) {
-  const w = await attempt(m => m.build(config.widgetFamily, args.widgetParameter || ""));
+  const w = await attempt(m => m.build(config.widgetFamily, args.widgetParameter || "", INFO));
   Script.setWidget(w || fallback());
 } else {
-  const ok = await attempt(async m => { await m.runInApp(); return true; });
+  const ok = await attempt(async m => { await m.runInApp(INFO); return true; });
   if (!ok) await fallback().presentSmall();
 }
 Script.complete();
 </script>
 <script>
-  const days = (y, m, d) => {
-    const t = new Date(y, m, d), n = new Date();
+  // ตัวอย่างด้านบน: อ่านวันจาก events.csv ชุดเดียวกับ widget (ถ้าโหลดไม่ได้ใช้ค่าที่ใส่ไว้)
+  const MONTHS = ["มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา", "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"];
+  const show = (id, name, s, e) => {
+    const el = document.getElementById(id), n = new Date();
     n.setHours(0, 0, 0, 0);
-    return Math.max(0, Math.round((t - n) / 86400000));
+    const d0 = new Date(s); d0.setHours(0, 0, 0, 0);
+    const d = Math.round((d0 - n) / 86400000);
+    if (d < 0) { el.hidden = true; return; }
+    el.querySelector(".name").textContent = name;
+    el.querySelector(".num span").textContent = d;
+    const same = s.toDateString() === e.toDateString();
+    el.querySelector(".date").textContent = same ? `${s.getDate()} ${MONTHS[s.getMonth()]}` : s.getMonth() === e.getMonth() ? `${s.getDate()}–${e.getDate()} ${MONTHS[s.getMonth()]}` : `${s.getDate()} ${MONTHS[s.getMonth()]}–${e.getDate()} ${MONTHS[e.getMonth()]}`;
+    el.classList.toggle("urgent", d <= 14);
+    el.querySelector(".bar i").style.width = Math.max(4, Math.min(100, 100 - d / 1.2)) + "%";
   };
-  document.getElementById("d-tgat").firstChild.textContent = days(2027, 0, 30);
-  document.getElementById("d-alevel").firstChild.textContent = days(2027, 2, 14);
+  show("w-tgat", "สอบ TGAT", new Date(2027, 0, 30), new Date(2027, 0, 30));
+  show("w-alevel", "สอบ A-Level", new Date(2027, 2, 13), new Date(2027, 2, 15));
+  fetch("events.csv").then(r => (r.ok ? r.text() : "")).then(t => {
+    const rows = t.replace(/^﻿/, "").split(/\r?\n/).map(l => l.split(","));
+    const head = rows[0] || [], c = k => head.indexOf(k);
+    const dt = v => { const m = String(v || "").trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); return m ? new Date(+m[1] > 2400 ? +m[1] - 543 : +m[1], +m[2] - 1, +m[3]) : null; };
+    [["w-tgat", "tgat"], ["w-alevel", "alevel"]].forEach(([id, key]) => {
+      const r = rows.find(x => x[c("key")] === key);
+      const s = r && dt(r[c("start")]), e = r && (dt(r[c("end")]) || s);
+      if (s) show(id, r[c("name")], s, e);
+    });
+  }).catch(() => {});
 
   const code = document.getElementById("loader").textContent.trim();
   const btn = document.getElementById("copy");

@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.6.2";
+module.exports.version = "7.6.3";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -71,15 +71,15 @@ module.exports.DESIGN = DESIGN;
 
 // ---------- เหตุการณ์ ----------
 // ตารางวันจริงอยู่ที่ events.csv บนเว็บ (แก้ใน GitHub ได้เลย) รายการด้านล่างเป็นชุดสำรองตอนโหลดไม่ได้
-const EVENTS_URL = "https://bwy-dek70.pages.dev/events.csv";
+const EVENTS_URL = "https://bwy-widget.pages.dev/events.csv";
 // key: ใช้ล็อกใน Parameter ได้ เช่น tgat, alevel  |  วันที่: [ปี, เดือน(1-12), วัน, ชม, นาที]
 const EVENT_LIST = [
   { key: "reg-tgat", name: "สมัคร TGAT/TPAT", short: "สมัคร", start: [2026, 11, 4], end: [2026, 11, 10, 23, 59] },
   { key: "reg-alevel", name: "สมัคร A-Level", short: "สมัคร", start: [2027, 1, 14], end: [2027, 1, 20, 23, 59] },
   { key: "tgat", name: "สอบ TGAT", short: "TGAT", start: [2027, 1, 30, 13, 0], end: [2027, 1, 30, 16, 0] },
   { key: "res-tgat", name: "ประกาศผล TGAT", short: "ผล", start: [2027, 2, 28], end: [2027, 2, 28, 23, 59], minor: true },
-  { key: "alevel", name: "สอบ A-Level", short: "A-Lv", start: [2027, 3, 14, 11, 0], end: [2027, 3, 14, 12, 30] },
-  { key: "res-alevel", name: "ประกาศผล A-Level", short: "ผล", start: [2027, 4, 20], end: [2027, 4, 20, 23, 59], minor: true },
+  { key: "alevel", name: "สอบ A-Level", short: "A-Lv", start: [2027, 3, 13, 8, 30], end: [2027, 3, 15, 15, 0] },
+  { key: "res-alevel", name: "ประกาศผล A-Level", short: "ผล", start: [2027, 4, 20], end: [2027, 4, 20, 23, 59], minor: true, estimate: true },
   { key: "round3", name: "สมัครรอบ 3", short: "รอบ 3", start: [2027, 5, 7], end: [2027, 5, 11, 23, 59] },
 ];
 // อ่าน events.csv → รายการเหตุการณ์ (แถวที่ผิดรูปแบบจะถูกข้าม)
@@ -235,6 +235,8 @@ function makeState(nowMs, param, D, list) {
   const isOpen = e => now >= e.start && now <= e.end;
   const dm = d => `${d.getDate()} ${MONTHS[d.getMonth()]}`;
   const rough = d => `~${d.getDate() <= 10 ? "ต้น" : d.getDate() <= 20 ? "กลาง" : "ปลาย"} ${MONTHS[d.getMonth()]}`;
+  const isExam = e => /^สอบ/.test(e.name);
+  const openWord = e => (isExam(e) ? "กำลังสอบ" : "เปิดแล้ว");
   const isNew = e => !!e.changed && daysUntil(e.changed) <= 0 && daysUntil(e.changed) > -(D.changedDays || 0);
   function dateLabel(e) {
     if (e.estimate) return rough(e.start);
@@ -248,7 +250,7 @@ function makeState(nowMs, param, D, list) {
   const tokens = (param || "").toLowerCase().split(/[\s,]+/).filter(Boolean);
   const up = events.filter(e => e.end >= now);
   // ตัวเลขใหญ่ = เหตุการณ์ "หลัก" ที่ใกล้ที่สุด เหตุการณ์ "รอง" ขึ้นตัวเลขใหญ่เฉพาะวันที่เกิดขึ้นจริง
-  const minorToday = up.find(e => e.minor && (isOpen(e) || sameDay(e.start, now)));
+  const minorToday = up.find(e => e.minor && !e.estimate && (isOpen(e) || sameDay(e.start, now)));
   const hero = events.find(e => tokens.includes(e.key) && e.end >= now) || minorToday || up.find(e => !e.minor) || up[0] || null;
   const rest = up.filter(e => e !== hero);
   let st;
@@ -292,10 +294,10 @@ function makeState(nowMs, param, D, list) {
   const prep = st.kind === "prep";
   let heroDate = "";
   if (prep) heroDate = D.prepNote;
-  else if (hero) heroDate = st.kind === "open" ? `เปิดแล้ว ปิด ${dm(hero.end)}` : dateLabel(hero);
+  else if (hero) heroDate = st.kind === "open" ? (isExam(hero) ? `กำลังสอบ ถึง ${dm(hero.end)}` : `เปิดแล้ว ปิด ${dm(hero.end)}`) : dateLabel(hero);
   if (hero && !prep && isNew(hero)) heroDate += "  วันใหม่!";
   return {
-    now, hero, rest: prep && hero ? up : rest, st, progress, daysUntil, isOpen, dateLabel, isNew, bar: tokens.includes("bar"),
+    now, hero, rest: prep && hero ? up : rest, st, progress, daysUntil, isOpen, isExam, openWord, dateLabel, isNew, bar: tokens.includes("bar"),
     urgent: st.kind === "open" || st.kind === "today" || st.kind === "last" || (st.kind === "wait" && st.days <= D.urgentDays),
     heroName: prep ? D.prepTitle : hero.name,
     heroDate,
@@ -481,7 +483,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
       T(null, S.dateLabel(e) + (S.isNew(e) ? "  วันใหม่!" : ""), x + padX, top + nameS * 1.2, dateS, 400, S.isNew(e) ? D.red : D.dateColor, "l", "shText");
       const right = x + w - padX;
       if (S.isOpen(e)) {
-        T(null, "เปิดแล้ว", right, top + (rowH - numS * 0.9) / 2, numS * 0.75, P("ItemNumWeight"), D.red, "r", "shText");
+        T(null, S.openWord(e), right, top + (rowH - numS * 0.9) / 2, numS * 0.75, P("ItemNumWeight"), D.red, "r", "shText");
         return;
       }
       if (e.estimate) return T(null, "ประมาณการ", right, top + (rowH - numS * 0.9) / 2, numS * 0.6, 400, D.dateColor, "r", "shText");
@@ -719,7 +721,7 @@ function buildPainted(fam, PARAM, list) {
   if (tk.includes("noimg") || tk.includes("info")) {
     let sc = 0; try { sc = Device.screenScale(); } catch (e) {}
     const ss = Device.screenSize();
-    const lines = [`ทดสอบ ${fam} v${module.exports.version}`, `ขนาด ${W}×${H} pt  จอ ${Math.round(ss.width)}×${Math.round(ss.height)} @${sc}x`,
+    const lines = [`ทดสอบ ${fam} v${module.exports.version} L${LOADER}`, `ขนาด ${W}×${H} pt  จอ ${Math.round(ss.width)}×${Math.round(ss.height)} @${sc}x`,
       `วาด ${Date.now() - t0} ms  ${S.heroName} ${S.st.days || S.st.text || S.st.kind}`];
     w.backgroundColor = new Color("#1C1C1E");
     lines.forEach(l => { const t = w.addText(l); t.font = Font.mediumSystemFont(12); t.textColor = new Color("#FFFFFF"); });
@@ -796,7 +798,7 @@ function buildLock(FAMILY, PARAM, list) {
   if (FAMILY === "accessoryInline") {
     let s = `${S.heroName} ${S.st.text || ""} ${S.st.sub || ""}`.trim();
     if (k === "wait") s = `${S.heroName} อีก ${S.st.days} วัน`;
-    else if (k === "open") s = `${S.heroName} ปิดใน ${S.st.days} วัน`;
+    else if (k === "open") s = S.isExam(S.hero) ? `${S.heroName} ถึง ${S.dateLabel({ start: S.hero.end, end: S.hero.end })}` : `${S.heroName} ปิดใน ${S.st.days} วัน`;
     else if (k !== "prep") s = `${S.heroName} วันนี้!`;
     w.addText(s);
     return { w, S };
@@ -843,6 +845,7 @@ function buildLock(FAMILY, PARAM, list) {
   return { w, S };
 }
 
+let LOADER = 2; // เลขรุ่นของตัวติดตั้งบนเครื่องนี้ (รุ่นก่อน v3 ไม่ส่งมา)
 // เลือกแบบที่จะใช้จริงตามที่ตั้งใน Studio (use...)
 function pickFam(FAMILY, PARAM) {
   const D = DESIGN;
@@ -867,7 +870,8 @@ function notUsed() {
   return { w, S: makeState(Date.now(), "", DESIGN, null) };
 }
 
-module.exports.build = async function (FAMILY, PARAM) {
+module.exports.build = async function (FAMILY, PARAM, info) {
+  LOADER = (info && Number(info.loader)) || 2;
   const lock = FAMILY && FAMILY.startsWith("accessory");
   const fam = lock ? null : pickFam(FAMILY || "large", PARAM);
   const list = await loadEvents();
@@ -886,7 +890,8 @@ module.exports.build = async function (FAMILY, PARAM) {
 };
 
 // ---------- เมนูตอนรันในแอป Scriptable ----------
-module.exports.runInApp = async function () {
+module.exports.runInApp = async function (info) {
+  LOADER = (info && Number(info.loader)) || 2;
   const D = DESIGN;
   const opts = [];
   if (D.useSmall) opts.push(["Small", "small", ""]);
@@ -902,7 +907,7 @@ module.exports.runInApp = async function () {
   const i = await a.presentSheet();
   if (i === -1) return;
   const [, fam, prm] = opts[i];
-  const w = await module.exports.build(fam, prm);
+  const w = await module.exports.build(fam, prm, info);
   if (fam === "small") await w.presentSmall();
   else if (fam === "medium") await w.presentMedium();
   else if (fam === "extraLarge") await w.presentExtraLarge();

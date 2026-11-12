@@ -1,9 +1,10 @@
-// 🐻 Dek70 Countdown by BearWithYou (@WeBearTogether)
+// 🐻 Countdown Widget by BearWithYou (@WeBearTogether)
 // ติดตั้งครั้งเดียว อัปเดตอัตโนมัติ ไม่ต้องแก้อะไรในนี้
-const SOURCE = "https://bwy-dek70.pages.dev/widget.js";
+const SOURCE = "https://bwy-widget.pages.dev/widget.js";
+const INFO = { loader: 3 };
 
 const fm = FileManager.local();
-const dir = fm.joinPath(fm.documentsDirectory(), "bwy-dek70");
+const dir = fm.joinPath(fm.documentsDirectory(), "bwy-widget");
 if (!fm.fileExists(dir)) fm.createDirectory(dir);
 const LATEST = fm.joinPath(dir, "latest.js");
 const GOOD = fm.joinPath(dir, "good.js");
@@ -38,10 +39,10 @@ function fallback() {
 }
 
 if (config.runsInWidget) {
-  const w = await attempt(m => m.build(config.widgetFamily, args.widgetParameter || ""));
+  const w = await attempt(m => m.build(config.widgetFamily, args.widgetParameter || "", INFO));
   Script.setWidget(w || fallback());
 } else {
-  const ok = await attempt(async m => { await m.runInApp(); return true; });
+  const ok = await attempt(async m => { await m.runInApp(INFO); return true; });
   if (!ok) await fallback().presentSmall();
 }
 Script.complete();
