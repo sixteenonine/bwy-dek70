@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.6.3";
+module.exports.version = "7.6.4";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -876,7 +876,7 @@ module.exports.build = async function (FAMILY, PARAM, info) {
   const fam = lock ? null : pickFam(FAMILY || "large", PARAM);
   const list = await loadEvents();
   const { w, S } = lock ? buildLock(FAMILY, PARAM, list) : fam ? buildPainted(fam, PARAM, list) : notUsed();
-  w.url = "https://x.com/WeBearTogether"; // แตะ widget แล้วเปิดลิงก์นี้
+  w.url = "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD"; // แตะ widget แล้วเปิดลิงก์นี้
   // รีเฟรชทุก ~1 ชม. / เที่ยงคืน / ตอนวินาทีวิ่งครบวัน (แบบไหนถึงก่อน)
   const now = Date.now();
   const times = [now + 60 * 60000];
