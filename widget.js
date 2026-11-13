@@ -4,25 +4,25 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.8.4";
+module.exports.version = "7.8.5";
 
 // ==== DESIGN START ====
 const DESIGN = {
-  bg: "#2C2C2F", ink: "#D8D8DD", dateColor: "#8E8E95", leadColor: "#8A8A8E", red: "#E22400", panel: "#1F1F22",
-  panelRadius: 14, line: "#3A3A3E", track: "#3A3A3E", urgentDays: 14, itemUrgentDays: 7, bgGrad: 1,
-  bgN: 2, bg2: "#0C0C0E", bg3: "#000000", bg4: "#262626", bgAngle: 90, bgPos: 50,
-  bgSize: 100, bgIntensity: 100, bgShape: "linear", bgCX: 52, bgCY: 37, bgR: 49,
+  bg: "#D6D6D6", ink: "#000000", dateColor: "#000000", leadColor: "#8A8A8E", red: "#E5484D", panel: "#F2F2F2",
+  panelRadius: 14, line: "#FFFFFF", track: "#C2C2C2", urgentDays: 14, itemUrgentDays: 7, bgGrad: 1,
+  bgN: 4, bg2: "#FFFFFF", bg3: "#FFFFFF", bg4: "#D6D6D6", bgAngle: 90, bgPos: 2,
+  bgSize: 122, bgIntensity: 52, bgShape: "linear", bgCX: 52, bgCY: 37, bgR: 49,
   bgRW: 93, bgRH: 136, startDays: 120, changedDays: 14, prepTitle: "เตรียมตัวฤดูสอบ", prepNote: "ปฏิทินจริงอัปเดตให้อัตโนมัติ",
   barDir: "fill", useSmall: 1, useMedium: 0, useMediumBar: 1, useLarge: 0, useXL: 0,
   fxBlobs: 0, b1Color: "#1EC8FF", b1X: 52, b1Y: 55, b1W: 75, b1H: 55,
   b1I: 85, b1Soft: 65, b2Color: "#FF8A3D", b2X: 50, b2Y: 25, b2W: 40,
   b2H: 30, b2I: 60, b2Soft: 70, b3Color: "#FFB020", b3X: 20, b3Y: 90,
-  b3W: 60, b3H: 50, b3I: 50, b3Soft: 60, egOn: 0, egColor: "#000000",
-  egWidth: 11, egIntensity: 47, egFalloff: 32, lightAngle: 113, lightMain: 100, lightReflect: 100,
-  lightWidth: 5, lightBase: 0, wgOn: 1, wgRadius: 22, wgTint: "#FFFFFF", wgOpacity: 0,
-  wgSheen: 0, wgSheenSize: 19, wgRim: 95, wgRimW: 0.9, wgInner: 60, wgInnerSize: 100,
-  panelGlass: 1, barGlass: 1, glassTint: "#FFFFFF", glassOpacity: 7, glassSheen: 0, glassSheenSize: 2,
-  glassRim: 0, glassRimW: 0.8, glassInner: 0, glassInnerSize: 35, panelGrad: 0, panelN: 2,
+  b3W: 60, b3H: 50, b3I: 50, b3Soft: 60, egOn: 1, egColor: "#FFFFFF",
+  egWidth: 14, egIntensity: 47, egFalloff: 32, lightAngle: 225, lightMain: 100, lightReflect: 60,
+  lightWidth: 22, lightBase: 14, wgOn: 0, wgRadius: 22, wgTint: "#FFFFFF", wgOpacity: 0,
+  wgSheen: 8, wgSheenSize: 35, wgRim: 60, wgRimW: 1, wgInner: 0, wgInnerSize: 30,
+  panelGlass: 0, barGlass: 1, glassTint: "#FFFFFF", glassOpacity: 0, glassSheen: 12, glassSheenSize: 50,
+  glassRim: 80, glassRimW: 0.8, glassInner: 0, glassInnerSize: 35, panelGrad: 0, panelN: 2,
   panel2: "#E2E2E8", panel3: "#D6E4FF", panel4: "#FFE1EC", panelDir: "v", panelPos: 50, panelSize: 100,
   panelIntensity: 100, shNumOn: 0, shNumColor: "#000000", shNumX: 0, shNumY: 3, shNumBlur: 5,
   shNumOpacity: 55, shNumStyle: "soft", shNumSpread: 0, shTextOn: 0, shTextColor: "#000000", shTextX: 0,
@@ -37,8 +37,8 @@ const DESIGN = {
   sLeadOn: 1, sLeadX: 9, sLeadY: 9, sLeadSize: 18, sLeadWeight: 400, sLeadAlign: "l",
   sLabelOn: 1, sLabelX: 9, sLabelY: 60, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
   sNumOn: 1, sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 200, sNumAlign: "l",
-  sUnitOn: 1, sUnitFollow: 1, sUnitX: 49.5, sUnitY: 41, sUnitGap: 6, sUnitLift: 1, sUnitSize: 18, sUnitWeight: 400,
-  sDateOn: 0, sDateX: 9, sDateY: 70, sDateSize: 18, sDateWeight: 400, sDateAlign: "l",
+  sUnitOn: 1, sUnitFollow: 1, sUnitX: 60, sUnitY: 40, sUnitGap: 6, sUnitLift: 6, sUnitSize: 18, sUnitWeight: 400,
+  sDateOn: 0, sDateX: 9, sDateY: 72, sDateSize: 11.5, sDateWeight: 400, sDateAlign: "l",
   sBarX: 9, sBarY: 87, sBarW: 82, sBarH: 4,
   mCardOn: 0, mCardX: 3, mCardY: 6, mCardW: 36, mCardH: 88, mCardR: 18,
   mLeadOn: 1, mLeadX: 4.5, mLeadY: 10, mLeadSize: 13, mLeadWeight: 400, mLeadAlign: "l",
@@ -66,7 +66,8 @@ const DESIGN = {
   xUnitOn: 1, xUnitFollow: 1, xUnitX: 40, xUnitY: 50, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
   xDateOn: 1, xDateX: 3.4, xDateY: 75.5, xDateSize: 14, xDateWeight: 400, xDateAlign: "l",
   xTlX: 56.5, xTlY: 7, xTlW: 42.6, xCount: 6, xItemNameSize: 12, xItemNameWeight: 700, xItemDateSize: 11, xItemNumSize: 20, xItemNumWeight: 700, xItemUnitSize: 12, xItemGap: 6, xPanelPadX: 12, xPanelPadY: 8,
-  txtLead: "อีก", txtLeft: "เหลือ", txtToday: "วันนี้!", txtLast: "วันสุดท้าย!", txtExam: "กำลังสอบ", txtChanged: "เลื่อนวัน!", txtEstimate: "รอประกาศ",
+  txtLead: "อีก",
+  txtLeft: "เหลือ", txtToday: "วันนี้!", txtLast: "วันสุดท้าย!", txtExam: "กำลังสอบ", txtChanged: "เลื่อนวัน!", txtEstimate: "รอประกาศ",
   sX1On: 0, sX1Text: "", sX1X: 9, sX1Y: 48, sX1Size: 12, sX1Weight: 400, sX1Align: "l", sX1Color: "ink",
   sX2On: 0, sX2Text: "", sX2X: 9, sX2Y: 56, sX2Size: 12, sX2Weight: 400, sX2Align: "l", sX2Color: "ink",
   sX3On: 0, sX3Text: "", sX3X: 9, sX3Y: 64, sX3Size: 12, sX3Weight: 400, sX3Align: "l", sX3Color: "ink",
@@ -87,7 +88,46 @@ const DESIGN = {
 module.exports.DESIGN = DESIGN;
 // ธีมมืด: เก็บเฉพาะค่าที่ต่างจาก DESIGN (null = ยังไม่มีธีมมืด) Studio เขียนก้อนนี้ให้ตอนส่งออก
 // ==== DARK START ====
-const DESIGN_DARK = null;
+const DESIGN_DARK = {
+ "bg": "#2C2C2F",
+ "ink": "#D8D8DD",
+ "dateColor": "#8E8E95",
+ "red": "#E22400",
+ "panel": "#1F1F22",
+ "line": "#3A3A3E",
+ "track": "#3A3A3E",
+ "bgN": 2,
+ "bg2": "#0C0C0E",
+ "bg3": "#000000",
+ "bg4": "#262626",
+ "bgPos": 50,
+ "bgSize": 100,
+ "bgIntensity": 100,
+ "egOn": 0,
+ "egColor": "#000000",
+ "egWidth": 11,
+ "lightAngle": 113,
+ "lightReflect": 100,
+ "lightWidth": 5,
+ "lightBase": 0,
+ "wgOn": 1,
+ "wgSheen": 0,
+ "wgSheenSize": 19,
+ "wgRim": 95,
+ "wgRimW": 0.9,
+ "wgInner": 60,
+ "wgInnerSize": 100,
+ "panelGlass": 1,
+ "glassOpacity": 7,
+ "glassSheen": 0,
+ "glassSheenSize": 2,
+ "glassRim": 0,
+ "sUnitX": 49.5,
+ "sUnitY": 41,
+ "sUnitLift": 1,
+ "sDateY": 70,
+ "sDateSize": 18
+};
 // ==== DARK END ====
 module.exports.DESIGN_DARK = DESIGN_DARK;
 
