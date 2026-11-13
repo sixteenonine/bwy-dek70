@@ -107,9 +107,11 @@ async function one(t, fam, param, mode) {
     const t = sod(day + 3600000) + 12 * 3600000;
     const st = M.makeState(t, "", M.DESIGN, events);
     const k = st.st.kind;
-    const big = k === "wait" || k === "open" ? `${st.st.days} วัน` : k === "prep" ? `${st.st.text} ${st.st.sub}` : k === "today" ? "วันนี้!" : "วันสุดท้าย!";
+    const big = st.examNow ? "กำลังสอบ" : k === "wait" || k === "open" ? `${st.lead} ${st.st.days} วัน` : k === "prep" ? `${st.st.text} ${st.st.sub}` : k === "today" ? "วันนี้!" : "วันสุดท้าย!";
+    if ((k === "wait") !== (st.lead === "อีก")) fail(`${stamp(t)}: คำนำ "อีก" ไม่ตรงกับสถานะ ${k}`);
+    if (st.lead === "เหลือ" && (k !== "open" || st.examNow)) fail(`${stamp(t)}: คำนำ "เหลือ" ขึ้นผิดสถานะ`);
     const nxt = st.rest.slice(0, 2).map(e => e.name + (st.isOpen(e) ? " [กำลังเกิด]" : e.estimate ? " [ประมาณ]" : ` ${st.daysUntil(e.start)}ว`)).join(" · ");
-    rows.push({ t, key: `${st.heroName}|${k}|${st.heroDate}|${st.urgent ? "แดง" : ""}`, line: `${stamp(t).slice(0, 10)}  ${st.heroName.padEnd(18)} ${big.padEnd(12)} ${st.heroDate.padEnd(26)} ${st.urgent ? "แดง" : "   "} bar ${(st.progress * 100).toFixed(0).padStart(3)}%  | ${nxt}` });
+    rows.push({ t, key: `${st.heroName}|${k}|${st.heroDate}|${st.urgent ? "แดง" : ""}`, line: `${stamp(t).slice(0, 10)}  ${st.heroName.padEnd(18)} ${big.padEnd(14)} ${st.heroDate.padEnd(26)} ${st.urgent ? "แดง" : "   "} bar ${(st.progress * 100).toFixed(0).padStart(3)}%  | ${nxt}` });
   }
   console.log("\nตารางรายวัน (แสดงเฉพาะวันที่สถานะเปลี่ยน ใส่ --daily เพื่อดูทุกวัน)");
   rows.forEach((r, i) => { if (DAILY || i === 0 || rows[i - 1].key !== r.key || i === rows.length - 1) console.log(r.line); });
