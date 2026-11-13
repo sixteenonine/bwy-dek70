@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.8.1";
+module.exports.version = "7.8.2";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -37,37 +37,37 @@ const DESIGN = {
   shBarSpread: 0, shBarSX: 100, shBarSY: 100, shBarRound: 0,
   emNum: [[0.582, 0.39, 0.557, 0.558, 0.575, 0.571, 0.579, 0.529, 0.58, 0.579], [0.59, 0.408, 0.56, 0.569, 0.585, 0.576, 0.592, 0.535, 0.586, 0.592], [0.598, 0.426, 0.563, 0.581, 0.595, 0.58, 0.605, 0.541, 0.593, 0.605], [0.606, 0.443, 0.566, 0.592, 0.604, 0.585, 0.617, 0.547, 0.6, 0.617], [0.623, 0.456, 0.578, 0.604, 0.619, 0.598, 0.629, 0.555, 0.616, 0.629], [0.639, 0.468, 0.591, 0.617, 0.633, 0.612, 0.64, 0.564, 0.632, 0.64], [0.656, 0.48, 0.603, 0.63, 0.647, 0.625, 0.652, 0.572, 0.649, 0.652], [0.672, 0.492, 0.615, 0.642, 0.662, 0.638, 0.664, 0.58, 0.665, 0.664], [0.689, 0.504, 0.628, 0.655, 0.676, 0.652, 0.675, 0.589, 0.682, 0.675]], emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
-  sLeadX: 9, sLeadY: 9, sLeadSize: 13, sLeadWeight: 400, sLeadAlign: "l",
-  sLabelX: 9, sLabelY: 60, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
-  sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 200, sNumAlign: "l",
-  sUnitFollow: 1, sUnitX: 60, sUnitY: 40, sUnitGap: 6, sUnitLift: 6, sUnitSize: 18, sUnitWeight: 400,
-  sDateX: 9, sDateY: 72, sDateSize: 11.5, sDateWeight: 400, sDateAlign: "l",
+  sLeadOn: 1, sLeadX: 9, sLeadY: 9, sLeadSize: 13, sLeadWeight: 400, sLeadAlign: "l",
+  sLabelOn: 1, sLabelX: 9, sLabelY: 60, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
+  sNumOn: 1, sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 200, sNumAlign: "l",
+  sUnitOn: 1, sUnitFollow: 1, sUnitX: 60, sUnitY: 40, sUnitGap: 6, sUnitLift: 6, sUnitSize: 18, sUnitWeight: 400,
+  sDateOn: 1, sDateX: 9, sDateY: 72, sDateSize: 11.5, sDateWeight: 400, sDateAlign: "l",
   sBarX: 9, sBarY: 87, sBarW: 82, sBarH: 4,
   mCardOn: 0, mCardX: 3, mCardY: 6, mCardW: 36, mCardH: 88, mCardR: 18,
-  mLeadX: 4.5, mLeadY: 10, mLeadSize: 13, mLeadWeight: 400, mLeadAlign: "l",
-  mLabelX: 4.5, mLabelY: 66, mLabelSize: 13, mLabelWeight: 400, mLabelAlign: "l",
-  mNumX: 4, mNumY: 23, mNumSize: 64, mNumWeight: 400, mNumAlign: "l",
-  mUnitFollow: 1, mUnitX: 30, mUnitY: 50, mUnitGap: 5, mUnitLift: 8, mUnitSize: 19, mUnitWeight: 400,
-  mDateX: 4.5, mDateY: 79, mDateSize: 11, mDateWeight: 400, mDateAlign: "l",
+  mLeadOn: 1, mLeadX: 4.5, mLeadY: 10, mLeadSize: 13, mLeadWeight: 400, mLeadAlign: "l",
+  mLabelOn: 1, mLabelX: 4.5, mLabelY: 66, mLabelSize: 13, mLabelWeight: 400, mLabelAlign: "l",
+  mNumOn: 1, mNumX: 4, mNumY: 23, mNumSize: 64, mNumWeight: 400, mNumAlign: "l",
+  mUnitOn: 1, mUnitFollow: 1, mUnitX: 30, mUnitY: 50, mUnitGap: 5, mUnitLift: 8, mUnitSize: 19, mUnitWeight: 400,
+  mDateOn: 1, mDateX: 4.5, mDateY: 79, mDateSize: 11, mDateWeight: 400, mDateAlign: "l",
   mTlX: 41, mTlY: 8, mTlW: 55, mCount: 3, mItemNameSize: 11, mItemNameWeight: 700, mItemDateSize: 10, mItemNumSize: 19, mItemNumWeight: 700, mItemUnitSize: 11, mItemGap: 6, mPanelPadX: 12, mPanelPadY: 8,
   tCardOn: 0, tCardX: 3, tCardY: 8, tCardW: 94, tCardH: 84, tCardR: 18,
-  tLabelX: 5.3, tLabelY: 13, tLabelSize: 16, tLabelWeight: 400, tLabelAlign: "l",
-  tDateX: 67, tDateY: 13, tDateSize: 15, tDateWeight: 400, tDateAlign: "l",
-  tTimerX: 6.5, tTimerY: 66, tTimerSize: 63, tTimerWeight: 200,
+  tLabelOn: 1, tLabelX: 5.3, tLabelY: 13, tLabelSize: 16, tLabelWeight: 400, tLabelAlign: "l",
+  tDateOn: 1, tDateX: 67, tDateY: 13, tDateSize: 15, tDateWeight: 400, tDateAlign: "l",
+  tTimerOn: 1, tTimerX: 6.5, tTimerY: 66, tTimerSize: 63, tTimerWeight: 200,
   tBarX: 5.3, tBarY: 47.5, tBarW: 89.4, tBarH: 4,
   lCardOn: 0, lCardX: 4, lCardY: 3, lCardW: 92, lCardH: 46, lCardR: 18,
-  lLeadX: 5.3, lLeadY: 5, lLeadSize: 16, lLeadWeight: 400, lLeadAlign: "l",
-  lLabelX: 5.3, lLabelY: 39.5, lLabelSize: 18, lLabelWeight: 400, lLabelAlign: "l",
-  lNumX: 4.5, lNumY: 10, lNumSize: 100, lNumWeight: 400, lNumAlign: "l",
-  lUnitFollow: 1, lUnitX: 50, lUnitY: 30, lUnitGap: 5, lUnitLift: 11, lUnitSize: 22, lUnitWeight: 400,
-  lDateX: 5.3, lDateY: 46, lDateSize: 12, lDateWeight: 400, lDateAlign: "l",
+  lLeadOn: 1, lLeadX: 5.3, lLeadY: 5, lLeadSize: 16, lLeadWeight: 400, lLeadAlign: "l",
+  lLabelOn: 1, lLabelX: 5.3, lLabelY: 39.5, lLabelSize: 18, lLabelWeight: 400, lLabelAlign: "l",
+  lNumOn: 1, lNumX: 4.5, lNumY: 10, lNumSize: 100, lNumWeight: 400, lNumAlign: "l",
+  lUnitOn: 1, lUnitFollow: 1, lUnitX: 50, lUnitY: 30, lUnitGap: 5, lUnitLift: 11, lUnitSize: 22, lUnitWeight: 400,
+  lDateOn: 1, lDateX: 5.3, lDateY: 46, lDateSize: 12, lDateWeight: 400, lDateAlign: "l",
   lTlX: 5.3, lTlY: 53, lTlW: 89.4, lCount: 3, lItemNameSize: 12, lItemNameWeight: 700, lItemDateSize: 11, lItemNumSize: 20, lItemNumWeight: 700, lItemUnitSize: 12, lItemGap: 6, lPanelPadX: 12, lPanelPadY: 8,
   xCardOn: 0, xCardX: 2.5, xCardY: 5, xCardW: 48, xCardH: 90, xCardR: 18,
-  xLeadX: 3.4, xLeadY: 7, xLeadSize: 20, xLeadWeight: 400, xLeadAlign: "l",
-  xLabelX: 3.4, xLabelY: 66, xLabelSize: 22, xLabelWeight: 400, xLabelAlign: "l",
-  xNumX: 3, xNumY: 15, xNumSize: 160, xNumWeight: 400, xNumAlign: "l",
-  xUnitFollow: 1, xUnitX: 40, xUnitY: 50, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
-  xDateX: 3.4, xDateY: 75.5, xDateSize: 14, xDateWeight: 400, xDateAlign: "l",
+  xLeadOn: 1, xLeadX: 3.4, xLeadY: 7, xLeadSize: 20, xLeadWeight: 400, xLeadAlign: "l",
+  xLabelOn: 1, xLabelX: 3.4, xLabelY: 66, xLabelSize: 22, xLabelWeight: 400, xLabelAlign: "l",
+  xNumOn: 1, xNumX: 3, xNumY: 15, xNumSize: 160, xNumWeight: 400, xNumAlign: "l",
+  xUnitOn: 1, xUnitFollow: 1, xUnitX: 40, xUnitY: 50, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
+  xDateOn: 1, xDateX: 3.4, xDateY: 75.5, xDateSize: 14, xDateWeight: 400, xDateAlign: "l",
   xTlX: 56.5, xTlY: 7, xTlW: 42.6, xCount: 6, xItemNameSize: 12, xItemNameWeight: 700, xItemDateSize: 11, xItemNumSize: 20, xItemNumWeight: 700, xItemUnitSize: 12, xItemGap: 6, xPanelPadX: 12, xPanelPadY: 8,
 };
 // ==== DESIGN END ====
@@ -330,6 +330,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
   const X = v => (v / 100) * W, Y = v => (v / 100) * H;
   const p = { small: "s", medium: "m", mediumBar: "t", large: "l", xl: "x" }[fam];
   const P = k => D[p + k];
+  const off = k => P(k + "On") === 0; // ชิ้นที่ปิดไว้ใน Studio (ไฟล์เก่าที่ไม่มีค่านี้ = แสดง)
   const mainColor = S.urgent ? D.red : D.ink;
 
   // พื้นหลัง: เส้นตรงใช้ไล่สีของ iOS, วงกลม/วงรีวาดเป็นวงซ้อนในชั้นภาพนุ่ม (ด้านนอกวงใช้สีสุดท้าย)
@@ -449,17 +450,20 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
   }
 
   function label() {
+    if (off("Label")) return;
     T("label", S.heroName, X(P("LabelX")), Y(P("LabelY")), P("LabelSize") * sc, P("LabelWeight"), D.ink, P("LabelAlign"), "shText");
   }
   function lead() {
-    if (!S.lead || P("LeadSize") === undefined) return;
+    if (!S.lead || P("LeadSize") === undefined || off("Lead")) return;
     T("lead", S.lead, X(P("LeadX")), Y(P("LeadY")), P("LeadSize") * sc, P("LeadWeight"), D.leadColor || D.dateColor, P("LeadAlign"), "shText");
   }
   function date() {
+    if (off("Date")) return;
     T("date", fam === "mediumBar" ? S.heroDateShort : S.heroDate, X(P("DateX")), Y(P("DateY")), P("DateSize") * sc, P("DateWeight"),
       S.heroDateRed ? D.red : D.dateColor, P("DateAlign"), "shText");
   }
   function number() {
+    if (off("Num")) return;
     const x = X(P("NumX")), y = Y(P("NumY")), N = P("NumSize") * sc, wgt = P("NumWeight"), al = P("NumAlign");
     const k = S.st.kind;
     if (k === "prep") {
@@ -468,6 +472,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
       const U = P("UnitSize") * sc, w = G.measure(S.st.text.replace("~", "0"), N, wgt);
       const left = al === "r" ? x - w : al === "c" ? x - w / 2 : x;
       const uy = y + 0.95 * N - 0.95 * U - P("UnitLift") * sc;
+      if (off("Unit")) return;
       return T("unit", S.st.sub, P("UnitFollow") ? left + w + P("UnitGap") * sc : X(P("UnitX")), P("UnitFollow") ? uy : Y(P("UnitY")), U, P("UnitWeight"), D.ink, "l", "shNum");
     }
     if (S.examNow) return T("num", "กำลังสอบ", x, y, N * 0.45, 600, D.red, al, "shNum");
@@ -476,6 +481,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
     const str = String(S.st.days);
     T("num", str, x, y, N, wgt, mainColor, al, "shNum");
     const U = P("UnitSize") * sc;
+    if (off("Unit")) return;
     if (P("UnitFollow")) {
       const w = G.measure(str, N, wgt);
       const left = al === "r" ? x - w : al === "c" ? x - w / 2 : x;
@@ -539,6 +545,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
     G.group("timeline", x, y0, w, total);
   }
   function timer() {
+    if (off("Timer")) return;
     const x = X(P("TimerX")), y = Y(P("TimerY")), size = P("TimerSize") * sc, wgt = P("TimerWeight");
     const k = S.st.kind;
     if (k === "prep") return T("timer", `${S.st.text} ${S.st.sub}`, x, y, size, wgt, D.ink, "l", "shNum");
