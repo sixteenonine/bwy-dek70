@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.8.3";
+module.exports.version = "7.8.4";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -66,9 +66,30 @@ const DESIGN = {
   xUnitOn: 1, xUnitFollow: 1, xUnitX: 40, xUnitY: 50, xUnitGap: 6, xUnitLift: 18, xUnitSize: 28, xUnitWeight: 400,
   xDateOn: 1, xDateX: 3.4, xDateY: 75.5, xDateSize: 14, xDateWeight: 400, xDateAlign: "l",
   xTlX: 56.5, xTlY: 7, xTlW: 42.6, xCount: 6, xItemNameSize: 12, xItemNameWeight: 700, xItemDateSize: 11, xItemNumSize: 20, xItemNumWeight: 700, xItemUnitSize: 12, xItemGap: 6, xPanelPadX: 12, xPanelPadY: 8,
+  txtLead: "อีก", txtLeft: "เหลือ", txtToday: "วันนี้!", txtLast: "วันสุดท้าย!", txtExam: "กำลังสอบ", txtChanged: "เลื่อนวัน!", txtEstimate: "รอประกาศ",
+  sX1On: 0, sX1Text: "", sX1X: 9, sX1Y: 48, sX1Size: 12, sX1Weight: 400, sX1Align: "l", sX1Color: "ink",
+  sX2On: 0, sX2Text: "", sX2X: 9, sX2Y: 56, sX2Size: 12, sX2Weight: 400, sX2Align: "l", sX2Color: "ink",
+  sX3On: 0, sX3Text: "", sX3X: 9, sX3Y: 64, sX3Size: 12, sX3Weight: 400, sX3Align: "l", sX3Color: "ink",
+  mX1On: 0, mX1Text: "", mX1X: 9, mX1Y: 48, mX1Size: 12, mX1Weight: 400, mX1Align: "l", mX1Color: "ink",
+  mX2On: 0, mX2Text: "", mX2X: 9, mX2Y: 56, mX2Size: 12, mX2Weight: 400, mX2Align: "l", mX2Color: "ink",
+  mX3On: 0, mX3Text: "", mX3X: 9, mX3Y: 64, mX3Size: 12, mX3Weight: 400, mX3Align: "l", mX3Color: "ink",
+  tX1On: 0, tX1Text: "", tX1X: 9, tX1Y: 48, tX1Size: 12, tX1Weight: 400, tX1Align: "l", tX1Color: "ink",
+  tX2On: 0, tX2Text: "", tX2X: 9, tX2Y: 56, tX2Size: 12, tX2Weight: 400, tX2Align: "l", tX2Color: "ink",
+  tX3On: 0, tX3Text: "", tX3X: 9, tX3Y: 64, tX3Size: 12, tX3Weight: 400, tX3Align: "l", tX3Color: "ink",
+  lX1On: 0, lX1Text: "", lX1X: 9, lX1Y: 48, lX1Size: 12, lX1Weight: 400, lX1Align: "l", lX1Color: "ink",
+  lX2On: 0, lX2Text: "", lX2X: 9, lX2Y: 56, lX2Size: 12, lX2Weight: 400, lX2Align: "l", lX2Color: "ink",
+  lX3On: 0, lX3Text: "", lX3X: 9, lX3Y: 64, lX3Size: 12, lX3Weight: 400, lX3Align: "l", lX3Color: "ink",
+  xX1On: 0, xX1Text: "", xX1X: 9, xX1Y: 48, xX1Size: 12, xX1Weight: 400, xX1Align: "l", xX1Color: "ink",
+  xX2On: 0, xX2Text: "", xX2X: 9, xX2Y: 56, xX2Size: 12, xX2Weight: 400, xX2Align: "l", xX2Color: "ink",
+  xX3On: 0, xX3Text: "", xX3X: 9, xX3Y: 64, xX3Size: 12, xX3Weight: 400, xX3Align: "l", xX3Color: "ink",
 };
 // ==== DESIGN END ====
 module.exports.DESIGN = DESIGN;
+// ธีมมืด: เก็บเฉพาะค่าที่ต่างจาก DESIGN (null = ยังไม่มีธีมมืด) Studio เขียนก้อนนี้ให้ตอนส่งออก
+// ==== DARK START ====
+const DESIGN_DARK = null;
+// ==== DARK END ====
+module.exports.DESIGN_DARK = DESIGN_DARK;
 
 // ---------- เหตุการณ์ ----------
 // ตารางวันจริงอยู่ที่ events.csv บนเว็บ (แก้ใน GitHub ได้เลย) รายการด้านล่างเป็นชุดสำรองตอนโหลดไม่ได้
@@ -251,6 +272,7 @@ function makeState(nowMs, param, D, list) {
     else t = `${dm(a)}–${dm(b)}`;
     return t;
   }
+  const tx = (k, d) => (typeof D[k] === "string" && D[k] ? D[k] : d);
   const tokens = (param || "").toLowerCase().split(/[\s,]+/).filter(Boolean);
   const up = events.filter(e => e.end >= now);
   // ตัวเลขใหญ่ = เหตุการณ์ "หลัก" ที่ใกล้ที่สุด เหตุการณ์ "รอง" ขึ้นตัวเลขใหญ่เฉพาะวันที่เกิดขึ้นจริง
@@ -306,11 +328,11 @@ function makeState(nowMs, param, D, list) {
     heroDate = `วันที่ ${nth} จาก ${total} · ${nth === total ? "วันสุดท้าย" : "ถึง " + dm(hero.end)}`;
   } else if (hero) heroDate = during ? `ถึง ${dm(hero.end)}` : dateLabel(hero);
   const heroDateShort = examNow ? (daysUntil(hero.end) <= 0 ? "วันสุดท้าย" : `ถึง ${dm(hero.end)}`) : heroDate;
-  if (hero && !prep && isNew(hero)) heroDate += "  เลื่อนวัน!";
+  if (hero && !prep && isNew(hero)) heroDate += "  " + tx("txtChanged", "เลื่อนวัน!");
   // คำนำเหนือตัวเลข: "อีก 62 วัน เปิดสมัคร…" / "เหลือ 6 วัน ปิดสมัคร…"
-  const lead = st.kind === "wait" ? "อีก" : st.kind === "open" && !examNow ? "เหลือ" : "";
+  const lead = st.kind === "wait" ? tx("txtLead", "อีก") : st.kind === "open" && !examNow ? tx("txtLeft", "เหลือ") : "";
   return {
-    now, hero, rest: prep && hero ? up : rest, st, progress, daysUntil, isOpen, isExam, openWord, dateLabel, isNew, showName, lead, examNow, bar: tokens.includes("bar"),
+    now, hero, rest: prep && hero ? up : rest, st, progress, daysUntil, isOpen, isExam, openWord, dateLabel, isNew, showName, lead, examNow, tx, bar: tokens.includes("bar"),
     urgent: st.kind === "open" || st.kind === "today" || st.kind === "last" || (st.kind === "wait" && st.days <= D.urgentDays),
     heroName: prep ? D.prepTitle : showName(hero, during),
     heroDate, heroDateShort,
@@ -472,9 +494,9 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
       if (off("Unit")) return;
       return T("unit", S.st.sub, P("UnitFollow") ? left + w + P("UnitGap") * sc : X(P("UnitX")), P("UnitFollow") ? uy : Y(P("UnitY")), U, P("UnitWeight"), D.ink, "l", "shNum");
     }
-    if (S.examNow) return T("num", "กำลังสอบ", x, y, N * 0.45, 600, D.red, al, "shNum");
-    if (k === "today") return T("num", "วันนี้!", x, y, N * 0.5, 600, D.red, al, "shNum");
-    if (k === "last") return T("num", "วันสุดท้าย!", x, y, N * 0.45, 600, D.red, al, "shNum");
+    if (S.examNow) return T("num", S.tx("txtExam", "กำลังสอบ"), x, y, N * 0.45, 600, D.red, al, "shNum");
+    if (k === "today") return T("num", S.tx("txtToday", "วันนี้!"), x, y, N * 0.5, 600, D.red, al, "shNum");
+    if (k === "last") return T("num", S.tx("txtLast", "วันสุดท้าย!"), x, y, N * 0.45, 600, D.red, al, "shNum");
     const str = String(S.st.days);
     T("num", str, x, y, N, wgt, mainColor, al, "shNum");
     const U = P("UnitSize") * sc;
@@ -504,9 +526,9 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
     const rowH = Math.max(nameS * 1.2 + dateS * 1.2, numS * 1.2);
     function row(e, top) {
       T(null, S.showName(e, false), x + padX, top, nameS, P("ItemNameWeight"), D.ink, "l", "shText");
-      T(null, S.dateLabel(e) + (S.isNew(e) ? "  เลื่อนวัน!" : ""), x + padX, top + nameS * 1.2, dateS, 400, S.isNew(e) ? D.red : D.dateColor, "l", "shText");
+      T(null, S.dateLabel(e) + (S.isNew(e) ? "  " + S.tx("txtChanged", "เลื่อนวัน!") : ""), x + padX, top + nameS * 1.2, dateS, 400, S.isNew(e) ? D.red : D.dateColor, "l", "shText");
       const right = x + w - padX;
-      if (e.estimate) return T(null, "รอประกาศ", right, top + (rowH - numS * 0.9) / 2, numS * 0.6, 400, D.dateColor, "r", "shText");
+      if (e.estimate) return T(null, S.tx("txtEstimate", "รอประกาศ"), right, top + (rowH - numS * 0.9) / 2, numS * 0.6, 400, D.dateColor, "r", "shText");
       if (S.isOpen(e)) {
         T(null, S.openWord(e), right, top + (rowH - numS * 0.9) / 2, numS * 0.75, P("ItemNumWeight"), D.red, "r", "shText");
         return;
@@ -541,13 +563,23 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
     }
     G.group("timeline", x, y0, w, total);
   }
+  // ข้อความที่เพิ่มเองใน Studio (สูงสุด 3 ชิ้นต่อขนาด) ใส่ {days} {name} {date} {lead} ได้
+  function extras() {
+    const col = { ink: D.ink, date: D.dateColor, lead: D.leadColor || D.dateColor, red: D.red };
+    for (let i = 1; i <= 3; i++) {
+      const q = "X" + i;
+      if (!P(q + "On") || !P(q + "Text")) continue;
+      const str = String(P(q + "Text")).replace(/\{days\}/g, S.st.days === undefined ? "" : S.st.days).replace(/\{name\}/g, S.heroName).replace(/\{date\}/g, S.heroDate).replace(/\{lead\}/g, S.lead);
+      T("x" + i, str, X(P(q + "X")), Y(P(q + "Y")), P(q + "Size") * sc, P(q + "Weight"), col[P(q + "Color")] || D.ink, P(q + "Align"), "shText");
+    }
+  }
   function timer() {
     if (off("Timer")) return;
     const x = X(P("TimerX")), y = Y(P("TimerY")), size = P("TimerSize") * sc, wgt = P("TimerWeight");
     const k = S.st.kind;
     if (k === "prep") return T("timer", `${S.st.text} ${S.st.sub}`, x, y, size, wgt, D.ink, "l", "shNum");
     if (!S.st.target || k === "last") {
-      return T("timer", S.examNow ? "กำลังสอบ" : k === "last" ? "วันสุดท้าย!" : "วันนี้!", x, y, size * 0.5, wgt, mainColor, "l", "shNum");
+      return T("timer", S.examNow ? S.tx("txtExam", "กำลังสอบ") : k === "last" ? S.tx("txtLast", "วันสุดท้าย!") : S.tx("txtToday", "วันนี้!"), x, y, size * 0.5, wgt, mainColor, "l", "shNum");
     }
     const left = S.st.target - S.now;
     const days = Math.max(0, Math.floor(left / DAY));
@@ -567,6 +599,7 @@ module.exports.paint = function (G, fam, W, H, nowMs, param, D, list) {
   else if (fam === "medium") { lead(); label(); number(); date(); timeline(); }
   else if (fam === "mediumBar") { label(); date(); timer(); bar(); }
   else { lead(); label(); number(); date(); timeline(); }
+  extras();
   // ชั้นบน (เงามืดด้านใน + ขอบเรืองแสง) ทับขอบ widget
   if (D.wgOn) {
     if (D.wgRim > 0) {
@@ -733,11 +766,25 @@ async function loadEvents() {
   return EVENT_LIST;
 }
 
+// ค่าที่น้องเลือกไว้ในแอป (เก็บในเครื่อง)
+function prefsPath() { const fm = FileManager.local(); return fm.joinPath(fm.joinPath(fm.documentsDirectory(), "bwy-dek70"), "prefs.json"); }
+function readPrefs() { try { const fm = FileManager.local(), p = prefsPath(); return fm.fileExists(p) ? JSON.parse(fm.readString(p)) || {} : {}; } catch (e) { return {}; } }
+function writePrefs(o) { try { const fm = FileManager.local(), dir = fm.joinPath(fm.documentsDirectory(), "bwy-dek70"); if (!fm.fileExists(dir)) fm.createDirectory(dir); fm.writeString(prefsPath(), JSON.stringify(o)); } catch (e) {} }
+function isDarkFor(PARAM) {
+  if (!DESIGN_DARK) return false;
+  const tk = (PARAM || "").toLowerCase().split(/[\s,]+/);
+  if (tk.includes("dark") || tk.includes("มืด")) return true;
+  if (tk.includes("light") || tk.includes("สว่าง")) return false;
+  return readPrefs().theme === "dark";
+}
+const themed = PARAM => (isDarkFor(PARAM) ? Object.assign({}, DESIGN, DESIGN_DARK) : DESIGN);
+module.exports.themed = themed;
+
 function buildPainted(fam, PARAM, list) {
   // โหมดทดสอบ (พิมพ์ใน Parameter): noimg = ไม่วาดภาพ, s1 = ภาพความละเอียดต่ำ, nofx = ปิดเอฟเฟกต์ทั้งหมด, info = โชว์ข้อมูลขนาด
   const tk = (PARAM || "").toLowerCase().split(/[\s,]+/);
-  let D = DESIGN;
-  if (tk.includes("nofx")) D = Object.assign({}, DESIGN, { wgOn: 0, panelGlass: 0, barGlass: 0, bgGrad: 0, panelGrad: 0, shNumOn: 0, shTextOn: 0, shPanelOn: 0, shBarOn: 0 });
+  let D = themed(PARAM);
+  if (tk.includes("nofx")) D = Object.assign({}, D, { wgOn: 0, panelGlass: 0, barGlass: 0, bgGrad: 0, panelGrad: 0, shNumOn: 0, shTextOn: 0, shPanelOn: 0, shBarOn: 0 });
   const [W, H] = widgetSize(fam);
   const t0 = Date.now();
   const G = scriptableG(W, H, D, tk.includes("s1") ? 1 : 0);
@@ -928,9 +975,20 @@ module.exports.runInApp = async function (info) {
   a.title = "🐻 Dek70 Countdown";
   a.message = "เลือกแบบเพื่อดูตัวอย่าง\n\nMedium แบบนับวินาที: กดค้างที่ widget > Edit Widget > ช่อง Parameter พิมพ์ bar\nอยากล็อกที่วันสอบ: พิมพ์ tgat หรือ alevel (ใช้คู่กันได้ เช่น tgat bar)";
   opts.forEach(o => a.addAction(o[0]));
+  const dark = readPrefs().theme === "dark";
+  if (DESIGN_DARK) a.addAction(dark ? "☀️ เปลี่ยนเป็นธีมสว่าง" : "🌙 เปลี่ยนเป็นธีมมืด");
   a.addCancelAction("ปิด");
   const i = await a.presentSheet();
   if (i === -1) return;
+  if (DESIGN_DARK && i === opts.length) {
+    writePrefs(Object.assign(readPrefs(), { theme: dark ? "light" : "dark" }));
+    const ok = new Alert();
+    ok.title = dark ? "☀️ ธีมสว่าง" : "🌙 ธีมมืด";
+    ok.message = "บันทึกแล้ว widget บนหน้าจอโฮมจะเปลี่ยนเองภายใน ~1 ชม.\n\nอยากให้ widget ตัวไหนใช้ธีมต่างจากนี้ พิมพ์ dark หรือ light ในช่อง Parameter ของตัวนั้น";
+    ok.addAction("โอเค");
+    await ok.presentAlert();
+    return;
+  }
   const [, fam, prm] = opts[i];
   const w = await module.exports.build(fam, prm, info);
   if (fam === "small") await w.presentSmall();

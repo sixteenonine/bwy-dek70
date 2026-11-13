@@ -48,7 +48,7 @@ const sod = t => { const d = new RD(t); d.setHours(0, 0, 0, 0); return d.getTime
 const from = sod(first - 130 * DAY), to = sod(last + 30 * DAY);
 const FAMS = ["small", "medium", "large", "extraLarge", "accessoryInline", "accessoryCircular", "accessoryRectangular"];
 const keyParams = events.filter(e => !e.minor).map(e => e.key);
-const PARAMS = ["", "bar", ...keyParams, ...keyParams.slice(0, 2).map(k => k + " bar"), "info", "nofx", "s1"];
+const PARAMS = ["", "bar", "dark", "light bar", ...keyParams, ...keyParams.slice(0, 2).map(k => k + " bar"), "info", "nofx", "s1"];
 const DEVICES = [[[393, 852, 3], false], [[820, 1180, 2], true], [[320, 568, 2], false]];
 const BAD = /undefined|NaN|null|\[object|Infinity/;
 let builds = 0;
