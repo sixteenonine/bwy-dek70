@@ -8,7 +8,7 @@ module.exports.version = "7.8.5";
 
 // ==== DESIGN START ====
 const DESIGN = {
-  bg: "#D6D6D6", ink: "#000000", dateColor: "#000000", leadColor: "#8A8A8E", red: "#E5484D", panel: "#F2F2F2",
+  bg: "#D6D6D6", ink: "#000000", dateColor: "#000000", leadColor: "#8A8A8E", red: "#E22400", panel: "#F2F2F2",
   panelRadius: 14, line: "#FFFFFF", track: "#C2C2C2", urgentDays: 14, itemUrgentDays: 7, bgGrad: 1,
   bgN: 4, bg2: "#FFFFFF", bg3: "#FFFFFF", bg4: "#D6D6D6", bgAngle: 90, bgPos: 2,
   bgSize: 122, bgIntensity: 52, bgShape: "linear", bgCX: 52, bgCY: 37, bgR: 49,
@@ -36,7 +36,7 @@ const DESIGN = {
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
   sLeadOn: 1, sLeadX: 9, sLeadY: 9, sLeadSize: 18, sLeadWeight: 400, sLeadAlign: "l",
   sLabelOn: 1, sLabelX: 9, sLabelY: 60, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
-  sNumOn: 1, sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 200, sNumAlign: "l",
+  sNumOn: 1, sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 900, sNumAlign: "l",
   sUnitOn: 1, sUnitFollow: 1, sUnitX: 60, sUnitY: 40, sUnitGap: 6, sUnitLift: 6, sUnitSize: 18, sUnitWeight: 400,
   sDateOn: 0, sDateX: 9, sDateY: 72, sDateSize: 11.5, sDateWeight: 400, sDateAlign: "l",
   sBarX: 9, sBarY: 87, sBarW: 82, sBarH: 4,
@@ -92,7 +92,6 @@ const DESIGN_DARK = {
  "bg": "#2C2C2F",
  "ink": "#D8D8DD",
  "dateColor": "#8E8E95",
- "red": "#E22400",
  "panel": "#1F1F22",
  "line": "#3A3A3E",
  "track": "#3A3A3E",
