@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.8.6";
+module.exports.version = "7.8.7";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -34,7 +34,7 @@ const DESIGN = {
   emNum: [[0.582, 0.39, 0.557, 0.558, 0.575, 0.571, 0.579, 0.529, 0.58, 0.579], [0.59, 0.408, 0.56, 0.569, 0.585, 0.576, 0.592, 0.535, 0.586, 0.592], [0.598, 0.426, 0.563, 0.581, 0.595, 0.58, 0.605, 0.541, 0.593, 0.605], [0.606, 0.443, 0.566, 0.592, 0.604, 0.585, 0.617, 0.547, 0.6, 0.617], [0.623, 0.456, 0.578, 0.604, 0.619, 0.598, 0.629, 0.555, 0.616, 0.629], [0.639, 0.468, 0.591, 0.617, 0.633, 0.612, 0.64, 0.564, 0.632, 0.64], [0.656, 0.48, 0.603, 0.63, 0.647, 0.625, 0.652, 0.572, 0.649, 0.652], [0.672, 0.492, 0.615, 0.642, 0.662, 0.638, 0.664, 0.58, 0.665, 0.664], [0.689, 0.504, 0.628, 0.655, 0.676, 0.652, 0.675, 0.589, 0.682, 0.675]],
   emWan: [1.106, 1.106, 1.106, 1.133, 1.132, 1.131, 1.13, 1.13, 1.13],
   sCardOn: 0, sCardX: 5, sCardY: 5, sCardW: 90, sCardH: 65, sCardR: 18,
-  sLeadOn: 1, sLeadX: 9, sLeadY: 9, sLeadSize: 13, sLeadWeight: 400, sLeadAlign: "l",
+  sLeadOn: 1, sLeadX: 9, sLeadY: 9, sLeadSize: 18, sLeadWeight: 400, sLeadAlign: "l",
   sLabelOn: 1, sLabelX: 9, sLabelY: 60, sLabelSize: 14, sLabelWeight: 400, sLabelAlign: "l",
   sNumOn: 1, sNumX: 8, sNumY: 20, sNumSize: 54, sNumWeight: 700, sNumAlign: "l",
   sUnitOn: 1, sUnitFollow: 1, sUnitX: 56.5, sUnitY: 38, sUnitGap: 6, sUnitLift: 1, sUnitSize: 18, sUnitWeight: 400,
@@ -121,7 +121,6 @@ const DESIGN_DARK = {
  "glassSheen": 0,
  "glassSheenSize": 2,
  "glassRim": 0,
- "sLeadSize": 18,
  "sUnitY": 41,
  "sDateY": 72.5,
  "tLabelSize": 22,
