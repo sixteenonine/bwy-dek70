@@ -34,8 +34,8 @@
   .step ol.do { margin: 10px 0 0; padding-left: 1.3em; color: var(--sub); }
   .step ol.do li { padding-left: 2px; }
   b.key { color: var(--ink); font-weight: 700; }
-  .shot { margin: 14px auto 0; width: min(100%, 270px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; position: relative; }
-  .shot video { display: block; width: 100%; height: auto; aspect-ratio: 414 / 851; }
+  .shot { margin: 14px auto 0; width: min(100%, 300px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; position: relative; }
+  .shot video { display: block; width: 100%; height: auto; }
   .shot.wait { aspect-ratio: 414 / 520; background: var(--soft); border: 2px dashed var(--line); display: grid; place-items: center; text-align: center; color: var(--sub); font-weight: 700; }
   .shot.wait small { font-weight: 400; }
   .check { margin: 14px 0 0 !important; padding: 9px 12px; border-radius: 12px; background: var(--ok-bg); color: var(--ink) !important; font-size: .95rem; }
@@ -53,7 +53,7 @@
 </head>
 <body>
 <main>
-  <div class="preview"><b>หน้าตัวอย่าง</b> ยังไม่ใช่หน้าจริง ขั้นที่ยังไม่มีคลิปจะขึ้นกรอบ "รอคลิป"</div>
+  <div class="preview"><b>หน้าตัวอย่าง</b> ยังไม่ใช่หน้าจริง หน้าติดตั้งจริงยังเป็นตัวเดิม</div>
   <h1>🐻 ติดตั้ง Dek70 Countdown</h1>
   <p class="lead">ทำตามทีละขั้น ดูภาพแล้วกดตาม</p>
   <ul class="need" aria-label="ก่อนเริ่ม">
@@ -66,7 +66,7 @@
     <li class="step">
       <div class="head"><span class="n">1</span><h2>โหลดแอป Scriptable</h2></div>
       <p>แอปฟรีจาก App Store</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
-      <figure class="shot wait"><div>รอคลิป<br><small>หน้า App Store ของ Scriptable</small></div></figure>
+      
       <p class="check"><b>ต้องเห็น</b> ไอคอน Scriptable อยู่บนเครื่อง</p>
     </li>
     <li class="step">
@@ -78,31 +78,37 @@
     <li class="step">
       <div class="head"><span class="n">3</span><h2>เปิด Scriptable แล้วกด +</h2></div>
       <p>ปุ่ม <b class="key">+</b> อยู่มุมขวาบน</p>
-      <figure class="shot"><video muted loop playsinline preload="none" poster="guide/s3.jpg" aria-label="กดปุ่มบวกมุมขวาบนของ Scriptable"><source src="guide/s3.mp4" type="video/mp4"></video></figure>
+      <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s3.jpg" aria-label="กดปุ่มบวกมุมขวาบนของ Scriptable"><source src="guide/s3.mp4" type="video/mp4"></video></figure>
       <p class="check"><b>ต้องเห็น</b> หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script</p>
     </li>
     <li class="step">
       <div class="head"><span class="n">4</span><h2>แตะค้าง แล้วกด Paste</h2></div>
       <p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด <b class="key">Paste</b></p>
-      <figure class="shot"><video muted loop playsinline preload="none" poster="guide/s4.jpg" aria-label="แตะค้างที่หน้าว่างแล้วกด Paste"><source src="guide/s4.mp4" type="video/mp4"></video></figure>
+      <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s4.jpg" aria-label="แตะค้างที่หน้าว่างแล้วกด Paste"><source src="guide/s4.mp4" type="video/mp4"></video></figure>
       <p class="check"><b>ต้องเห็น</b> โค้ดขึ้นเต็มหน้า</p>
     </li>
     <li class="step">
       <div class="head"><span class="n">5</span><h2>ตั้งชื่อว่า Dek70</h2></div>
       <ol class="do"><li>แตะชื่อ <b class="key">Untitled Script</b> ด้านบน</li><li>ลบชื่อเดิม พิมพ์ <b class="key">Dek70</b></li><li>กด <b class="key">Rename</b></li><li>กด <b class="key">Done</b> มุมซ้ายบน</li></ol>
-      <figure class="shot"><video muted loop playsinline preload="none" poster="guide/s5.jpg" aria-label="แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"><source src="guide/s5.mp4" type="video/mp4"></video></figure>
+      <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s5.jpg" aria-label="แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"><source src="guide/s5.mp4" type="video/mp4"></video></figure>
       <p class="check"><b>ต้องเห็น</b> การ์ดชื่อ Dek70 อยู่ในรายการ</p>
     </li>
     <li class="step">
-      <div class="head"><span class="n">6</span><h2>เพิ่ม Widget บนหน้าจอโฮม</h2></div>
-      <p>กดค้างที่หน้าจอโฮม แล้วเพิ่ม Widget ของ <b class="key">Scriptable</b> ขนาด Small หรือ Medium</p>
-      <figure class="shot wait"><div>รอคลิป<br><small>กดค้างหน้าจอโฮม → เพิ่ม Widget → Scriptable</small></div></figure>
-      <p class="check"><b>ต้องเห็น</b> กล่อง Scriptable ว่างๆ อยู่บนหน้าจอโฮม</p>
+      <div class="head"><span class="n">6</span><h2>กดค้างที่หน้าจอโฮม แล้วกด Add Widget</h2></div>
+      <ol class="do"><li>กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น</li><li>กด <b class="key">Edit</b> มุมซ้ายบน</li><li>กด <b class="key">Add Widget</b></li></ol>
+      <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอโฮม กด Edit แล้วกด Add Widget"><source src="guide/s6.mp4" type="video/mp4"></video></figure>
+      <p class="check"><b>ต้องเห็น</b> หน้ารวม Widget มีช่อง Search Widgets ด้านบน</p>
     </li>
     <li class="step">
-      <div class="head"><span class="n">7</span><h2>เลือกสคริปต์ Dek70</h2></div>
-      <p>กดค้างที่กล่องนั้น กด <b class="key">Edit Widget</b> แล้วเลือก <b class="key">Dek70</b> ในช่อง Script</p>
-      <figure class="shot wait"><div>รอคลิป<br><small>กดค้างที่ Widget → Edit Widget → Script</small></div></figure>
+      <div class="head"><span class="n">7</span><h2>ค้นหา Scriptable แล้วกด Add Widget</h2></div>
+      <ol class="do"><li>พิมพ์ <b class="key">Scriptable</b> ในช่องค้นหา แล้วแตะชื่อแอป</li><li>ปัดซ้ายถ้าอยากได้ขนาด Medium</li><li>กด <b class="key">Add Widget</b></li><li>กด <b class="key">Done</b> มุมขวาบน</li></ol>
+      <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s7.jpg" aria-label="ค้นหา Scriptable แตะชื่อแอป กด Add Widget แล้วกด Done"><source src="guide/s7.mp4" type="video/mp4"></video></figure>
+      <p class="check"><b>ต้องเห็น</b> กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">8</span><h2>เลือกสคริปต์ Dek70</h2></div>
+      <ol class="do"><li>กดค้างที่กล่องนั้น แล้วกด <b class="key">Edit Widget</b></li><li>แตะ <b class="key">Choose</b> ที่แถว Script</li><li>เลือก <b class="key">Dek70</b></li><li>แตะที่ว่างนอกกล่องเพื่อปิด</li></ol>
+      <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s8.jpg" aria-label="กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"><source src="guide/s8.mp4" type="video/mp4"></video></figure>
       <p class="check"><b>ต้องเห็น</b> Widget นับถอยหลังขึ้นแล้ว</p>
     </li>
     <li class="step end"><h2>เสร็จแล้ว 🎉</h2><p>Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p></li>
