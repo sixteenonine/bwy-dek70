@@ -56,8 +56,9 @@ const screens = [
   </section>`,
   `<section class="screen step" id="s${N + 2}" data-i="${N + 2}" aria-labelledby="ht">
     <div class="head"><span class="num" aria-hidden="true">🎨</span><div><p class="count">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
-    ${list([`เปิดแอป ${k("Scriptable")} แล้วแตะ ${k("Dek70")}`, `กด ${k("🌙 เปลี่ยนเป็นธีมมืด")} (กดอีกครั้งเพื่อกลับเป็นธีมสว่าง)`, "รอ Widget เปลี่ยนเอง ภายในประมาณ 1 ชั่วโมง"])}
-    <figure class="shot wait"><div>รอคลิป<br><small>เปลี่ยนธีมในแอป Scriptable</small></div></figure>
+    ${list([`เปิดแอป ${k("Scriptable")} แล้วแตะ ${k("Dek70")}`, `กด ${k("🌙 เปลี่ยนเป็นธีมมืด")}`, `กด ${k("โอเค")}`, "กลับหน้าจอโฮม รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)"])}
+    <p>อยากกลับเป็นธีมสว่าง ทำซ้ำแล้วกด ${k("☀️ เปลี่ยนเป็นธีมสว่าง")}</p>
+    ${clip("theme", "แตะไอคอน Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอโฮมเปลี่ยนเป็นสีมืด")}
     <p class="check"><b>อยากให้บางตัวเป็นธีมมืด</b> กดค้างที่ Widget ตัวนั้น กด ${k("Edit Widget")} แล้วพิมพ์ ${k("dark")} ในช่อง Parameter</p>
   </section>`,
 ];
@@ -94,8 +95,8 @@ const html = `<!DOCTYPE html>
   .done-h { font-size: 1.75rem; margin-bottom: 6px; }
   .lead { color: var(--sub); margin: 0 0 18px; }
   .head { display: flex; align-items: center; gap: 14px; }
-  .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFC233; color: #1A1A1A; display: grid; place-items: center;
-    font-size: 2.1rem; font-weight: 800; line-height: 1; box-shadow: 0 4px 14px rgba(255, 170, 0, .35); }
+  .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFFFFF; color: #1A1A1A; display: grid; place-items: center;
+    font-size: 2.1rem; font-weight: 800; line-height: 1; box-shadow: 0 2px 10px rgba(0, 0, 0, .12); }
   .count { margin: 0 0 2px; color: var(--sub); font-weight: 700; font-size: .95rem; }
   .btn.small { min-height: 44px; margin-top: 10px; font-size: .95rem; }
   pre.code { margin: 10px 0 0; max-height: 40vh; overflow: auto; padding: 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line);
