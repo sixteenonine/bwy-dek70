@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>วิธีติดตั้ง Dek70 Countdown (หน้าตัวอย่าง)</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
+<style>
+  :root {
+    --bg: #ECECEC; --card: #FFFFFF; --ink: #000000; --sub: #5F5F64; --line: #DADADA; --soft: #F2F2F2; --ok: #1F7A3A; --ok-bg: #E6F4EA; --warn-bg: #FFF4E5; --warn-ink: #8A5300;
+    box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0F0F11; --card: #1C1C1E; --ink: #F5F5F7; --sub: #A1A1A6; --line: #2C2C2E; --soft: #2C2C2E; --ok: #7DDA98; --ok-bg: #13301D; --warn-bg: #3A2A10; --warn-ink: #FFCF8A; }
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--ink); line-height: 1.55; -webkit-font-smoothing: antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
+  main { max-width: 480px; margin: 0 auto; padding: 24px 16px 56px; }
+  .preview { background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 10px 14px; font-size: .9rem; margin-bottom: 20px; }
+  h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 6px; }
+  .lead { color: var(--sub); margin: 0 0 18px; }
+  .need { list-style: none; margin: 0 0 28px; padding: 14px 16px; background: var(--card); border-radius: 16px; display: grid; gap: 6px; font-size: .95rem; }
+  .need li::before { content: "✓"; color: var(--ok); font-weight: 700; margin-right: 10px; }
+  .need li.no::before { content: "✕"; color: var(--sub); }
+  ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  .step { background: var(--card); border-radius: 20px; padding: 18px 16px 16px; }
+  .head { display: flex; align-items: center; gap: 12px; }
+  .n { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; font-weight: 700; font-size: 1.15rem; }
+  h2 { font-size: 1.2rem; line-height: 1.3; margin: 0; }
+  .step > p { margin: 10px 0 0; color: var(--sub); }
+  .step ol.do { margin: 10px 0 0; padding-left: 1.3em; color: var(--sub); }
+  .step ol.do li { padding-left: 2px; }
+  b.key { color: var(--ink); font-weight: 700; }
+  .shot { margin: 14px auto 0; width: min(100%, 270px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; position: relative; }
+  .shot video { display: block; width: 100%; height: auto; aspect-ratio: 414 / 851; }
+  .shot.wait { aspect-ratio: 414 / 520; background: var(--soft); border: 2px dashed var(--line); display: grid; place-items: center; text-align: center; color: var(--sub); font-weight: 700; }
+  .shot.wait small { font-weight: 400; }
+  .check { margin: 14px 0 0 !important; padding: 9px 12px; border-radius: 12px; background: var(--ok-bg); color: var(--ink) !important; font-size: .95rem; }
+  .check b { color: var(--ok); margin-right: 6px; }
+  .btn { display: flex; align-items: center; justify-content: center; min-height: 52px; margin-top: 14px; padding: 0 20px; border-radius: 14px; width: 100%;
+    font: 700 1.05rem inherit; font-family: inherit; text-decoration: none; cursor: pointer; background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.done { background: #2E7D32; border-color: #2E7D32; color: #fff; }
+  .btn:focus-visible { outline: 3px solid #E5484D; outline-offset: 3px; }
+  textarea.fallback { width: 100%; height: 160px; margin-top: 10px; font-size: 12px; display: none; }
+  .end { text-align: center; padding: 22px 16px; }
+  .end h2 { font-size: 1.4rem; }
+  footer { text-align: center; color: var(--sub); font-size: .9rem; margin-top: 28px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="preview"><b>หน้าตัวอย่าง</b> ยังไม่ใช่หน้าจริง ขั้นที่ยังไม่มีคลิปจะขึ้นกรอบ "รอคลิป"</div>
+  <h1>🐻 ติดตั้ง Dek70 Countdown</h1>
+  <p class="lead">ทำตามทีละขั้น ดูภาพแล้วกดตาม</p>
+  <ul class="need" aria-label="ก่อนเริ่ม">
+    <li>iPhone หรือ iPad</li>
+    <li>ต่อเน็ตอยู่</li>
+    <li>ใช้เวลาประมาณ 2 นาที</li>
+    <li class="no">Android ยังใช้ไม่ได้</li>
+  </ul>
+  <ol class="steps">
+    <li class="step">
+      <div class="head"><span class="n">1</span><h2>โหลดแอป Scriptable</h2></div>
+      <p>แอปฟรีจาก App Store</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
+      <figure class="shot wait"><div>รอคลิป<br><small>หน้า App Store ของ Scriptable</small></div></figure>
+      <p class="check"><b>ต้องเห็น</b> ไอคอน Scriptable อยู่บนเครื่อง</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">2</span><h2>ก๊อปโค้ด</h2></div>
+      <p>กดปุ่มนี้ครั้งเดียว</p><button class="btn" id="copy" type="button">ก๊อปโค้ด</button><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
+      
+      <p class="check"><b>ต้องเห็น</b> ปุ่มเปลี่ยนเป็น “ก๊อปแล้ว ✓”</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">3</span><h2>เปิด Scriptable แล้วกด +</h2></div>
+      <p>ปุ่ม <b class="key">+</b> อยู่มุมขวาบน</p>
+      <figure class="shot"><video muted loop playsinline preload="none" poster="guide/s3.jpg" aria-label="กดปุ่มบวกมุมขวาบนของ Scriptable"><source src="guide/s3.mp4" type="video/mp4"></video></figure>
+      <p class="check"><b>ต้องเห็น</b> หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">4</span><h2>แตะค้าง แล้วกด Paste</h2></div>
+      <p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด <b class="key">Paste</b></p>
+      <figure class="shot"><video muted loop playsinline preload="none" poster="guide/s4.jpg" aria-label="แตะค้างที่หน้าว่างแล้วกด Paste"><source src="guide/s4.mp4" type="video/mp4"></video></figure>
+      <p class="check"><b>ต้องเห็น</b> โค้ดขึ้นเต็มหน้า</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">5</span><h2>ตั้งชื่อว่า Dek70</h2></div>
+      <ol class="do"><li>แตะชื่อ <b class="key">Untitled Script</b> ด้านบน</li><li>ลบชื่อเดิม พิมพ์ <b class="key">Dek70</b></li><li>กด <b class="key">Rename</b></li><li>กด <b class="key">Done</b> มุมซ้ายบน</li></ol>
+      <figure class="shot"><video muted loop playsinline preload="none" poster="guide/s5.jpg" aria-label="แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"><source src="guide/s5.mp4" type="video/mp4"></video></figure>
+      <p class="check"><b>ต้องเห็น</b> การ์ดชื่อ Dek70 อยู่ในรายการ</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">6</span><h2>เพิ่ม Widget บนหน้าจอโฮม</h2></div>
+      <p>กดค้างที่หน้าจอโฮม แล้วเพิ่ม Widget ของ <b class="key">Scriptable</b> ขนาด Small หรือ Medium</p>
+      <figure class="shot wait"><div>รอคลิป<br><small>กดค้างหน้าจอโฮม → เพิ่ม Widget → Scriptable</small></div></figure>
+      <p class="check"><b>ต้องเห็น</b> กล่อง Scriptable ว่างๆ อยู่บนหน้าจอโฮม</p>
+    </li>
+    <li class="step">
+      <div class="head"><span class="n">7</span><h2>เลือกสคริปต์ Dek70</h2></div>
+      <p>กดค้างที่กล่องนั้น กด <b class="key">Edit Widget</b> แล้วเลือก <b class="key">Dek70</b> ในช่อง Script</p>
+      <figure class="shot wait"><div>รอคลิป<br><small>กดค้างที่ Widget → Edit Widget → Script</small></div></figure>
+      <p class="check"><b>ต้องเห็น</b> Widget นับถอยหลังขึ้นแล้ว</p>
+    </li>
+    <li class="step end"><h2>เสร็จแล้ว 🎉</h2><p>Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p></li>
+  </ol>
+  <footer>BearWithYou · @WeBearTogether</footer>
+</main>
+<script type="text/plain" id="loader">// 🐻 Countdown Widget by BearWithYou (@WeBearTogether)
+// ติดตั้งครั้งเดียว อัปเดตอัตโนมัติ ไม่ต้องแก้อะไรในนี้
+const SOURCE = "https://bwy-widget.pages.dev/widget.js";
+const INFO = { loader: 3 };
+
+const fm = FileManager.local();
+const dir = fm.joinPath(fm.documentsDirectory(), "bwy-widget");
+if (!fm.fileExists(dir)) fm.createDirectory(dir);
+const LATEST = fm.joinPath(dir, "latest.js");
+const GOOD = fm.joinPath(dir, "good.js");
+
+// โหลดเวอร์ชันล่าสุด ถ้าไม่มีเน็ตจะใช้ตัวที่เก็บไว้ในเครื่อง
+try {
+  const req = new Request(SOURCE + "?t=" + Date.now());
+  req.timeoutInterval = 8;
+  const code = await req.loadString();
+  if (req.response.statusCode === 200 && code.indexOf("module.exports") !== -1) {
+    fm.writeString(LATEST, code);
+  }
+} catch (e) {}
+
+// ลองเวอร์ชันล่าสุดก่อน ถ้า error ถอยไปใช้เวอร์ชันที่เคยใช้ได้
+async function attempt(fn) {
+  for (const p of [LATEST, GOOD]) {
+    try {
+      if (!fm.fileExists(p)) continue;
+      const result = await fn(importModule(p));
+      if (p === LATEST) fm.writeString(GOOD, fm.readString(LATEST));
+      return result;
+    } catch (e) {}
+  }
+  return null;
+}
+
+function fallback() {
+  const w = new ListWidget();
+  w.addText("🐻 ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ");
+  return w;
+}
+
+if (config.runsInWidget) {
+  const w = await attempt(m => m.build(config.widgetFamily, args.widgetParameter || "", INFO));
+  Script.setWidget(w || fallback());
+} else {
+  const ok = await attempt(async m => { await m.runInApp(INFO); return true; });
+  if (!ok) await fallback().presentSmall();
+}
+Script.complete();
+</script>
+<script>
+(() => {
+  const code = document.getElementById("loader").textContent;
+  const btn = document.getElementById("copy"), ta = document.getElementById("fallback");
+  btn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(code); btn.textContent = "ก๊อปแล้ว ✓"; btn.classList.add("done"); }
+    catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); btn.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
+  });
+  // คลิปเล่นเองเฉพาะตอนอยู่บนจอ (ประหยัดเน็ต) แตะที่คลิปเพื่อหยุด/เล่น
+  const vids = [...document.querySelectorAll(".shot video")];
+  const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (still) vids.forEach(v => { v.controls = true; });
+  else if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.play().catch(() => { e.target.controls = true; }); else e.target.pause(); }), { threshold: 0.5 });
+    vids.forEach(v => io.observe(v));
+  }
+  vids.forEach(v => v.addEventListener("click", () => { if (v.paused) v.play().catch(() => {}); else v.pause(); }));
+})();
+</script>
+</body>
+</html>
