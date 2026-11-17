@@ -43,16 +43,39 @@
   .check { margin: 16px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--ok-bg); }
   .check b { color: var(--ok); margin-right: 6px; }
   .btn { display: flex; align-items: center; justify-content: center; min-height: 52px; margin-top: 16px; padding: 0 20px; border-radius: 14px; width: 100%;
-    font: 700 1.05rem inherit; font-family: inherit; text-decoration: none; cursor: pointer; background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink); }
+    font-family: inherit; font-weight: 700; font-size: 1.05rem; text-decoration: none; cursor: pointer; background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink); }
   .btn.ghost { background: transparent; color: var(--ink); }
   .btn.done { background: #2E7D32; border-color: #2E7D32; color: #fff; }
   .btn:focus-visible, .nav button:focus-visible { outline: 3px solid #E5484D; outline-offset: 3px; }
+  .copywrap { position: relative; }
+  .btn.copy { gap: 8px; font-size: 1.2rem; letter-spacing: .02em; }
+  .btn.copy .tick { width: 0; height: 24px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; stroke-dashoffset: 22; }
+  .btn.copy.done { background: #2E7D32; border-color: #2E7D32; color: #fff; }
+  .btn.copy.done .tick { width: 24px; stroke-dashoffset: 0; }
+  .copied { margin: 12px 0 0 !important; text-align: center; font-weight: 700; color: var(--ok) !important; }
+  .burst { position: absolute; left: 50%; top: 42px; width: 0; height: 0; pointer-events: none; }
+  .burst i { position: absolute; left: 0; top: 0; font-style: normal; font-size: 22px; line-height: 1; opacity: 0; transform: translate(-50%, -50%); }
+  .burst i.dot { width: 9px; height: 9px; border-radius: 50%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn.copy .tick { transition: width .2s, stroke-dashoffset .35s .15s ease-out; }
+    .btn.copy { transition: background .2s, border-color .2s, transform .1s; }
+    .btn.copy:active { transform: scale(.96); }
+    .btn.copy.pop { animation: pop .5s cubic-bezier(.2, 1.7, .4, 1); }
+    .burst i { animation: fly .9s cubic-bezier(.15, .7, .3, 1) forwards; }
+    .copied:not([hidden]) { animation: rise .4s ease-out; }
+    #next.nudge { animation: nudge 1.2s ease-in-out 2; }
+  }
+  @keyframes pop { 0% { transform: scale(1); } 30% { transform: scale(.9); } 100% { transform: scale(1); } }
+  @keyframes fly { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.4); }
+    70% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1) rotate(var(--r)); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(46, 125, 50, .35); } }
   textarea.fallback { width: 100%; height: 160px; margin-top: 10px; font-size: 12px; display: none; }
   /* แถบปุ่มล่างจอ */
   .nav { position: fixed; left: 0; right: 0; bottom: 0; background: var(--bar); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
     border-top: 1px solid var(--line); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
   .nav div { max-width: 480px; margin: 0 auto; display: flex; gap: 10px; }
-  .nav button { min-height: 54px; border-radius: 14px; font: 700 1.1rem inherit; font-family: inherit; cursor: pointer; border: 1.5px solid var(--ink); }
+  .nav button { min-height: 54px; border-radius: 14px; font-family: inherit; font-weight: 700; font-size: 1.1rem; cursor: pointer; border: 1.5px solid var(--ink); }
   #back { flex: 0 0 34%; background: transparent; color: var(--ink); }
   #next { flex: 1; background: var(--ink); color: var(--bg); }
   #back[hidden] { display: none; }
@@ -88,9 +111,9 @@
   <section class="screen step" id="s2" data-i="2" aria-labelledby="h2">
     <p class="count">ขั้นที่ 2 จาก 8</p>
     <h2 id="h2">ก๊อปโค้ด</h2>
-    <p>กดปุ่มนี้ครั้งเดียว</p><button class="btn" id="copy" type="button">ก๊อปโค้ด</button><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
+    <p>กดปุ่มนี้ครั้งเดียว</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 โค้ดอยู่ในเครื่องแล้ว กด ถัดไป ได้เลย</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
     
-    <p class="check"><b>ต้องเห็น</b> ปุ่มเปลี่ยนเป็น “ก๊อปแล้ว ✓”</p>
+    <p class="check"><b>ต้องเห็น</b> ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!</p>
   </section>
   <section class="screen step" id="s3" data-i="3" aria-labelledby="h3">
     <p class="count">ขั้นที่ 3 จาก 8</p>
@@ -195,9 +218,27 @@ Script.complete();
 (() => {
   const code = document.getElementById("loader").textContent;
   const copy = document.getElementById("copy"), ta = document.getElementById("fallback");
+  const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), copied = document.getElementById("copied");
+  const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const BITS = ["🐻", "✨", "💛", "⭐", "✨", "🐻"], COLORS = ["#FFC94D", "#FF8FB1", "#7DDA98", "#6FB6FF", "#E5484D"];
+  function party() {
+    if (calm) return;
+    burst.textContent = "";
+    for (let n = 0; n < 18; n++) {
+      const el = document.createElement("i"), a = Math.PI * 2 * n / 18 + Math.random() * .3, d = 70 + Math.random() * 70;
+      if (n % 3 === 0) el.textContent = BITS[(n / 3) % BITS.length]; else { el.className = "dot"; el.style.background = COLORS[n % COLORS.length]; }
+      el.style.setProperty("--x", Math.cos(a) * d * 1.6 + "px"); el.style.setProperty("--y", Math.sin(a) * d - 20 + "px");
+      el.style.setProperty("--r", (Math.random() * 120 - 60) + "deg"); el.style.animationDelay = Math.random() * 60 + "ms";
+      burst.appendChild(el);
+    }
+    copy.classList.remove("pop"); void copy.offsetWidth; copy.classList.add("pop");
+    const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
+  }
   copy.addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(code); copy.textContent = "ก๊อปแล้ว ✓"; copy.classList.add("done"); }
-    catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); copy.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
+    try {
+      await navigator.clipboard.writeText(code);
+      lbl.textContent = "Copied!"; copy.classList.add("done"); copied.hidden = false; party();
+    } catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); lbl.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
   });
 
   const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, STEPS = LAST - 1;

@@ -22,7 +22,7 @@ for (const name of only) {
   });
   f += `${cur}crop=iw:ih-${c.top}:0:${c.top},split=${c.parts.length + 1}${c.parts.map((_, i) => `[p${i}]`).join("")}[ps];`;
   c.parts.forEach(([a, b, sp], i) => { f += `[p${i}]trim=${a}:${b},setpts=(PTS-STARTPTS)/${sp}[t${i}];`; });
-  f += `${c.parts.map((_, i) => `[t${i}]`).join("")}concat=n=${c.parts.length}:v=1,fps=30,tpad=stop_mode=clone:stop_duration=1.2,format=yuv420p[v];`;
+  f += `${c.parts.map((_, i) => `[t${i}]`).join("")}concat=n=${c.parts.length}:v=1,fps=60,tpad=stop_mode=clone:stop_duration=1.2,format=yuv420p[v];`;
   f += `[ps]trim=${c.poster}:${c.poster + 0.1},setpts=PTS-STARTPTS[j]`;
   execFileSync("ffmpeg", ["-v", "error", "-y", "-i", c.src, "-loop", "1", "-t", "36", "-i", ring, "-filter_complex", f,
     "-map", "[v]", "-an", "-c:v", "libx264", "-profile:v", "high", "-crf", "23", "-preset", "slow", "-movflags", "+faststart", `${out}/${name}.mp4`,
