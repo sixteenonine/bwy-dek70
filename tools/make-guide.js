@@ -12,8 +12,8 @@ const k = t => `<b class="key">${t}</b>`;
 const STEPS = [
   { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></figure>`,
-    check: "ปุ่ม Get เปลี่ยนเป็น Open และมีไอคอน Scriptable บนเครื่อง" },
-  { title: "ก๊อปโค้ด", body: `<p>กดปุ่มนี้ครั้งเดียว</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copyโค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><button class="btn ghost small" id="view" type="button" aria-expanded="false" aria-controls="code">ดูโค้ด</button><pre class="code" id="code" hidden></pre><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
+    info: { label: "Scriptable คืออะไร", text: "แอปฟรีสำหรับสร้าง Widget เอง จากนักพัฒนา Simon Støvring อยู่ใน App Store มาหลายปี ผ่านการตรวจของ Apple เหมือนแอปทั่วไป โค้ดของเราใช้แค่โหลดตัวนับถอยหลังจากเว็บ BearWithYou ไม่ขอเข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ และไม่ต้องจ่ายเงิน" } },
+  { title: "ก๊อปโค้ด", body: `<p>โค้ดสั้นๆ นี้คือตัวติดตั้ง มันบอก Scriptable ให้ไปโหลดตัวนับถอยหลังจากเว็บ BearWithYou และอัปเดตวันให้เองทุกชั่วโมง กด Copy แล้วเอาไปวางในขั้นถัดไป</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copyโค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><button class="btn ghost small" id="view" type="button" aria-expanded="false" aria-controls="code">ดูโค้ด</button><pre class="code" id="code" hidden></pre><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
     check: "ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!" },
   { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
     check: "หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script" },
@@ -24,7 +24,7 @@ const STEPS = [
   { title: "เพิ่ม Widget บนหน้าจอโฮม", body: list(["กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)`, `กด ${k("Done")} มุมขวาบน`]),
     media: clip("s6", "กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม" },
   { title: "เลือกสคริปต์ Dek70", body: list([`กดค้างที่กล่องนั้น แล้วกด ${k("Edit Widget")}`, `แตะ ${k("Choose")} ที่แถว Script`, `เลือก ${k("Dek70")}`, "แตะที่ว่างนอกกล่องเพื่อปิด"]),
-    media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง", 1792), check: "Widget นับถอยหลังขึ้นแล้ว" },
+    media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"), check: "Widget แสดงผลนับถอยหลังแล้ว" },
 ];
 const N = STEPS.length;
 const hero = `<figure class="hero"><img src="guide/hero.jpg" width="1011" height="350" alt="ตัวอย่าง Widget: ขนาด Small ธีมมืด นับถอยหลัง 58 วันถึงเปิดสมัคร A-Level และขนาด Medium ธีมสว่าง นับถอยหลังเป็นวินาที"></figure>`;
@@ -45,7 +45,7 @@ const screens = [
     <div class="head"><span class="num" aria-hidden="true">${i + 1}</span><div><p class="count">ขั้นที่ ${i + 1} จาก ${N}</p><h2 id="h${i + 1}">${s.title}</h2></div></div>
     ${s.body}
     ${s.media || ""}
-    <p class="check"><b>ต้องเห็น</b> ${s.check}</p>
+    ${s.info ? `<p class="check info"><b>${s.info.label}</b> ${s.info.text}</p>` : `<p class="check"><b>ต้องเห็น</b> ${s.check}</p>`}
   </section>`),
   `<section class="screen" id="s${N + 1}" data-i="${N + 1}" aria-labelledby="hd">
     <h2 id="hd" class="done-h">เสร็จแล้ว 🎉</h2>
@@ -115,6 +115,8 @@ const html = `<!DOCTYPE html>
   .shot img { display: block; width: 100%; height: auto; }
   .check { margin: 16px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--ok-bg); }
   .check b { color: var(--ok); margin-right: 6px; }
+  .check.info { background: var(--card); border: 1px solid var(--line); color: var(--sub); font-size: .95rem; }
+  .check.info b { display: block; color: var(--ink); margin: 0 0 2px; }
   .btn { display: flex; align-items: center; justify-content: center; min-height: 52px; margin-top: 16px; padding: 0 20px; border-radius: 14px; width: 100%;
     font-family: inherit; font-weight: 700; font-size: 1.05rem; text-decoration: none; cursor: pointer; background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink); }
   .btn.ghost { background: transparent; color: var(--ink); }
@@ -152,6 +154,12 @@ const html = `<!DOCTYPE html>
   #back { flex: 0 0 34%; background: transparent; color: var(--ink); }
   #next { flex: 1; background: var(--ink); color: var(--bg); }
   #back[hidden] { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav button { transition: transform .22s cubic-bezier(.3, 1.8, .5, 1), background .2s, color .2s; -webkit-tap-highlight-color: transparent; }
+    .nav button.down { transform: scale(.93); transition-duration: .08s; }
+    .nav button.boing { animation: boing .42s cubic-bezier(.3, 1.4, .5, 1); }
+  }
+  @keyframes boing { 0% { transform: scale(.93); } 55% { transform: scale(1.05); } 100% { transform: scale(1); } }
   /* ---------- จอกว้าง / แนวนอน ---------- */
   main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .nav { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
@@ -256,6 +264,13 @@ ${loader}
     const h = screens[i].querySelector("h1, h2");
     if (h && push) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
   }
+  // กดแล้วยุบ ปล่อยแล้วเด้ง
+  [back, next].forEach(b => {
+    b.addEventListener("pointerdown", () => b.classList.add("down"));
+    ["pointerup", "pointercancel", "pointerleave"].forEach(ev => b.addEventListener(ev, () => b.classList.remove("down")));
+    b.addEventListener("click", () => { b.classList.remove("boing"); void b.offsetWidth; b.classList.add("boing"); });
+    b.addEventListener("animationend", () => b.classList.remove("boing"));
+  });
   next.addEventListener("click", () => show(cur === DONE ? 1 : cur === LAST ? DONE : cur + 1, true));
   document.getElementById("toTheme").addEventListener("click", () => show(LAST, true));
   back.addEventListener("click", () => show(cur - 1, true));
