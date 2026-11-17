@@ -38,6 +38,8 @@
   b.key { color: var(--ink); font-weight: 700; }
   .shot { margin: 16px auto 0; width: min(100%, 300px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; }
   .shot video { display: block; width: 100%; height: auto; }
+  .shot.wide { width: 100%; background: #fff; }
+  .shot img { display: block; width: 100%; height: auto; }
   .check { margin: 16px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--ok-bg); }
   .check b { color: var(--ok); margin-right: 6px; }
   .btn { display: flex; align-items: center; justify-content: center; min-height: 52px; margin-top: 16px; padding: 0 20px; border-radius: 14px; width: 100%;
@@ -79,9 +81,9 @@
   <section class="screen step" id="s1" data-i="1" aria-labelledby="h1">
     <p class="count">ขั้นที่ 1 จาก 8</p>
     <h2 id="h1">โหลดแอป Scriptable</h2>
-    <p>แอปฟรีจาก App Store</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
-    
-    <p class="check"><b>ต้องเห็น</b> ไอคอน Scriptable อยู่บนเครื่อง</p>
+    <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
+    <figure class="shot wide"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></figure>
+    <p class="check"><b>ต้องเห็น</b> ปุ่ม Get เปลี่ยนเป็น Open และมีไอคอน Scriptable บนเครื่อง</p>
   </section>
   <section class="screen step" id="s2" data-i="2" aria-labelledby="h2">
     <p class="count">ขั้นที่ 2 จาก 8</p>

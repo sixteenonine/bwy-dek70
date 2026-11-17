@@ -10,8 +10,9 @@ const list = items => `<ol class="do">${items.map(t => `<li>${t}</li>`).join("")
 const k = t => `<b class="key">${t}</b>`;
 
 const STEPS = [
-  { title: "โหลดแอป Scriptable", body: `<p>แอปฟรีจาก App Store</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
-    check: "ไอคอน Scriptable อยู่บนเครื่อง" },
+  { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
+    media: `<figure class="shot wide"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></figure>`,
+    check: "ปุ่ม Get เปลี่ยนเป็น Open และมีไอคอน Scriptable บนเครื่อง" },
   { title: "ก๊อปโค้ด", body: `<p>กดปุ่มนี้ครั้งเดียว</p><button class="btn" id="copy" type="button">ก๊อปโค้ด</button><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
     check: "ปุ่มเปลี่ยนเป็น “ก๊อปแล้ว ✓”" },
   { title: "เปิด Scriptable แล้วกด +", body: `<p>ปุ่ม ${k("+")} อยู่มุมขวาบน</p>`, media: clip("s3", "กดปุ่มบวกมุมขวาบนของ Scriptable"),
@@ -97,6 +98,8 @@ const html = `<!DOCTYPE html>
   b.key { color: var(--ink); font-weight: 700; }
   .shot { margin: 16px auto 0; width: min(100%, 300px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; }
   .shot video { display: block; width: 100%; height: auto; }
+  .shot.wide { width: 100%; background: #fff; }
+  .shot img { display: block; width: 100%; height: auto; }
   .check { margin: 16px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--ok-bg); }
   .check b { color: var(--ok); margin-right: 6px; }
   .btn { display: flex; align-items: center; justify-content: center; min-height: 52px; margin-top: 16px; padding: 0 20px; border-radius: 14px; width: 100%;
