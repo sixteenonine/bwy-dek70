@@ -29,11 +29,19 @@
   h2 { font-size: 1.45rem; line-height: 1.3; margin: 0; }
   .done-h { font-size: 1.75rem; margin-bottom: 6px; }
   .lead { color: var(--sub); margin: 0 0 18px; }
-  .count { margin: 0 0 4px; color: var(--sub); font-weight: 700; font-size: .95rem; }
+  .head { display: flex; align-items: center; gap: 14px; }
+  .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFC233; color: #1A1A1A; display: grid; place-items: center;
+    font-size: 2.1rem; font-weight: 800; line-height: 1; box-shadow: 0 4px 14px rgba(255, 170, 0, .35); }
+  .count { margin: 0 0 2px; color: var(--sub); font-weight: 700; font-size: .95rem; }
+  .btn.small { min-height: 44px; margin-top: 10px; font-size: .95rem; }
+  pre.code { margin: 10px 0 0; max-height: 40vh; overflow: auto; padding: 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line);
+    font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; -webkit-user-select: text; user-select: text; }
+  .shot.wait { aspect-ratio: 828 / 1100; background: var(--soft); border: 2px dashed var(--line); display: grid; place-items: center; text-align: center; color: var(--sub); font-weight: 700; }
+  .shot.wait small { font-weight: 400; }
   .need { list-style: none; margin: 0; padding: 14px 16px; background: var(--card); border-radius: 16px; display: grid; gap: 6px; }
   .need li::before { content: "✓"; color: var(--ok); font-weight: 700; margin-right: 10px; }
   .need li.no::before { content: "✕"; color: var(--sub); }
-  .step > p:not(.count):not(.check) { margin: 10px 0 0; color: var(--sub); font-size: 1.05rem; }
+  .step > p:not(.check) { margin: 10px 0 0; color: var(--sub); font-size: 1.05rem; }
   ol.do { margin: 10px 0 0; padding-left: 1.4em; color: var(--sub); font-size: 1.05rem; display: grid; gap: 2px; }
   b.key { color: var(--ink); font-weight: 700; }
   .shot { margin: 16px auto 0; width: min(100%, 300px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; }
@@ -95,7 +103,7 @@
     html:not(.js) #s0, #s0.on { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); column-gap: 40px; align-items: center; }
     #s0 .hero { grid-column: 1; grid-row: 1 / span 6; margin: 0; }
     #s0 > :not(.hero) { grid-column: 2; }
-    #s9 { max-width: 640px; margin: 0 auto; }
+    #s8 { max-width: 640px; margin: 0 auto; }
     .nav div { justify-content: flex-end; }
     #back { flex: 0 0 180px; }
     #next { flex: 0 0 300px; }
@@ -130,71 +138,64 @@
     <ul class="need" aria-label="ก่อนเริ่ม">
       <li>iPhone หรือ iPad</li>
       <li>ต่อเน็ตอยู่</li>
-      <li>ใช้เวลาประมาณ 2 นาที (8 ขั้น)</li>
+      <li>ใช้เวลาประมาณ 2 นาที (7 ขั้น)</li>
       <li class="no">Android ยังใช้ไม่ได้</li>
     </ul>
   </section>
   <section class="screen step" id="s1" data-i="1" aria-labelledby="h1">
-    <p class="count">ขั้นที่ 1 จาก 8</p>
-    <h2 id="h1">โหลดแอป Scriptable</h2>
+    <div class="head"><span class="num" aria-hidden="true">1</span><div><p class="count">ขั้นที่ 1 จาก 7</p><h2 id="h1">โหลดแอป Scriptable</h2></div></div>
     <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
     <figure class="shot wide"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></figure>
     <p class="check"><b>ต้องเห็น</b> ปุ่ม Get เปลี่ยนเป็น Open และมีไอคอน Scriptable บนเครื่อง</p>
   </section>
   <section class="screen step" id="s2" data-i="2" aria-labelledby="h2">
-    <p class="count">ขั้นที่ 2 จาก 8</p>
-    <h2 id="h2">ก๊อปโค้ด</h2>
-    <p>กดปุ่มนี้ครั้งเดียว</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 โค้ดอยู่ในเครื่องแล้ว กด ถัดไป ได้เลย</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
+    <div class="head"><span class="num" aria-hidden="true">2</span><div><p class="count">ขั้นที่ 2 จาก 7</p><h2 id="h2">ก๊อปโค้ด</h2></div></div>
+    <p>กดปุ่มนี้ครั้งเดียว</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copyโค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><button class="btn ghost small" id="view" type="button" aria-expanded="false" aria-controls="code">ดูโค้ด</button><pre class="code" id="code" hidden></pre><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
     
     <p class="check"><b>ต้องเห็น</b> ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!</p>
   </section>
   <section class="screen step" id="s3" data-i="3" aria-labelledby="h3">
-    <p class="count">ขั้นที่ 3 จาก 8</p>
-    <h2 id="h3">เปิด Scriptable แล้วกด +</h2>
-    <p>ปุ่ม <b class="key">+</b> อยู่มุมขวาบน</p>
-    <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s3.jpg" aria-label="กดปุ่มบวกมุมขวาบนของ Scriptable"><source src="guide/s3.mp4" type="video/mp4"></video></figure>
+    <div class="head"><span class="num" aria-hidden="true">3</span><div><p class="count">ขั้นที่ 3 จาก 7</p><h2 id="h3">เปิด Scriptable แล้วกด +</h2></div></div>
+    <ol class="do"><li>แตะไอคอน <b class="key">Scriptable</b> บนหน้าจอโฮม</li><li>กด <b class="key">+</b> มุมขวาบน</li></ol>
+    <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s3.jpg" aria-label="แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"><source src="guide/s3.mp4" type="video/mp4"></video></figure>
     <p class="check"><b>ต้องเห็น</b> หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script</p>
   </section>
   <section class="screen step" id="s4" data-i="4" aria-labelledby="h4">
-    <p class="count">ขั้นที่ 4 จาก 8</p>
-    <h2 id="h4">แตะค้าง แล้วกด Paste</h2>
+    <div class="head"><span class="num" aria-hidden="true">4</span><div><p class="count">ขั้นที่ 4 จาก 7</p><h2 id="h4">แตะค้าง แล้วกด Paste</h2></div></div>
     <p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด <b class="key">Paste</b></p>
     <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s4.jpg" aria-label="แตะค้างที่หน้าว่างแล้วกด Paste"><source src="guide/s4.mp4" type="video/mp4"></video></figure>
     <p class="check"><b>ต้องเห็น</b> โค้ดขึ้นเต็มหน้า</p>
   </section>
   <section class="screen step" id="s5" data-i="5" aria-labelledby="h5">
-    <p class="count">ขั้นที่ 5 จาก 8</p>
-    <h2 id="h5">ตั้งชื่อว่า Dek70</h2>
+    <div class="head"><span class="num" aria-hidden="true">5</span><div><p class="count">ขั้นที่ 5 จาก 7</p><h2 id="h5">ตั้งชื่อว่า Dek70</h2></div></div>
     <ol class="do"><li>แตะชื่อ <b class="key">Untitled Script</b> ด้านบน</li><li>ลบชื่อเดิม พิมพ์ <b class="key">Dek70</b></li><li>กด <b class="key">Rename</b></li><li>กด <b class="key">Done</b> มุมซ้ายบน</li></ol>
     <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s5.jpg" aria-label="แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"><source src="guide/s5.mp4" type="video/mp4"></video></figure>
     <p class="check"><b>ต้องเห็น</b> การ์ดชื่อ Dek70 อยู่ในรายการ</p>
   </section>
   <section class="screen step" id="s6" data-i="6" aria-labelledby="h6">
-    <p class="count">ขั้นที่ 6 จาก 8</p>
-    <h2 id="h6">กดค้างที่หน้าจอโฮม แล้วกด Add Widget</h2>
-    <ol class="do"><li>กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น</li><li>กด <b class="key">Edit</b> มุมซ้ายบน</li><li>กด <b class="key">Add Widget</b></li></ol>
-    <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอโฮม กด Edit แล้วกด Add Widget"><source src="guide/s6.mp4" type="video/mp4"></video></figure>
-    <p class="check"><b>ต้องเห็น</b> หน้ารวม Widget มีช่อง Search Widgets ด้านบน</p>
-  </section>
-  <section class="screen step" id="s7" data-i="7" aria-labelledby="h7">
-    <p class="count">ขั้นที่ 7 จาก 8</p>
-    <h2 id="h7">ค้นหา Scriptable แล้วกด Add Widget</h2>
-    <ol class="do"><li>พิมพ์ <b class="key">Scriptable</b> ในช่องค้นหา แล้วแตะชื่อแอป</li><li>ปัดซ้ายถ้าอยากได้ขนาด Medium</li><li>กด <b class="key">Add Widget</b></li><li>กด <b class="key">Done</b> มุมขวาบน</li></ol>
-    <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s7.jpg" aria-label="ค้นหา Scriptable แตะชื่อแอป กด Add Widget แล้วกด Done"><source src="guide/s7.mp4" type="video/mp4"></video></figure>
+    <div class="head"><span class="num" aria-hidden="true">6</span><div><p class="count">ขั้นที่ 6 จาก 7</p><h2 id="h6">เพิ่ม Widget บนหน้าจอโฮม</h2></div></div>
+    <ol class="do"><li>กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น</li><li>กด <b class="key">Edit</b> มุมซ้ายบน แล้วกด <b class="key">Add Widget</b></li><li>พิมพ์ <b class="key">Scriptable</b> ในช่องค้นหา แล้วแตะชื่อแอป</li><li>กด <b class="key">Add Widget</b> (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)</li><li>กด <b class="key">Done</b> มุมขวาบน</li></ol>
+    <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done"><source src="guide/s6.mp4" type="video/mp4"></video></figure>
     <p class="check"><b>ต้องเห็น</b> กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม</p>
   </section>
-  <section class="screen step" id="s8" data-i="8" aria-labelledby="h8">
-    <p class="count">ขั้นที่ 8 จาก 8</p>
-    <h2 id="h8">เลือกสคริปต์ Dek70</h2>
+  <section class="screen step" id="s7" data-i="7" aria-labelledby="h7">
+    <div class="head"><span class="num" aria-hidden="true">7</span><div><p class="count">ขั้นที่ 7 จาก 7</p><h2 id="h7">เลือกสคริปต์ Dek70</h2></div></div>
     <ol class="do"><li>กดค้างที่กล่องนั้น แล้วกด <b class="key">Edit Widget</b></li><li>แตะ <b class="key">Choose</b> ที่แถว Script</li><li>เลือก <b class="key">Dek70</b></li><li>แตะที่ว่างนอกกล่องเพื่อปิด</li></ol>
     <figure class="shot"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s8.jpg" aria-label="กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"><source src="guide/s8.mp4" type="video/mp4"></video></figure>
     <p class="check"><b>ต้องเห็น</b> Widget นับถอยหลังขึ้นแล้ว</p>
   </section>
-  <section class="screen" id="s9" data-i="9" aria-labelledby="hd">
+  <section class="screen" id="s8" data-i="8" aria-labelledby="hd">
     <h2 id="hd" class="done-h">เสร็จแล้ว 🎉</h2>
     <p class="lead">Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p>
     <figure class="hero"><img src="guide/hero.jpg" width="1011" height="350" alt="ตัวอย่าง Widget: ขนาด Small ธีมมืด นับถอยหลัง 58 วันถึงเปิดสมัคร A-Level และขนาด Medium ธีมสว่าง นับถอยหลังเป็นวินาที"></figure>
-    <p class="lead">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ 8 อีกรอบ</p>
+    <p class="lead">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ 7 อีกรอบ</p>
+    <button class="btn ghost" id="toTheme" type="button">🎨 ดูวิธีเปลี่ยนธีมสี</button>
+  </section>
+  <section class="screen step" id="s9" data-i="9" aria-labelledby="ht">
+    <div class="head"><span class="num" aria-hidden="true">🎨</span><div><p class="count">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
+    <ol class="do"><li>เปิดแอป <b class="key">Scriptable</b> แล้วแตะ <b class="key">Dek70</b></li><li>กด <b class="key">🌙 เปลี่ยนเป็นธีมมืด</b> (กดอีกครั้งเพื่อกลับเป็นธีมสว่าง)</li><li>รอ Widget เปลี่ยนเอง ภายในประมาณ 1 ชั่วโมง</li></ol>
+    <figure class="shot wait"><div>รอคลิป<br><small>เปลี่ยนธีมในแอป Scriptable</small></div></figure>
+    <p class="check"><b>อยากให้บางตัวเป็นธีมมืด</b> กดค้างที่ Widget ตัวนั้น กด <b class="key">Edit Widget</b> แล้วพิมพ์ <b class="key">dark</b> ในช่อง Parameter</p>
   </section>
 </main>
 <nav class="nav" aria-label="เปลี่ยนขั้น"><div><button id="back" type="button">← ย้อนกลับ</button><button id="next" type="button">เริ่มติดตั้ง →</button></div></nav>
@@ -267,6 +268,11 @@ Script.complete();
     copy.classList.remove("pop"); void copy.offsetWidth; copy.classList.add("pop");
     const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
   }
+  const view = document.getElementById("view"), pre = document.getElementById("code");
+  pre.textContent = code;
+  view.addEventListener("click", () => {
+    const open = pre.hidden; pre.hidden = !open; view.setAttribute("aria-expanded", open); view.textContent = open ? "ซ่อนโค้ด" : "ดูโค้ด";
+  });
   copy.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -274,7 +280,7 @@ Script.complete();
     } catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); lbl.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
   });
 
-  const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, STEPS = LAST - 1;
+  const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, DONE = LAST - 1, STEPS = DONE - 1; // LAST = หน้าเปลี่ยนธีม
   const back = document.getElementById("back"), next = document.getElementById("next"), prog = document.getElementById("prog");
   const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let cur = -1;
@@ -291,14 +297,15 @@ Script.complete();
       if (j === i + 1) v.preload = "auto"; // โหลดคลิปขั้นถัดไปรอไว้
     });
     back.hidden = i === 0;
-    next.textContent = i === 0 ? "เริ่มติดตั้ง →" : i === STEPS ? "เสร็จแล้ว ✓" : i === LAST ? "กลับไปขั้นแรก" : "ถัดไป →";
+    next.textContent = i === 0 ? "เริ่มติดตั้ง →" : i === STEPS ? "เสร็จแล้ว ✓" : i === DONE ? "กลับไปขั้นแรก" : i === LAST ? "กลับหน้าเสร็จ ✓" : "ถัดไป →";
     prog.style.width = (Math.min(i, STEPS) / STEPS * 100) + "%";
     window.scrollTo(0, 0);
     if (push) history.pushState({ i }, "", i ? "#" + i : location.pathname);
     const h = screens[i].querySelector("h1, h2");
     if (h && push) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
   }
-  next.addEventListener("click", () => show(cur === LAST ? 1 : cur + 1, true));
+  next.addEventListener("click", () => show(cur === DONE ? 1 : cur === LAST ? DONE : cur + 1, true));
+  document.getElementById("toTheme").addEventListener("click", () => show(LAST, true));
   back.addEventListener("click", () => show(cur - 1, true));
   window.addEventListener("popstate", () => show(parseInt(location.hash.slice(1), 10) || 0, false));
   document.addEventListener("keydown", e => {

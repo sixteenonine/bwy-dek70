@@ -13,18 +13,16 @@ const STEPS = [
   { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></figure>`,
     check: "ปุ่ม Get เปลี่ยนเป็น Open และมีไอคอน Scriptable บนเครื่อง" },
-  { title: "ก๊อปโค้ด", body: `<p>กดปุ่มนี้ครั้งเดียว</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 โค้ดอยู่ในเครื่องแล้ว กด ถัดไป ได้เลย</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
+  { title: "ก๊อปโค้ด", body: `<p>กดปุ่มนี้ครั้งเดียว</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copyโค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><button class="btn ghost small" id="view" type="button" aria-expanded="false" aria-controls="code">ดูโค้ด</button><pre class="code" id="code" hidden></pre><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
     check: "ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!" },
-  { title: "เปิด Scriptable แล้วกด +", body: `<p>ปุ่ม ${k("+")} อยู่มุมขวาบน</p>`, media: clip("s3", "กดปุ่มบวกมุมขวาบนของ Scriptable"),
+  { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
     check: "หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script" },
   { title: "แตะค้าง แล้วกด Paste", body: `<p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด ${k("Paste")}</p>`, media: clip("s4", "แตะค้างที่หน้าว่างแล้วกด Paste"),
     check: "โค้ดขึ้นเต็มหน้า" },
   { title: "ตั้งชื่อว่า Dek70", body: list([`แตะชื่อ ${k("Untitled Script")} ด้านบน`, `ลบชื่อเดิม พิมพ์ ${k("Dek70")}`, `กด ${k("Rename")}`, `กด ${k("Done")} มุมซ้ายบน`]),
     media: clip("s5", "แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"), check: "การ์ดชื่อ Dek70 อยู่ในรายการ" },
-  { title: "กดค้างที่หน้าจอโฮม แล้วกด Add Widget", body: list(["กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น", `กด ${k("Edit")} มุมซ้ายบน`, `กด ${k("Add Widget")}`]),
-    media: clip("s6", "กดค้างที่หน้าจอโฮม กด Edit แล้วกด Add Widget", 1792), check: "หน้ารวม Widget มีช่อง Search Widgets ด้านบน" },
-  { title: "ค้นหา Scriptable แล้วกด Add Widget", body: list([`พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, "ปัดซ้ายถ้าอยากได้ขนาด Medium", `กด ${k("Add Widget")}`, `กด ${k("Done")} มุมขวาบน`]),
-    media: clip("s7", "ค้นหา Scriptable แตะชื่อแอป กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม" },
+  { title: "เพิ่ม Widget บนหน้าจอโฮม", body: list(["กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)`, `กด ${k("Done")} มุมขวาบน`]),
+    media: clip("s6", "กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม" },
   { title: "เลือกสคริปต์ Dek70", body: list([`กดค้างที่กล่องนั้น แล้วกด ${k("Edit Widget")}`, `แตะ ${k("Choose")} ที่แถว Script`, `เลือก ${k("Dek70")}`, "แตะที่ว่างนอกกล่องเพื่อปิด"]),
     media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง", 1792), check: "Widget นับถอยหลังขึ้นแล้ว" },
 ];
@@ -44,8 +42,7 @@ const screens = [
     </ul>
   </section>`,
   ...STEPS.map((s, i) => `<section class="screen step" id="s${i + 1}" data-i="${i + 1}" aria-labelledby="h${i + 1}">
-    <p class="count">ขั้นที่ ${i + 1} จาก ${N}</p>
-    <h2 id="h${i + 1}">${s.title}</h2>
+    <div class="head"><span class="num" aria-hidden="true">${i + 1}</span><div><p class="count">ขั้นที่ ${i + 1} จาก ${N}</p><h2 id="h${i + 1}">${s.title}</h2></div></div>
     ${s.body}
     ${s.media || ""}
     <p class="check"><b>ต้องเห็น</b> ${s.check}</p>
@@ -54,7 +51,14 @@ const screens = [
     <h2 id="hd" class="done-h">เสร็จแล้ว 🎉</h2>
     <p class="lead">Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p>
     ${hero}
-    <p class="lead">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ 8 อีกรอบ</p>
+    <p class="lead">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ ${N} อีกรอบ</p>
+    <button class="btn ghost" id="toTheme" type="button">🎨 ดูวิธีเปลี่ยนธีมสี</button>
+  </section>`,
+  `<section class="screen step" id="s${N + 2}" data-i="${N + 2}" aria-labelledby="ht">
+    <div class="head"><span class="num" aria-hidden="true">🎨</span><div><p class="count">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
+    ${list([`เปิดแอป ${k("Scriptable")} แล้วแตะ ${k("Dek70")}`, `กด ${k("🌙 เปลี่ยนเป็นธีมมืด")} (กดอีกครั้งเพื่อกลับเป็นธีมสว่าง)`, "รอ Widget เปลี่ยนเอง ภายในประมาณ 1 ชั่วโมง"])}
+    <figure class="shot wait"><div>รอคลิป<br><small>เปลี่ยนธีมในแอป Scriptable</small></div></figure>
+    <p class="check"><b>อยากให้บางตัวเป็นธีมมืด</b> กดค้างที่ Widget ตัวนั้น กด ${k("Edit Widget")} แล้วพิมพ์ ${k("dark")} ในช่อง Parameter</p>
   </section>`,
 ];
 
@@ -89,11 +93,19 @@ const html = `<!DOCTYPE html>
   h2 { font-size: 1.45rem; line-height: 1.3; margin: 0; }
   .done-h { font-size: 1.75rem; margin-bottom: 6px; }
   .lead { color: var(--sub); margin: 0 0 18px; }
-  .count { margin: 0 0 4px; color: var(--sub); font-weight: 700; font-size: .95rem; }
+  .head { display: flex; align-items: center; gap: 14px; }
+  .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFC233; color: #1A1A1A; display: grid; place-items: center;
+    font-size: 2.1rem; font-weight: 800; line-height: 1; box-shadow: 0 4px 14px rgba(255, 170, 0, .35); }
+  .count { margin: 0 0 2px; color: var(--sub); font-weight: 700; font-size: .95rem; }
+  .btn.small { min-height: 44px; margin-top: 10px; font-size: .95rem; }
+  pre.code { margin: 10px 0 0; max-height: 40vh; overflow: auto; padding: 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line);
+    font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; -webkit-user-select: text; user-select: text; }
+  .shot.wait { aspect-ratio: 828 / 1100; background: var(--soft); border: 2px dashed var(--line); display: grid; place-items: center; text-align: center; color: var(--sub); font-weight: 700; }
+  .shot.wait small { font-weight: 400; }
   .need { list-style: none; margin: 0; padding: 14px 16px; background: var(--card); border-radius: 16px; display: grid; gap: 6px; }
   .need li::before { content: "✓"; color: var(--ok); font-weight: 700; margin-right: 10px; }
   .need li.no::before { content: "✕"; color: var(--sub); }
-  .step > p:not(.count):not(.check) { margin: 10px 0 0; color: var(--sub); font-size: 1.05rem; }
+  .step > p:not(.check) { margin: 10px 0 0; color: var(--sub); font-size: 1.05rem; }
   ol.do { margin: 10px 0 0; padding-left: 1.4em; color: var(--sub); font-size: 1.05rem; display: grid; gap: 2px; }
   b.key { color: var(--ink); font-weight: 700; }
   .shot { margin: 16px auto 0; width: min(100%, 300px); border-radius: 22px; overflow: hidden; border: 1px solid var(--line); background: #000; }
@@ -207,6 +219,11 @@ ${loader}
     copy.classList.remove("pop"); void copy.offsetWidth; copy.classList.add("pop");
     const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
   }
+  const view = document.getElementById("view"), pre = document.getElementById("code");
+  pre.textContent = code;
+  view.addEventListener("click", () => {
+    const open = pre.hidden; pre.hidden = !open; view.setAttribute("aria-expanded", open); view.textContent = open ? "ซ่อนโค้ด" : "ดูโค้ด";
+  });
   copy.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -214,7 +231,7 @@ ${loader}
     } catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); lbl.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
   });
 
-  const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, STEPS = LAST - 1;
+  const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, DONE = LAST - 1, STEPS = DONE - 1; // LAST = หน้าเปลี่ยนธีม
   const back = document.getElementById("back"), next = document.getElementById("next"), prog = document.getElementById("prog");
   const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let cur = -1;
@@ -231,14 +248,15 @@ ${loader}
       if (j === i + 1) v.preload = "auto"; // โหลดคลิปขั้นถัดไปรอไว้
     });
     back.hidden = i === 0;
-    next.textContent = i === 0 ? "เริ่มติดตั้ง →" : i === STEPS ? "เสร็จแล้ว ✓" : i === LAST ? "กลับไปขั้นแรก" : "ถัดไป →";
+    next.textContent = i === 0 ? "เริ่มติดตั้ง →" : i === STEPS ? "เสร็จแล้ว ✓" : i === DONE ? "กลับไปขั้นแรก" : i === LAST ? "กลับหน้าเสร็จ ✓" : "ถัดไป →";
     prog.style.width = (Math.min(i, STEPS) / STEPS * 100) + "%";
     window.scrollTo(0, 0);
     if (push) history.pushState({ i }, "", i ? "#" + i : location.pathname);
     const h = screens[i].querySelector("h1, h2");
     if (h && push) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
   }
-  next.addEventListener("click", () => show(cur === LAST ? 1 : cur + 1, true));
+  next.addEventListener("click", () => show(cur === DONE ? 1 : cur === LAST ? DONE : cur + 1, true));
+  document.getElementById("toTheme").addEventListener("click", () => show(LAST, true));
   back.addEventListener("click", () => show(cur - 1, true));
   window.addEventListener("popstate", () => show(parseInt(location.hash.slice(1), 10) || 0, false));
   document.addEventListener("keydown", e => {
