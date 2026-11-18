@@ -13,7 +13,7 @@ const STEPS = [
   { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></figure>`,
     info: { label: "Scriptable คืออะไร", text: "แอปฟรีสำหรับสร้าง Widget เอง จากนักพัฒนา Simon Støvring ผ่านการตรวจของ Apple เหมือนแอปทั่วไป ไม่ต้องสมัครหรือล็อกอิน และ iPhone จะถามเราก่อนทุกครั้งถ้าแอปจะเข้าถึงรูป รายชื่อ หรือตำแหน่ง" } },
-  { title: "Copy โค้ด", body: `<p>โค้ดนี้คือหัวใจของ Widget ไม่มีโค้ดนี้ Widget จะว่างเปล่า</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><button class="btn ghost small" id="view" type="button" aria-expanded="false" aria-controls="code">ดูโค้ด</button><pre class="code" id="code" hidden></pre><p class="safe">🔒 โค้ดนี้แค่โหลดตัวนับถอยหลังจากเว็บ BearWithYou ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ และไม่ต้องจ่ายเงิน</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
+  { title: "Copy โค้ด", body: `<p>โค้ดนี้คือหัวใจของ Widget ไม่มีโค้ดนี้ Widget จะว่างเปล่า</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้แค่โหลดตัวนับถอยหลังจากเว็บ BearWithYou ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ และไม่ต้องจ่ายเงิน</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
     check: "ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!" },
   { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
     check: "หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script" },
@@ -100,7 +100,7 @@ const html = `<!DOCTYPE html>
   .count { margin: 0 0 2px; color: var(--sub); font-weight: 700; font-size: .95rem; }
   .step > p.safe { margin: 12px 0 0; font-size: .9rem; color: var(--sub); }
   .btn.small { min-height: 44px; margin-top: 10px; font-size: .95rem; }
-  pre.code { margin: 10px 0 0; max-height: 40vh; overflow: auto; padding: 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line);
+  pre.code { margin: 12px 0 0; max-height: 24vh; overflow: auto; padding: 12px; border-radius: 12px; background: var(--card); border: 1px solid var(--line);
     font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; -webkit-user-select: text; user-select: text; }
   .shot.wait { aspect-ratio: 828 / 1100; background: var(--soft); border: 2px dashed var(--line); display: grid; place-items: center; text-align: center; color: var(--sub); font-weight: 700; }
   .shot.wait small { font-weight: 400; }
@@ -229,11 +229,8 @@ ${loader}
     copy.classList.remove("pop"); void copy.offsetWidth; copy.classList.add("pop");
     const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
   }
-  const view = document.getElementById("view"), pre = document.getElementById("code");
+  const pre = document.getElementById("code");
   pre.textContent = code;
-  view.addEventListener("click", () => {
-    const open = pre.hidden; pre.hidden = !open; view.setAttribute("aria-expanded", open); view.textContent = open ? "ซ่อนโค้ด" : "ดูโค้ด";
-  });
   copy.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(code);
@@ -245,6 +242,22 @@ ${loader}
   const back = document.getElementById("back"), next = document.getElementById("next"), prog = document.getElementById("prog");
   const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let cur = -1;
+  // เล่นคลิปของหน้าที่เปิดอยู่ ถ้า iPhone หยุดเอง (โหลดไม่ทัน สลับแอป ประหยัดพลังงาน) ให้ลองเล่นต่อเอง
+  const active = v => !still && !v.userPaused && v.closest(".screen").classList.contains("on");
+  function play(v) {
+    if (!active(v)) return;
+    const p = v.play();
+    if (p && p.catch) p.catch(err => {
+      if (err && err.name === "NotAllowedError") { v.controls = true; return; } // เครื่องไม่ให้เล่นเอง (เช่นโหมดประหยัดพลังงาน) โชว์ปุ่มเล่นแทน
+      if (v.readyState < 3) v.addEventListener("canplay", () => play(v), { once: true }); else setTimeout(() => play(v), 300); });
+  }
+  document.querySelectorAll(".shot video").forEach(v => {
+    v.addEventListener("pause", () => { if (active(v) && !v.ended) setTimeout(() => { if (v.paused) play(v); }, 250); });
+    ["stalled", "waiting", "canplay"].forEach(ev => v.addEventListener(ev, () => { if (v.paused) play(v); }));
+    v.addEventListener("ended", () => { v.currentTime = 0; play(v); }); // กันกรณี loop ไม่ทำงาน
+    v.addEventListener("click", () => { if (v.paused) { v.userPaused = false; play(v); } else { v.userPaused = true; v.pause(); } });
+  });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { const v = screens[cur] && screens[cur].querySelector("video"); if (v) play(v); } });
   function show(i, push) {
     i = Math.max(0, Math.min(LAST, i));
     if (i === cur) return;
@@ -253,7 +266,7 @@ ${loader}
       s.classList.toggle("on", j === i);
       const v = s.querySelector("video");
       if (!v) return;
-      if (j === i) { if (still) v.controls = true; else { v.currentTime = 0; v.play().catch(() => { v.controls = true; }); } }
+      if (j === i) { v.preload = "auto"; v.userPaused = false; if (still) v.controls = true; else { if (v.readyState > 0) v.currentTime = 0; play(v); } }
       else v.pause();
       if (j === i + 1) v.preload = "auto"; // โหลดคลิปขั้นถัดไปรอไว้
     });
@@ -280,7 +293,6 @@ ${loader}
     if (/input|textarea/i.test(e.target.tagName)) return;
     if (e.key === "ArrowRight") next.click(); else if (e.key === "ArrowLeft" && cur > 0) back.click();
   });
-  document.querySelectorAll(".shot video").forEach(v => v.addEventListener("click", () => { if (v.paused) v.play().catch(() => {}); else v.pause(); }));
   history.replaceState({ i: 0 }, "", location.href);
   show(parseInt(location.hash.slice(1), 10) || 0, false);
 })();
