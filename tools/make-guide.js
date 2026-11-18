@@ -29,8 +29,9 @@ const STEPS = [
       <span class="big" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 12.6l3.6 3.6 7.3-8"/></svg></span>
       <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
     <div class="burst" id="burst" aria-hidden="true"></div></div>
-    <p class="safe">🔒 <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
-    <details class="codefold"><summary>ดูโค้ด</summary><p class="why">โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
+    <details class="fold codebox"><summary><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.6"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></svg></span><b>โค้ดนี้ปลอดภัยไหม?</b><span class="chev" aria-hidden="true"></span></summary>
+      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
+      <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>` },
   { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
     check: "หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script" },
@@ -279,13 +280,11 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .copied-card .s { margin: 4px 0 0; color: var(--sub); font-size: 1rem; }
   .copied-card .again { margin-top: 6px; padding: 8px 12px; border: 0; background: none; font: inherit; font-size: .9rem; font-weight: 700; color: var(--ok); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
   .copied-card .deco { position: absolute; font-size: 20px; line-height: 1; pointer-events: none; }
-  .codefold { margin: 2px 0 0; text-align: center; }
-  .codefold summary { list-style: none; display: inline-block; padding: 6px 10px; font-size: .9rem; font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-  .codefold summary::-webkit-details-marker { display: none; }
-  .codefold summary::after { content: "›"; display: inline-block; margin-left: 6px; text-decoration: none; transition: transform .2s; }
-  .codefold[open] summary::after { transform: rotate(90deg); }
-  .codefold .why { margin: 4px 0 0; text-align: left; color: var(--sub); font-size: .88rem; }
-  .codefold pre.code { text-align: left; }
+  /* กล่องโค้ด (กดเปิด/ปิด) */
+  .codebox p b { color: var(--ink); font-weight: 600; }
+  .codebox pre.code { margin: 0 14px 14px; }
+  .fold .ic svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; }
+  .fold .ic svg rect { fill: currentColor; }
   .btn.copy .tick { width: 0; height: 24px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; stroke-dashoffset: 22; }
   .btn.copy.done { background: linear-gradient(180deg, #3BB061, #1E7F3C); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 22px -6px rgba(30,127,60,.6); }
   .btn.copy.done .tick { width: 24px; stroke-dashoffset: 0; }
@@ -304,7 +303,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     .btn.copy.pop { animation: pop .5s cubic-bezier(.2, 1.7, .4, 1); }
     .burst i { animation: fly .9s cubic-bezier(.15, .7, .3, 1) forwards; }
     .copied-card.pop { animation: popin .5s cubic-bezier(.2, 1.6, .4, 1); }
-    .codefold[open] .why, .codefold[open] pre { animation: rise .3s ease-out; }
+    .fold[open] pre { animation: rise .3s ease-out; }
     #next.nudge > span { animation: nudge 1.2s ease-in-out 2; }
     .screen.on { animation: enter .35s cubic-bezier(.2, .8, .3, 1); }
   }
