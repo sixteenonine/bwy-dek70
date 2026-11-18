@@ -3,138 +3,301 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EDEDED" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <title>Dek70 Countdown by BearWithYou</title>
-<meta name="description" content="widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou">
+<meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
+<meta property="og:title" content="🐻 Dek70 Countdown">
+<meta property="og:description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou">
+<meta property="og:image" content="https://bwy-widget.pages.dev/guide/hero.jpg">
+<meta property="og:url" content="https://bwy-widget.pages.dev/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
 <style>
   :root {
-    --bg: #ECECEC; --card: #FFFFFF; --ink: #000000; --sub: #5F5F64; --line: #DADADA; --track: #C2C2C2; --red: #E5484D; --soft: #F2F2F2;
-    box-sizing: border-box;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg1: #F3F3F3; --bg2: #E7E7E7; --bgx: #EDEDED; --card: #FFFFFF; --inner: #F6F6F6; --ink: #0B0B0C; --sub: #6B6B70; --mute: #A3A3A8; --line: #ECECEC; --chip: #F2F2F2;
+    --ok: #1E7F3C; --ok-bg: #E9F6EC; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 18px 40px -12px rgba(0,0,0,.14);
+    --btn: linear-gradient(180deg, #3B3B3D 0%, #161617 55%, #050505 100%); --btn-ink: #FFFFFF;
+    --btn-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 3px rgba(0,0,0,.18), 0 10px 22px -6px rgba(0,0,0,.45);
+    --glass: rgba(255,255,255,.78);
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg: #0F0F11; --card: #1C1C1E; --ink: #F5F5F7; --sub: #A1A1A6; --line: #2C2C2E; --track: #3A3A3C; --red: #FF6369; --soft: #2C2C2E; }
+    :root { --bg1: #141416; --bg2: #0A0A0B; --bgx: #0F0F11; --card: #1B1B1E; --inner: #232327; --ink: #F4F4F6; --sub: #A3A3AA; --mute: #6E6E76; --line: #2B2B30; --chip: #26262B;
+      --ok: #7EDB9A; --ok-bg: #16301F; --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -12px rgba(0,0,0,.7);
+      --btn: linear-gradient(180deg, #FFFFFF 0%, #E9E9EB 60%, #D2D2D6 100%); --btn-ink: #0B0B0C;
+      --btn-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 3px rgba(0,0,0,.4), 0 10px 22px -6px rgba(0,0,0,.6);
+      --glass: rgba(27,27,30,.78); }
   }
-  *, *::before, *::after { box-sizing: inherit; }
+  *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; }
-  body {
-    background: var(--bg); color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif;
-    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  /* สีพื้นของทั้งหน้า (รวมส่วนที่ยืดออกตอนเลื่อนสุดขอบ) + ไล่สีที่ติดจอไว้ข้างหลัง */
+  html { background: var(--bgx); }
+  /* ปิดการซูมตอนแตะสองครั้ง (ยังถ่างนิ้วซูมได้ตามปกติ) */
+  html, body, button, a, video, .pager, .nav { touch-action: manipulation; }
+  body { min-height: 100vh; min-height: 100dvh; background: transparent; color: var(--ink); line-height: 1.55;
+    -webkit-font-smoothing: antialiased; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
+  body::before { content: ""; position: fixed; inset: -20vh 0; z-index: -1; background: linear-gradient(165deg, var(--bg1), var(--bg2)); pointer-events: none; }
+  main { max-width: 480px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(130px + env(safe-area-inset-bottom, 0px)); }
+  /* ตัวเลขขั้นด้านบน (แบบ pagination) */
+  .pager { display: flex; justify-content: space-between; gap: 6px; padding: 7px; margin: 0 0 22px; background: var(--card); border-radius: 22px; box-shadow: var(--shadow); }
+  .pager button { flex: 1; min-width: 0; height: 40px; border: 0; border-radius: 13px; background: var(--chip); color: var(--sub); font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; }
+  .pager button.done { color: var(--ok); }
+  .pager button.done::before { content: "✓"; font-weight: 800; }
+  .pager button.done { font-size: 0; }
+  .pager button.done::before { font-size: 1rem; }
+  .pager button.cur { background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); font-weight: 700; }
+  /* การ์ด */
+  .card { background: var(--card); border-radius: 28px; padding: 18px; box-shadow: var(--shadow); }
+  .frame { padding: 6px; border-radius: 26px; background: var(--inner); border: 1px solid var(--line); }
+  .frame > img, .frame > video { display: block; width: 100%; height: auto; border-radius: 20px; }
+  .hero { margin: 0; }
+  .hero .frame { border-radius: 24px; } .hero .frame > img { border-radius: 18px; }
+  /* หัวข้อ */
+  .chip { display: inline-block; margin: 0 0 6px; padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: .78rem; font-weight: 600; color: var(--sub); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 700; }
+  h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
+  .mute { display: block; color: var(--mute); }
+  .done-h { font-size: 2rem; margin-bottom: 8px; }
+  .lead { color: var(--sub); margin: 0; font-size: 1.02rem; }
+  .intro-text { margin: 4px 4px 18px; }
+  .hint { color: var(--sub); margin: 14px 2px 0; font-size: .95rem; }
+  .head { display: flex; align-items: center; gap: 14px; margin: 0 2px 16px; }
+  .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFFFFF; color: #0B0B0C; display: grid; place-items: center;
+    font-size: 2rem; font-weight: 800; line-height: 1; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 10px 24px -8px rgba(0,0,0,.25); border: 1px solid rgba(0,0,0,.04); }
+  .head .chip { margin-bottom: 4px; }
+  /* เนื้อหาในการ์ด */
+  .txt > p:not(.copied):not(.safe) { margin: 0 0 4px; color: var(--sub); font-size: 1.05rem; }
+  .txt > :first-child { margin-top: 0 !important; }
+  ol.do { list-style: none; counter-reset: d; margin: 0; padding: 0; display: grid; gap: 10px; color: var(--sub); font-size: 1.04rem; }
+  ol.do li { counter-increment: d; display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; }
+  ol.do li::before { content: counter(d); width: 28px; height: 28px; border-radius: 9px; background: var(--chip); color: var(--ink); display: grid; place-items: center; font-weight: 700; font-size: .9rem; margin-top: 1px; }
+  ol.do + p { margin-top: 12px !important; }
+  b.key { color: var(--ink); font-weight: 700; }
+  .shot { margin: 16px auto 0; width: min(100%, 300px); }
+  .shot.wide { width: 100%; }
+  .shot.wide .frame { background: #fff; }
+  /* กล่อง ต้องเห็น / ข้อมูล */
+  .check { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; margin: 16px 0 0; padding: 12px 14px; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); }
+  .check p { margin: 0; color: var(--ink); font-size: .98rem; }
+  .check b { display: block; font-size: .78rem; letter-spacing: .02em; color: var(--ok); margin-bottom: 1px; }
+  .check .ic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: .95rem; color: #fff;
+    background: linear-gradient(180deg, #3BB061, #1E7F3C); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 10px -3px rgba(30,127,60,.6); }
+  .check.info .ic { background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); font-family: Georgia, serif; font-style: italic; }
+  .check.info b { color: var(--ink); font-size: .95rem; letter-spacing: 0; }
+  .check.info p { color: var(--sub); font-size: .93rem; }
+  /* รายการก่อนเริ่ม */
+  .need { list-style: none; margin: 16px 2px 0; padding: 0; display: grid; gap: 10px; }
+  .need li { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+  .need li::before { content: "✓"; flex: none; width: 24px; height: 24px; border-radius: 8px; display: grid; place-items: center; background: var(--chip); color: var(--ok); font-weight: 800; font-size: .8rem; }
+  .need li.no { color: var(--sub); }
+  .need li.no::before { content: "✕"; color: var(--sub); }
+  /* ปุ่ม */
+  .btn { display: flex; align-items: center; justify-content: center; min-height: 54px; margin-top: 16px; padding: 0 20px; border-radius: 18px; width: 100%;
+    font-family: inherit; font-weight: 700; font-size: 1.05rem; text-decoration: none; cursor: pointer; border: 0; background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); }
+  .btn.ghost { background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 6px 14px -8px rgba(0,0,0,.2); }
+  .btn:focus-visible, .nav button:focus-visible, .pager button:focus-visible { outline: 3px solid #4C8DFF; outline-offset: 3px; }
+  .copywrap { position: relative; }
+  .btn.copy { gap: 8px; font-size: 1.15rem; min-height: 58px; }
+  .btn.copy .tick { width: 0; height: 24px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; stroke-dashoffset: 22; }
+  .btn.copy.done { background: linear-gradient(180deg, #3BB061, #1E7F3C); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 22px -6px rgba(30,127,60,.6); }
+  .btn.copy.done .tick { width: 24px; stroke-dashoffset: 0; }
+  .copied { margin: 10px 0 0; text-align: center; font-weight: 700; color: var(--ok); }
+  pre.code { margin: 12px 0 0; max-height: 24vh; overflow: auto; padding: 14px; border-radius: 18px; background: linear-gradient(180deg, #1C1C1F, #0E0E10); color: #D8D8DE;
+    border: 1px solid #2A2A2E; box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    font: 11.5px/1.55 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; -webkit-user-select: text; user-select: text; }
+  .txt > p.safe { margin: 12px 0 0; font-size: .88rem; color: var(--sub); }
+  .burst { position: absolute; left: 50%; top: 42px; width: 0; height: 0; pointer-events: none; }
+  .burst i { position: absolute; left: 0; top: 0; font-style: normal; font-size: 22px; line-height: 1; opacity: 0; transform: translate(-50%, -50%); }
+  .burst i.dot { width: 9px; height: 9px; border-radius: 50%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn.copy .tick { transition: width .2s, stroke-dashoffset .35s .15s ease-out; }
+    .btn, .pager button { transition: background .2s, transform .18s cubic-bezier(.3, 1.8, .5, 1), box-shadow .2s; }
+    .btn:active, .pager button:active { transform: scale(.96); }
+    .btn.copy.pop { animation: pop .5s cubic-bezier(.2, 1.7, .4, 1); }
+    .burst i { animation: fly .9s cubic-bezier(.15, .7, .3, 1) forwards; }
+    .copied:not([hidden]) { animation: rise .4s ease-out; }
+    #next.nudge { animation: nudge 1.2s ease-in-out 2; }
+    .screen.on { animation: enter .35s cubic-bezier(.2, .8, .3, 1); }
   }
-  main { max-width: 480px; margin: 0 auto; padding: 32px 16px 48px; }
-  h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 8px; font-weight: 700; letter-spacing: -.01em; }
-  h2 { font-size: 1.3rem; margin: 36px 0 16px; font-weight: 700; }
-  .lead { color: var(--sub); margin: 0 0 24px; font-size: 1.05rem; }
-
-  .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .w {
-    aspect-ratio: 1; border-radius: 22px; padding: 9% 9%; position: relative;
-    background: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 45%, #DFDFDF 100%); color: #000;
-    box-shadow: 0 10px 30px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.7);
-  }
-  .w .name { font-size: clamp(12px, 3.6vw, 15px); }
-  .w .num { font-size: clamp(40px, 14vw, 62px); font-weight: 200; line-height: 1.05; letter-spacing: -.02em; }
-  .w .num small { font-size: .32em; font-weight: 400; margin-left: 5px; letter-spacing: 0; }
-  .w .date { font-size: clamp(11px, 3.1vw, 13px); }
-  .w .bar { position: absolute; left: 9%; right: 9%; bottom: 13%; height: 4px; border-radius: 2px; background: #C2C2C2; overflow: hidden; }
-  .w .bar i { display: block; height: 100%; width: 30%; border-radius: 2px; background: #000; }
-  .w.urgent .num, .w.urgent .num small { color: #E5484D; } .w.urgent .bar i { background: #E5484D; }
-
-  ol { list-style: none; padding: 0; margin: 0; counter-reset: step; }
-  ol > li { counter-increment: step; position: relative; padding: 0 0 22px 48px; }
-  ol > li::before {
-    content: counter(step); position: absolute; left: 0; top: 0;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--ink); color: var(--bg);
-    display: grid; place-items: center; font-weight: 700;
-  }
-  li strong { display: block; font-size: 1.05rem; }
-  li p { margin: 2px 0 10px; color: var(--sub); }
-
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    min-height: 48px; padding: 0 20px; border-radius: 14px;
-    font: 600 1rem inherit; font-family: inherit; text-decoration: none; cursor: pointer;
-    background: var(--ink); color: var(--bg); border: 1.5px solid var(--ink);
-  }
-  .btn.ghost { background: transparent; color: var(--ink); }
-  .btn:focus-visible { outline: 3px solid var(--red); outline-offset: 3px; }
-  .btn.done { background: #2E7D32; border-color: #2E7D32; color: #fff; }
-
-  .box { background: var(--card); border-radius: 16px; padding: 4px 16px; }
-  .opt { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  @keyframes enter { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes pop { 0% { transform: scale(1); } 30% { transform: scale(.9); } 100% { transform: scale(1); } }
+  @keyframes fly { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.4); }
+    70% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1) rotate(var(--r)); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+  @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); box-shadow: var(--btn-shadow), 0 0 0 6px rgba(46, 160, 80, .35); } }
+  /* Parameter / คำถาม / ลิงก์เล็ก */
+  .opts { margin: 16px 0 0; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); padding: 2px 14px; }
+  .opt { display: grid; grid-template-columns: minmax(0, auto) 1fr; gap: 12px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--line); }
   .opt:last-child { border-bottom: 0; }
-  code { font: 600 .95rem ui-monospace, Menlo, Consolas, monospace; background: var(--soft); border-radius: 7px; padding: 2px 8px; white-space: nowrap; }
-  .opt span { color: var(--sub); font-size: .95rem; }
-  .hint { color: var(--sub); font-size: .92rem; margin: 10px 2px 0; }
-  details { border-bottom: 1px solid var(--line); padding: 12px 0; }
-  details:last-child { border-bottom: 0; }
-  summary { font-weight: 600; cursor: pointer; }
-  details p { margin: 6px 0 0; color: var(--sub); font-size: .95rem; }
-  footer { text-align: center; color: var(--sub); font-size: .9rem; margin-top: 36px; }
-  footer a { color: var(--ink); font-weight: 600; }
+  .opt .k { color: var(--sub); font-size: .85rem; }
+  .opt > span:last-child { color: var(--ink); font-size: .98rem; }
+  code { font: 600 .95rem ui-monospace, Menlo, Consolas, monospace; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 1px 7px; white-space: nowrap; }
+  .faq { padding: 6px 20px; }
+  .faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+  .faq details:last-child { border-bottom: 0; }
+  .faq summary { font-weight: 700; font-size: 1.02rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; flex: none; width: 26px; height: 26px; border-radius: 9px; background: var(--chip); color: var(--sub); display: grid; place-items: center; font-weight: 700; }
+  .faq details[open] summary::after { content: "−"; }
+  .faq details p { margin: 8px 0 0; color: var(--sub); font-size: .97rem; }
+  .more { margin: 16px 2px 0; color: var(--sub); font-size: .95rem; }
+  .link { border: 0; background: none; padding: 0; font: inherit; font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .js-only .btn + .btn { margin-top: 10px; }
+  footer { text-align: center; color: var(--sub); font-size: .9rem; margin: 28px 0 0; }
+  footer a { color: var(--ink); font-weight: 700; }
   textarea.fallback { width: 100%; height: 160px; margin-top: 10px; font-size: 12px; display: none; }
-  @media (prefers-reduced-motion: no-preference) { .btn { transition: background .2s; } }
+  /* แถบปุ่มล่าง: กล่องลอย */
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 16px calc(14px + env(safe-area-inset-bottom, 0px)); pointer-events: none; }
+  .nav div { pointer-events: auto; max-width: 448px; margin: 0 auto; display: flex; gap: 6px; padding: 6px; border-radius: 24px; background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); border: 1px solid var(--line); box-shadow: 0 18px 40px -12px rgba(0,0,0,.3); }
+  .nav button { min-height: 52px; border-radius: 18px; border: 0; font-family: inherit; font-weight: 700; font-size: 1.08rem; cursor: pointer; }
+  #back { flex: 0 0 36%; background: var(--chip); color: var(--sub); }
+  #next { flex: 1; background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); }
+  #back[hidden] { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .nav button { transition: transform .22s cubic-bezier(.3, 1.8, .5, 1), background .2s, color .2s; -webkit-tap-highlight-color: transparent; }
+    .nav button.down { transform: scale(.93); transition-duration: .08s; }
+    .nav button.boing { animation: boing .42s cubic-bezier(.3, 1.4, .5, 1); }
+  }
+  @keyframes boing { 0% { transform: scale(.93); } 55% { transform: scale(1.05); } 100% { transform: scale(1); } }
+  /* ---------- จอกว้าง / แนวนอน ---------- */
+  main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .nav { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  @media (min-width: 700px) {
+    main { max-width: 980px; }
+    .pager { max-width: 460px; margin-left: auto; margin-right: auto; }
+    .nav div { max-width: 520px; }
+    /* การ์ดขั้นตอน: คำอธิบายซ้าย ภาพ/คลิปขวา */
+    .step .card:not(.faq) { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto 1fr; column-gap: 36px; align-items: start; padding: 26px; }
+    .step .card > .txt { grid-column: 1; grid-row: 1; }
+    .step .card > .check { grid-column: 1; grid-row: 2; align-self: start; }
+    .step .card > .shot { grid-column: 2; grid-row: 1 / span 2; }
+    .step .card > .shot { margin: 0; width: clamp(240px, calc((100vh - 300px) * .462), 330px); width: clamp(240px, calc((100svh - 300px) * .462), 330px); }
+    .step .card > .shot.wide { width: min(440px, 44vw); }
+    h2 { font-size: 1.8rem; }
+    .narrow { max-width: 720px; margin-left: auto; margin-right: auto; }
+    /* หน้าแรก / หน้าเสร็จ: ข้อความซ้าย การ์ดขวา */
+    html:not(.js) #s0, #s0.on, #s8.on { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); column-gap: 40px; align-items: center; }
+    h1, .done-h { font-size: 2.6rem; }
+  }
+  /* มือถือแนวนอน (จอเตี้ย) */
+  @media (orientation: landscape) and (max-height: 520px) {
+    main { padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); }
+    .pager { margin-bottom: 12px; padding: 5px; } .pager button { height: 32px; }
+    .nav { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); } .nav button { min-height: 44px; }
+    .head { margin-bottom: 10px; } .num { width: 48px; height: 48px; font-size: 1.5rem; }
+    .step .card > .shot { width: clamp(170px, calc((100vh - 170px) * .462), 300px); }
+    .step .card > .shot.wide { width: min(380px, 42vw); }
+    h1, .done-h { font-size: 1.9rem; }
+  }
+  /* ไม่มี JS: แสดงทุกขั้นต่อกัน ซ่อนแถบปุ่ม */
+  html:not(.js) .nav, html:not(.js) .pager, html:not(.js) .js-only { display: none; }
+  html:not(.js) .screen + .screen { margin-top: 40px; }
+  html.js .screen:not(.on) { display: none; }
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add("js");</script>
 <main>
-  <h1>🐻 Dek70 Countdown</h1>
-  <p class="lead">นับถอยหลังวันสำคัญ TCAS70 บนหน้าจอโฮม ติดตั้งครั้งเดียว อัปเดตวันให้เอง ฟรีจาก BearWithYou</p>
-
-  <div class="demo" aria-label="ตัวอย่าง widget">
-    <div class="w" id="w-tgat"><div class="name">สอบ TGAT</div><div class="num"><span>--</span><small>วัน</small></div><div class="date">30 มกรา</div><div class="bar"><i></i></div></div>
-    <div class="w" id="w-alevel"><div class="name">สอบ A-Level</div><div class="num"><span>--</span><small>วัน</small></div><div class="date">13–15 มีนา</div><div class="bar"><i></i></div></div>
-  </div>
-
-  <h2>ติดตั้งใน 1 นาที</h2>
-  <ol>
-    <li>
-      <strong>โหลดแอป Scriptable</strong>
-      <p>แอปฟรี ใช้สร้าง widget บน iPhone และ iPad</p>
-      <a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
-    </li>
-    <li>
-      <strong>ก๊อปโค้ด</strong>
-      <p>กดปุ่มเดียว โค้ดจะถูกก๊อปไว้ให้เลย</p>
-      <button class="btn" id="copy" type="button">ก๊อปโค้ด</button>
-      <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
-    </li>
-    <li>
-      <strong>วางใน Scriptable</strong>
-      <p>เปิดแอป กดปุ่ม + มุมขวาบน วางโค้ด ตั้งชื่อว่า Dek70 แล้วกด Done</p>
-    </li>
-    <li>
-      <strong>เพิ่ม widget</strong>
-      <p>กดค้างที่หน้าจอโฮม เลือกเพิ่ม widget ค้นหา Scriptable เลือกขนาด แล้วกดค้างที่ widget เลือก Edit Widget ตรง Script เลือก Dek70</p>
-    </li>
-  </ol>
-
-  <h2>ปรับแบบที่ชอบ</h2>
-  <div class="box">
-    <div class="opt"><code>bar</code><span>ขนาด Medium แบบนับถอยหลังเป็นวินาที</span></div>
-    <div class="opt"><code>tgat</code><span>ล็อกให้นับถึงวันสอบ TGAT ตลอด</span></div>
-    <div class="opt"><code>alevel</code><span>ล็อกให้นับถึงวันสอบ A-Level ตลอด</span></div>
-    <div class="opt"><code>dark</code><span>ธีมมืด (หรือ <b>light</b> ธีมสว่าง) เฉพาะ widget ตัวนี้</span></div>
-    <div class="opt"><code>tgat bar</code><span>ใช้คู่กันได้ เว้นวรรคระหว่างคำ</span></div>
-  </div>
-  <p class="hint">วิธีใส่: กดค้างที่ widget เลือก Edit Widget แล้วพิมพ์ในช่อง Parameter ถ้าไม่ใส่อะไร widget จะนับถึงวันสำคัญที่ใกล้ที่สุดให้เอง</p>
-
-  <h2>คำถามที่เจอบ่อย</h2>
-  <div class="box">
-    <details><summary>ต้องอัปเดตเองไหม</summary><p>ไม่ต้อง ติดตั้งครั้งเดียวจบ ถ้า ทปอ. เลื่อนวัน widget จะเปลี่ยนตามให้เอง</p></details>
-    <details><summary>ทำไมตัวเลขยังไม่เปลี่ยน</summary><p>iPhone รีเฟรช widget เองประมาณชั่วโมงละครั้ง ถ้าอยากให้เปลี่ยนทันที เปิดแอป Scriptable แล้วกดรัน Dek70 หนึ่งรอบ</p></details>
-    <details><summary>ขึ้นว่า Unsupported widget หรือเป็นกล่องว่าง</summary><p>กดค้างที่ widget เลือก Edit Widget แล้วเช็กว่าตรง Script เลือก Dek70 อยู่</p></details>
-    <details><summary>ขึ้นว่า "ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ"</summary><p>ครั้งแรกต้องมีเน็ตเพื่อโหลด widget ต่อเน็ตแล้วเปิดแอป Scriptable รัน Dek70 หนึ่งรอบ หลังจากนั้นไม่มีเน็ตก็ยังใช้ได้</p></details>
-    <details><summary>กินแบตหรือเก็บข้อมูลอะไรไหม</summary><p>ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช widget และไม่เก็บข้อมูลส่วนตัวใดๆ</p></details>
-    <details><summary>ใช้กับ Android ได้ไหม</summary><p>ตอนนี้ใช้ได้เฉพาะ iPhone และ iPad</p></details>
-  </div>
-
+  <nav class="pager" id="pager" aria-label="ไปที่ขั้น"><button type="button" data-go="1" aria-label="ขั้นที่ 1">1</button><button type="button" data-go="2" aria-label="ขั้นที่ 2">2</button><button type="button" data-go="3" aria-label="ขั้นที่ 3">3</button><button type="button" data-go="4" aria-label="ขั้นที่ 4">4</button><button type="button" data-go="5" aria-label="ขั้นที่ 5">5</button><button type="button" data-go="6" aria-label="ขั้นที่ 6">6</button><button type="button" data-go="7" aria-label="ขั้นที่ 7">7</button></nav>
+  <section class="screen" id="s0" data-hash="" aria-labelledby="h0">
+    <div class="intro-text">
+      <p class="chip">ฟรี · iPhone / iPad</p>
+      <h1 id="h0"><span class="mute">นับถอยหลังวันสอบ</span> 🐻 Dek70 Countdown</h1>
+      <p class="lead">วันสำคัญ TCAS70 บนหน้าจอโฮม ติดตั้งครั้งเดียว วันอัปเดตให้เอง</p>
+    </div>
+    <div class="card intro-card"><figure class="hero"><div class="frame"><img src="guide/hero.jpg" width="1011" height="350" alt="ตัวอย่าง Widget: ขนาด Small ธีมมืด นับถอยหลัง 58 วันถึงเปิดสมัคร A-Level และขนาด Medium ธีมสว่าง นับถอยหลังเป็นวินาที"></div></figure>
+      <ul class="need" aria-label="ก่อนเริ่ม">
+        <li>iPhone หรือ iPad</li>
+        <li>ต่อเน็ตอยู่</li>
+        <li>ใช้เวลาประมาณ 2 นาที (7 ขั้น)</li>
+        <li class="no">Android ยังใช้ไม่ได้</li>
+      </ul>
+      <p class="more js-only">เคยติดตั้งแล้ว? <button class="link" type="button" data-go="options">ปรับแบบ</button> · <button class="link" type="button" data-go="faq">คำถามที่เจอบ่อย</button></p>
+    </div>
+  </section>
+  <section class="screen step" id="s1" data-hash="1" aria-labelledby="h1">
+    <div class="head"><span class="num" aria-hidden="true">1</span><div><p class="chip">ขั้นที่ 1 / 7</p><h2 id="h1">โหลดแอป Scriptable</h2></div></div>
+    <div class="card"><div class="txt">
+    <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
+    </div><figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>
+    <div class="check info"><span class="ic" aria-hidden="true">i</span><p><b>Scriptable คืออะไร</b>แอปฟรีสำหรับสร้าง Widget เอง จากนักพัฒนา Simon Støvring ผ่านการตรวจของ Apple เหมือนแอปทั่วไป ไม่ต้องสมัครหรือล็อกอิน และ iPhone จะถามเราก่อนทุกครั้งถ้าแอปจะเข้าถึงรูป รายชื่อ หรือตำแหน่ง</p></div></div>
+  </section>
+  <section class="screen step" id="s2" data-hash="2" aria-labelledby="h2">
+    <div class="head"><span class="num" aria-hidden="true">2</span><div><p class="chip">ขั้นที่ 2 / 7</p><h2 id="h2">Copy โค้ด</h2></div></div>
+    <div class="card"><div class="txt">
+    <p>โค้ดนี้คือหัวใจของ Widget ไม่มีโค้ดนี้ Widget จะว่างเปล่า</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้แค่โหลดตัวนับถอยหลังจากเว็บ BearWithYou ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ และไม่ต้องจ่ายเงิน</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
+    </div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!</p></div></div>
+  </section>
+  <section class="screen step" id="s3" data-hash="3" aria-labelledby="h3">
+    <div class="head"><span class="num" aria-hidden="true">3</span><div><p class="chip">ขั้นที่ 3 / 7</p><h2 id="h3">เปิด Scriptable แล้วกด +</h2></div></div>
+    <div class="card"><div class="txt">
+    <ol class="do"><li><span>แตะไอคอน <b class="key">Scriptable</b> บนหน้าจอโฮม</span></li><li><span>กด <b class="key">+</b> มุมขวาบน</span></li></ol>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s3.jpg" aria-label="แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"><source src="guide/s3.mp4" type="video/mp4"></video></div></figure>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script</p></div></div>
+  </section>
+  <section class="screen step" id="s4" data-hash="4" aria-labelledby="h4">
+    <div class="head"><span class="num" aria-hidden="true">4</span><div><p class="chip">ขั้นที่ 4 / 7</p><h2 id="h4">แตะค้าง แล้วกด Paste</h2></div></div>
+    <div class="card"><div class="txt">
+    <p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด <b class="key">Paste</b></p>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s4.jpg" aria-label="แตะค้างที่หน้าว่างแล้วกด Paste"><source src="guide/s4.mp4" type="video/mp4"></video></div></figure>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>โค้ดขึ้นเต็มหน้า</p></div></div>
+  </section>
+  <section class="screen step" id="s5" data-hash="5" aria-labelledby="h5">
+    <div class="head"><span class="num" aria-hidden="true">5</span><div><p class="chip">ขั้นที่ 5 / 7</p><h2 id="h5">ตั้งชื่อว่า Dek70</h2></div></div>
+    <div class="card"><div class="txt">
+    <ol class="do"><li><span>แตะชื่อ <b class="key">Untitled Script</b> ด้านบน</span></li><li><span>ลบชื่อเดิม พิมพ์ <b class="key">Dek70</b></span></li><li><span>กด <b class="key">Rename</b></span></li><li><span>กด <b class="key">Done</b> มุมซ้ายบน</span></li></ol>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s5.jpg" aria-label="แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"><source src="guide/s5.mp4" type="video/mp4"></video></div></figure>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>การ์ดชื่อ Dek70 อยู่ในรายการ</p></div></div>
+  </section>
+  <section class="screen step" id="s6" data-hash="6" aria-labelledby="h6">
+    <div class="head"><span class="num" aria-hidden="true">6</span><div><p class="chip">ขั้นที่ 6 / 7</p><h2 id="h6">เพิ่ม Widget บนหน้าจอโฮม</h2></div></div>
+    <div class="card"><div class="txt">
+    <ol class="do"><li><span>กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น</span></li><li><span>กด <b class="key">Edit</b> มุมซ้ายบน แล้วกด <b class="key">Add Widget</b></span></li><li><span>พิมพ์ <b class="key">Scriptable</b> ในช่องค้นหา แล้วแตะชื่อแอป</span></li><li><span>กด <b class="key">Add Widget</b> (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)</span></li><li><span>กด <b class="key">Done</b> มุมขวาบน</span></li></ol>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done"><source src="guide/s6.mp4" type="video/mp4"></video></div></figure>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม</p></div></div>
+  </section>
+  <section class="screen step" id="s7" data-hash="7" aria-labelledby="h7">
+    <div class="head"><span class="num" aria-hidden="true">7</span><div><p class="chip">ขั้นที่ 7 / 7</p><h2 id="h7">เลือกสคริปต์ Dek70</h2></div></div>
+    <div class="card"><div class="txt">
+    <ol class="do"><li><span>กดค้างที่กล่องนั้น แล้วกด <b class="key">Edit Widget</b></span></li><li><span>แตะ <b class="key">Choose</b> ที่แถว Script</span></li><li><span>เลือก <b class="key">Dek70</b></span></li><li><span>แตะที่ว่างนอกกล่องเพื่อปิด</span></li></ol>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s8.jpg" aria-label="กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"><source src="guide/s8.mp4" type="video/mp4"></video></div></figure>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>Widget แสดงผลนับถอยหลังแล้ว</p></div></div>
+  </section>
+  <section class="screen" id="s8" data-hash="done" aria-labelledby="hd">
+    <div class="intro-text"><p class="chip">ติดตั้งครบ 7 ขั้น</p>
+    <h2 id="hd" class="done-h"><span class="mute">เรียบร้อย</span> เสร็จแล้ว 🎉</h2>
+    <p class="lead">Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p></div>
+    <div class="card"><figure class="hero"><div class="frame"><img src="guide/hero.jpg" width="1011" height="350" alt="ตัวอย่าง Widget: ขนาด Small ธีมมืด นับถอยหลัง 58 วันถึงเปิดสมัคร A-Level และขนาด Medium ธีมสว่าง นับถอยหลังเป็นวินาที"></div></figure>
+    <p class="hint">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ 7 อีกรอบ</p>
+    <div class="js-only"><button class="btn ghost" type="button" data-go="theme">🎨 ดูวิธีเปลี่ยนธีมสี</button>
+    <button class="btn ghost" type="button" data-go="options">⚙️ ปรับแบบด้วย Parameter</button>
+    <button class="btn ghost" type="button" data-go="faq">💬 คำถามที่เจอบ่อย</button></div></div>
+  </section>
+  <section class="screen step" id="s9" data-hash="theme" aria-labelledby="ht">
+    <div class="head"><span class="num" aria-hidden="true">🎨</span><div><p class="chip">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
+    <div class="card"><div class="txt">
+    <ol class="do"><li><span>เปิดแอป <b class="key">Scriptable</b> แล้วแตะ <b class="key">Dek70</b></span></li><li><span>กด <b class="key">🌙 เปลี่ยนเป็นธีมมืด</b></span></li><li><span>กด <b class="key">โอเค</b></span></li><li><span>กลับหน้าจอโฮม รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)</span></li></ol>
+    <p>อยากกลับเป็นธีมสว่าง ทำซ้ำแล้วกด <b class="key">☀️ เปลี่ยนเป็นธีมสว่าง</b></p>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/theme.jpg" aria-label="แตะไอคอน Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอโฮมเปลี่ยนเป็นสีมืด"><source src="guide/theme.mp4" type="video/mp4"></video></div></figure>
+    <div class="check info"><span class="ic" aria-hidden="true">i</span><p><b>อยากให้บางตัวเป็นธีมมืด</b>กดค้างที่ Widget ตัวนั้น กด <b class="key">Edit Widget</b> แล้วพิมพ์ <b class="key">dark</b> ในช่อง Parameter</p></div></div>
+  </section>
+  <section class="screen step narrow" id="s10" data-hash="options" aria-labelledby="ho">
+    <div class="head"><span class="num" aria-hidden="true">⚙️</span><div><p class="chip">ไม่บังคับ</p><h2 id="ho">ปรับแบบด้วย Parameter</h2></div></div>
+    <div class="card"><div class="txt">
+    <ol class="do"><li><span>กดค้างที่ Widget แล้วกด <b class="key">Edit Widget</b></span></li><li><span>แตะช่อง <b class="key">Parameter</b> แล้วพิมพ์คำจากตารางด้านล่าง</span></li><li><span>แตะที่ว่างนอกกล่องเพื่อปิด</span></li></ol>
+    <div class="opts"><div class="opt"><span class="k"><code>tgat</code></span><span>นับถึงวันสอบ TGAT ตลอด</span></div><div class="opt"><span class="k"><code>alevel</code></span><span>นับถึงวันสอบ A-Level ตลอด</span></div><div class="opt"><span class="k"><code>dark</code> หรือ <code>มืด</code></span><span>ธีมมืด เฉพาะ Widget ตัวนี้</span></div><div class="opt"><span class="k"><code>light</code> หรือ <code>สว่าง</code></span><span>ธีมสว่าง เฉพาะ Widget ตัวนี้</span></div><div class="opt"><span class="k"><code>alevel dark</code></span><span>ใช้คู่กันได้ เว้นวรรคระหว่างคำ</span></div></div>
+    </div>
+    <div class="check info"><span class="ic" aria-hidden="true">i</span><p><b>ไม่ใส่อะไรเลยก็ได้</b>Widget จะนับถึงวันสำคัญที่ใกล้ที่สุดให้เอง พิมพ์ตัวพิมพ์เล็กหรือใหญ่ก็ได้</p></div></div>
+  </section>
+  <section class="screen step narrow" id="s11" data-hash="faq" aria-labelledby="hq">
+    <div class="head"><span class="num" aria-hidden="true">💬</span><div><p class="chip">มีปัญหา?</p><h2 id="hq">คำถามที่เจอบ่อย</h2></div></div>
+    <div class="card faq"><details><summary>ต้องอัปเดตเองไหม</summary><p>ไม่ต้อง ติดตั้งครั้งเดียวจบ ถ้า ทปอ. เลื่อนวัน Widget จะเปลี่ยนตามให้เอง</p></details><details><summary>ทำไมตัวเลขยังไม่เปลี่ยน</summary><p>iPhone รีเฟรช Widget เองประมาณชั่วโมงละครั้ง ถ้าอยากให้เปลี่ยนทันที เปิดแอป Scriptable แล้วแตะ Dek70 หนึ่งรอบ</p></details><details><summary>ขึ้นว่า Unsupported widget หรือเป็นกล่องว่าง</summary><p>กดค้างที่ Widget กด <b class="key">Edit Widget</b> แล้วเช็กว่าแถว Script เลือก <b class="key">Dek70</b> อยู่ (ดูขั้นที่ 7)</p></details><details><summary>ขึ้นว่า "ขนาดนี้ยังไม่เปิดใช้"</summary><p>ตอนนี้ใช้ได้ขนาด Small และ Medium ลบตัวนั้นออกแล้วเพิ่มใหม่เป็น Small หรือ Medium</p></details><details><summary>ขึ้นว่า "ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ"</summary><p>ครั้งแรกต้องมีเน็ตเพื่อโหลด Widget ต่อเน็ตแล้วเปิดแอป Scriptable แตะ Dek70 หนึ่งรอบ หลังจากนั้นไม่มีเน็ตก็ยังใช้ได้</p></details><details><summary>กินแบตหรือเก็บข้อมูลอะไรไหม</summary><p>ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช Widget และไม่เก็บข้อมูลส่วนตัวใดๆ</p></details><details><summary>ใช้กับ Android ได้ไหม</summary><p>ตอนนี้ใช้ได้เฉพาะ iPhone และ iPad</p></details></div>
+  </section>
   <footer>ติดตามเทคนิคพิชิตสอบได้ที่ <a href="https://x.com/WeBearTogether">@WeBearTogether</a></footer>
 </main>
-
+<nav class="nav" aria-label="เปลี่ยนขั้น"><div><button id="back" type="button">← ย้อนกลับ</button><button id="next" type="button">เริ่มติดตั้ง →</button></div></nav>
 <script type="text/plain" id="loader">// 🐻 Countdown Widget by BearWithYou (@WeBearTogether)
 // ติดตั้งครั้งเดียว อัปเดตอัตโนมัติ ไม่ต้องแก้อะไรในนี้
 const SOURCE = "https://bwy-widget.pages.dev/widget.js";
@@ -185,49 +348,99 @@ if (config.runsInWidget) {
 Script.complete();
 </script>
 <script>
-  // ตัวอย่างด้านบน: อ่านวันจาก events.csv ชุดเดียวกับ widget (ถ้าโหลดไม่ได้ใช้ค่าที่ใส่ไว้)
-  const MONTHS = ["มกรา", "กุมภา", "มีนา", "เมษา", "พฤษภา", "มิถุนา", "กรกฎา", "สิงหา", "กันยา", "ตุลา", "พฤศจิกา", "ธันวา"];
-  const show = (id, name, s, e) => {
-    const el = document.getElementById(id), n = new Date();
-    n.setHours(0, 0, 0, 0);
-    const d0 = new Date(s); d0.setHours(0, 0, 0, 0);
-    const d = Math.round((d0 - n) / 86400000);
-    if (d < 0) { el.hidden = true; return; }
-    el.querySelector(".name").textContent = name;
-    el.querySelector(".num span").textContent = d;
-    const same = s.toDateString() === e.toDateString();
-    el.querySelector(".date").textContent = same ? `${s.getDate()} ${MONTHS[s.getMonth()]}` : s.getMonth() === e.getMonth() ? `${s.getDate()}–${e.getDate()} ${MONTHS[s.getMonth()]}` : `${s.getDate()} ${MONTHS[s.getMonth()]}–${e.getDate()} ${MONTHS[e.getMonth()]}`;
-    el.classList.toggle("urgent", d <= 14);
-    el.querySelector(".bar i").style.width = Math.max(4, Math.min(100, 100 - d / 1.2)) + "%";
-  };
-  show("w-tgat", "สอบ TGAT", new Date(2027, 0, 30), new Date(2027, 0, 30));
-  show("w-alevel", "สอบ A-Level", new Date(2027, 2, 13), new Date(2027, 2, 15));
-  fetch("events.csv").then(r => (r.ok ? r.text() : "")).then(t => {
-    const rows = t.replace(/^﻿/, "").split(/\r?\n/).map(l => l.split(","));
-    const head = rows[0] || [], c = k => head.indexOf(k);
-    const dt = v => { const m = String(v || "").trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); return m ? new Date(+m[1] > 2400 ? +m[1] - 543 : +m[1], +m[2] - 1, +m[3]) : null; };
-    [["w-tgat", "tgat"], ["w-alevel", "alevel"]].forEach(([id, key]) => {
-      const r = rows.find(x => x[c("key")] === key);
-      const s = r && dt(r[c("start")]), e = r && (dt(r[c("end")]) || s);
-      if (s) show(id, r[c("name")], s, e);
-    });
-  }).catch(() => {});
-
-  const code = document.getElementById("loader").textContent.trim();
-  const btn = document.getElementById("copy");
-  btn.addEventListener("click", async () => {
+(() => {
+  const code = document.getElementById("loader").textContent;
+  const copy = document.getElementById("copy"), ta = document.getElementById("fallback");
+  const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), copied = document.getElementById("copied");
+  const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const BITS = ["🐻", "✨", "💛", "⭐", "✨", "🐻"], COLORS = ["#FFC94D", "#FF8FB1", "#7DDA98", "#6FB6FF", "#E5484D"];
+  function party() {
+    if (calm) return;
+    burst.textContent = "";
+    for (let n = 0; n < 18; n++) {
+      const el = document.createElement("i"), a = Math.PI * 2 * n / 18 + Math.random() * .3, d = 70 + Math.random() * 70;
+      if (n % 3 === 0) el.textContent = BITS[(n / 3) % BITS.length]; else { el.className = "dot"; el.style.background = COLORS[n % COLORS.length]; }
+      el.style.setProperty("--x", Math.cos(a) * d * 1.6 + "px"); el.style.setProperty("--y", Math.sin(a) * d - 20 + "px");
+      el.style.setProperty("--r", (Math.random() * 120 - 60) + "deg"); el.style.animationDelay = Math.random() * 60 + "ms";
+      burst.appendChild(el);
+    }
+    copy.classList.remove("pop"); void copy.offsetWidth; copy.classList.add("pop");
+    const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
+  }
+  const pre = document.getElementById("code");
+  pre.textContent = code;
+  copy.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(code);
-      btn.textContent = "ก๊อปแล้ว ไปวางใน Scriptable ได้เลย";
-      btn.classList.add("done");
-    } catch (e) {
-      const ta = document.getElementById("fallback");
-      ta.value = code;
-      ta.style.display = "block";
-      ta.select();
-      btn.textContent = "กดค้างในกล่องข้างล่างแล้วเลือกคัดลอก";
-    }
+      lbl.textContent = "Copied!"; copy.classList.add("done"); copied.hidden = false; party();
+    } catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); lbl.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
   });
+
+  const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, HASH = screens.map(s => s.dataset.hash);
+  const DONE = HASH.indexOf("done"), STEPS = DONE - 1;
+  const extra = i => i > DONE; // หน้าเสริมหลังหน้าเสร็จ: ธีม / Parameter / คำถาม
+  const idx = h => { h = String(h || "").replace(/^#/, ""); const j = HASH.indexOf(h); return j >= 0 ? j : parseInt(h, 10) || 0; };
+  const back = document.getElementById("back"), next = document.getElementById("next"), pager = [...document.querySelectorAll("#pager button")];
+  const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let cur = -1, ret = 0; // ret = หน้าที่จะกลับไปจากหน้าเสริม
+  // เล่นคลิปของหน้าที่เปิดอยู่ ถ้า iPhone หยุดเอง (โหลดไม่ทัน สลับแอป ประหยัดพลังงาน) ให้ลองเล่นต่อเอง
+  const active = v => !still && !v.userPaused && v.closest(".screen").classList.contains("on");
+  function play(v) {
+    if (!active(v)) return;
+    const p = v.play();
+    if (p && p.catch) p.catch(err => {
+      if (err && err.name === "NotAllowedError") { v.controls = true; return; } // เครื่องไม่ให้เล่นเอง (เช่นโหมดประหยัดพลังงาน) โชว์ปุ่มเล่นแทน
+      if (v.readyState < 3) v.addEventListener("canplay", () => play(v), { once: true }); else setTimeout(() => play(v), 300); });
+  }
+  document.querySelectorAll(".shot video").forEach(v => {
+    v.addEventListener("pause", () => { if (active(v) && !v.ended) setTimeout(() => { if (v.paused) play(v); }, 250); });
+    ["stalled", "waiting", "canplay"].forEach(ev => v.addEventListener(ev, () => { if (v.paused) play(v); }));
+    v.addEventListener("ended", () => { v.currentTime = 0; play(v); }); // กันกรณี loop ไม่ทำงาน
+    v.addEventListener("click", () => { if (v.paused) { v.userPaused = false; play(v); } else { v.userPaused = true; v.pause(); } });
+  });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { const v = screens[cur] && screens[cur].querySelector("video"); if (v) play(v); } });
+  function show(i, push) {
+    i = Math.max(0, Math.min(LAST, i));
+    if (i === cur) return;
+    if (extra(i) && cur >= 0 && !extra(cur)) ret = cur;
+    cur = i;
+    screens.forEach((s, j) => {
+      s.classList.toggle("on", j === i);
+      const v = s.querySelector("video");
+      if (!v) return;
+      if (j === i) { v.preload = "auto"; v.userPaused = false; if (still) v.controls = true; else { if (v.readyState > 0) v.currentTime = 0; play(v); } }
+      else v.pause();
+      if (j === i + 1) v.preload = "auto"; // โหลดคลิปขั้นถัดไปรอไว้
+    });
+    back.hidden = i === 0 || extra(i);
+    next.textContent = extra(i) ? (ret === 0 ? "← กลับหน้าแรก" : ret === DONE ? "กลับหน้าเสร็จ ✓" : "← กลับไปขั้นที่ " + ret)
+      : i === 0 ? "เริ่มติดตั้ง →" : i === STEPS ? "เสร็จแล้ว ✓" : i === DONE ? "กลับไปขั้นแรก" : "ถัดไป →";
+    const ref = extra(i) ? ret : i;
+    pager.forEach((b, j) => { const n = j + 1; b.classList.toggle("cur", n === i); b.classList.toggle("done", n < ref || ref > STEPS);
+      if (n === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+    window.scrollTo(0, 0);
+    if (push) history.pushState({ i }, "", i ? "#" + HASH[i] : location.pathname + location.search);
+    const h = screens[i].querySelector("h1, h2");
+    if (h && push) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
+  }
+  // กดแล้วยุบ ปล่อยแล้วเด้ง
+  [back, next].forEach(b => {
+    b.addEventListener("pointerdown", () => b.classList.add("down"));
+    ["pointerup", "pointercancel", "pointerleave"].forEach(ev => b.addEventListener(ev, () => b.classList.remove("down")));
+    b.addEventListener("click", () => { b.classList.remove("boing"); void b.offsetWidth; b.classList.add("boing"); });
+    b.addEventListener("animationend", () => b.classList.remove("boing"));
+  });
+  document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => show(idx(b.dataset.go), true)));
+  next.addEventListener("click", () => show(extra(cur) ? ret : cur === DONE ? 1 : cur + 1, true));
+  back.addEventListener("click", () => show(cur - 1, true));
+  window.addEventListener("popstate", () => show(idx(location.hash), false));
+  document.addEventListener("keydown", e => {
+    if (/input|textarea/i.test(e.target.tagName)) return;
+    if (e.key === "ArrowRight") next.click(); else if (e.key === "ArrowLeft" && cur > 0) back.click();
+  });
+  history.replaceState({ i: 0 }, "", location.href);
+  show(idx(location.hash), false);
+})();
 </script>
 </body>
 </html>
