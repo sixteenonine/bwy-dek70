@@ -280,7 +280,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     .btn.copy.pop { animation: pop .5s cubic-bezier(.2, 1.7, .4, 1); }
     .burst i { animation: fly .9s cubic-bezier(.15, .7, .3, 1) forwards; }
     .copied:not([hidden]) { animation: rise .4s ease-out; }
-    #next.nudge { animation: nudge 1.2s ease-in-out 2; }
+    #next.nudge > span { animation: nudge 1.2s ease-in-out 2; }
     .screen.on { animation: enter .35s cubic-bezier(.2, .8, .3, 1); }
   }
   @keyframes enter { from { opacity: 0; transform: translateY(8px); } }
@@ -313,17 +313,20 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .js-only .btn + .btn { margin-top: 10px; }
   textarea.fallback { width: 100%; height: 160px; margin-top: 10px; font-size: 12px; display: none; }
   /* แถบปุ่มล่าง: กล่องลอย */
-  .nav { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 16px calc(14px + env(safe-area-inset-bottom, 0px)); pointer-events: none; }
+  .nav { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 16px calc(14px + env(safe-area-inset-bottom, 0px)); }
+  /* ทั้งแถบล่างรับการแตะเอง ไม่ให้แตะทะลุไปโดนคลิปข้างหลัง */
   .nav div { pointer-events: auto; max-width: 448px; margin: 0 auto; display: flex; gap: 6px; padding: 6px; border-radius: 24px; background: var(--glass);
     -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); border: 1px solid var(--line); box-shadow: 0 18px 40px -12px rgba(0,0,0,.3); }
-  .nav button { min-height: 52px; border-radius: 18px; border: 0; font-family: inherit; font-weight: 700; font-size: 1.08rem; cursor: pointer; }
-  #back { flex: 0 0 36%; background: var(--chip); color: var(--sub); }
-  #next { flex: 1; background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); }
+  /* ปุ่ม = พื้นที่แตะขนาดคงที่ หน้าตาปุ่มอยู่ใน span ด้านใน (ยุบ/เด้งเฉพาะ span พื้นที่แตะไม่หดตาม) */
+  .nav button { display: flex; padding: 0; border: 0; border-radius: 0; background: none; font-family: inherit; font-weight: 700; font-size: 1.08rem; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .nav button > span { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 10px; border-radius: 18px; pointer-events: none; }
+  #back { flex: 0 0 36%; } #back > span { background: var(--chip); color: var(--sub); }
+  #next { flex: 1; } #next > span { background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); }
   #back[hidden] { display: none; }
   @media (prefers-reduced-motion: no-preference) {
-    .nav button { transition: transform .22s cubic-bezier(.3, 1.8, .5, 1), background .2s, color .2s; -webkit-tap-highlight-color: transparent; }
-    .nav button.down { transform: scale(.93); transition-duration: .08s; }
-    .nav button.boing { animation: boing .42s cubic-bezier(.3, 1.4, .5, 1); }
+    .nav button > span { transition: transform .22s cubic-bezier(.3, 1.8, .5, 1), background .2s, color .2s; }
+    .nav button.down > span { transform: scale(.93); transition-duration: .08s; }
+    .nav button.boing > span { animation: boing .42s cubic-bezier(.3, 1.4, .5, 1); }
   }
   @keyframes boing { 0% { transform: scale(.93); } 55% { transform: scale(1.05); } 100% { transform: scale(1); } }
   /* ---------- จอกว้าง / แนวนอน ---------- */
@@ -353,7 +356,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   @media (orientation: landscape) and (max-height: 520px) {
     main { padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); }
     .pager { margin-bottom: 12px; padding: 5px; } .pager button { height: 32px; }
-    .nav { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); } .nav button { min-height: 44px; }
+    .nav { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); } .nav button > span { min-height: 44px; }
     .head { margin-bottom: 10px; } .num { width: 48px; height: 48px; font-size: 1.5rem; } .num .ico { width: 24px; height: 24px; }
     .step .card > .shot { width: clamp(170px, calc((100vh - 170px) * .462), 300px); }
     .step .card > .shot.wide { width: min(380px, 42vw); }
@@ -371,7 +374,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   <nav class="pager" id="pager" aria-label="ไปที่ขั้น">${STEPS.map((_, i) => `<button type="button" data-go="${i + 1}" aria-label="ขั้นที่ ${i + 1}">${i + 1}</button>`).join("")}</nav>
   ${screens.join("\n  ")}
 </main>
-<nav class="nav" aria-label="เปลี่ยนขั้น"><div><button id="back" type="button">← ย้อนกลับ</button><button id="next" type="button">เริ่มติดตั้ง →</button></div></nav>
+<nav class="nav" aria-label="เปลี่ยนขั้น"><div><button id="back" type="button"><span>← ย้อนกลับ</span></button><button id="next" type="button"><span>เริ่มติดตั้ง →</span></button></div></nav>
 ${loader}
 <script>
 (() => {
@@ -422,7 +425,9 @@ ${loader}
     v.addEventListener("pause", () => { if (active(v) && !v.ended) setTimeout(() => { if (v.paused) play(v); }, 250); });
     ["stalled", "waiting", "canplay"].forEach(ev => v.addEventListener(ev, () => { if (v.paused) play(v); }));
     v.addEventListener("ended", () => { v.currentTime = 0; play(v); }); // กันกรณี loop ไม่ทำงาน
-    v.addEventListener("click", () => { if (v.paused) { v.userPaused = false; play(v); } else { v.userPaused = true; v.pause(); } });
+    // กันอีกชั้น: แตะที่อยู่ในแนวแถบปุ่มล่าง ไม่นับเป็นการแตะคลิป
+    const underNav = e => { const n = document.querySelector(".nav div"); return n && e.clientY >= n.getBoundingClientRect().top - 8; };
+    v.addEventListener("click", e => { if (underNav(e)) return; if (v.paused) { v.userPaused = false; play(v); } else { v.userPaused = true; v.pause(); } });
   });
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { const v = screens[cur] && screens[cur].querySelector("video"); if (v) play(v); } });
   // มือถือแนวตั้ง หน้าแรก/หน้าเสร็จ: ส่วนหัวกับการ์ดติดกัน แล้วดันทั้งก้อนลงมาให้อยู่กลางจอ
@@ -457,7 +462,7 @@ ${loader}
       if (j === i + 1) v.preload = "auto"; // โหลดคลิปขั้นถัดไปรอไว้
     });
     back.hidden = i === 0 || extra(i);
-    next.textContent = extra(i) ? (ret === 0 ? "← กลับหน้าแรก" : ret === DONE ? "กลับหน้าเสร็จ ✓" : "← กลับไปขั้นที่ " + ret)
+    next.firstChild.textContent = extra(i) ? (ret === 0 ? "← กลับหน้าแรก" : ret === DONE ? "กลับหน้าเสร็จ ✓" : "← กลับไปขั้นที่ " + ret)
       : i === 0 ? "เริ่มติดตั้ง →" : i === STEPS ? "เสร็จแล้ว ✓" : i === DONE ? "กลับไปขั้นแรก" : "ถัดไป →";
     const ref = extra(i) ? ret : i;
     pager.forEach((b, j) => { const n = j + 1; b.classList.toggle("cur", n === i); b.classList.toggle("done", n < ref || ref > STEPS);
