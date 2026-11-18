@@ -50,10 +50,11 @@ const hero = `<figure class="hero"><div class="frame"><img src="guide/hero.jpg" 
 
 const screens = [
   `<section class="screen" id="s0" data-hash="" aria-labelledby="h0">
-    <div class="intro-text">
-      <p class="chip">ฟรี · iPhone / iPad</p>
-      <h1 id="h0"><span class="mute">นับถอยหลังวันสอบ</span> 🐻 Dek70 Countdown</h1>
-      <p class="lead">วันสำคัญ TCAS70 บนหน้าจอโฮม ติดตั้งครั้งเดียว วันอัปเดตให้เอง</p>
+    <div class="intro-text brand">
+      <h1 id="h0"><span class="l1">Dek70</span> <span class="l2">BWY Widget</span> <span class="l3">นับถอยหลังวันสอบ</span></h1>
+      <ul class="pills"><li>ฟรีตลอดชีพ</li><li>สะดวก</li><li>แม่นยำ</li></ul>
+      <div class="maker"><img src="guide/jedi.webp" width="264" height="289" alt="พี่เจได"><div>
+        <p class="by">สร้างโดยพี่เจได</p><p class="bwy">BearWithYou</p><p class="pill">นศ. ปี2 ศึกษาศาสตร์ TESOL KKU</p></div></div>
     </div>
     <div class="card intro-card">${hero}
       <ul class="need" aria-label="ก่อนเริ่ม">
@@ -111,28 +112,35 @@ const html = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#EDEDED" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
-<title>Dek70 Countdown by BearWithYou</title>
+<title>Dek70 BWY Widget นับถอยหลังวันสอบ</title>
 <meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
-<meta property="og:title" content="🐻 Dek70 Countdown">
+<meta property="og:title" content="Dek70 BWY Widget นับถอยหลังวันสอบ">
 <meta property="og:description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou">
 <meta property="og:image" content="https://bwy-widget.pages.dev/guide/hero.jpg">
 <meta property="og:url" content="https://bwy-widget.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
+<link rel="preload" href="guide/fonts/prompt-thai-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="guide/fonts/prompt-thai-700.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* ฟอนต์ Prompt (Cadson Demak, SIL Open Font License: guide/fonts/OFL.txt) เก็บไว้ในเว็บเราเอง */
+${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: normal; font-weight: ${w}; font-display: swap; src: url(guide/fonts/prompt-thai-${w}.woff2) format("woff2"); unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC; }
+  @font-face { font-family: "Prompt"; font-style: normal; font-weight: ${w}; font-display: swap; src: url(guide/fonts/prompt-latin-${w}.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }`).join("\n")}
   :root {
     --bg1: #F3F3F3; --bg2: #E7E7E7; --bgx: #EDEDED; --card: #FFFFFF; --inner: #F6F6F6; --ink: #0B0B0C; --sub: #6B6B70; --mute: #A3A3A8; --line: #ECECEC; --chip: #F2F2F2;
     --ok: #1E7F3C; --ok-bg: #E9F6EC; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 18px 40px -12px rgba(0,0,0,.14);
     --btn: linear-gradient(180deg, #3B3B3D 0%, #161617 55%, #050505 100%); --btn-ink: #FFFFFF;
     --btn-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 3px rgba(0,0,0,.18), 0 10px 22px -6px rgba(0,0,0,.45);
     --glass: rgba(255,255,255,.78);
+    --pill: #C8D1D9; --paper: #FEFEFE; --dot: #E4E4E6;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg1: #141416; --bg2: #0A0A0B; --bgx: #0F0F11; --card: #1B1B1E; --inner: #232327; --ink: #F4F4F6; --sub: #A3A3AA; --mute: #6E6E76; --line: #2B2B30; --chip: #26262B;
       --ok: #7EDB9A; --ok-bg: #16301F; --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -12px rgba(0,0,0,.7);
       --btn: linear-gradient(180deg, #FFFFFF 0%, #E9E9EB 60%, #D2D2D6 100%); --btn-ink: #0B0B0C;
       --btn-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 3px rgba(0,0,0,.4), 0 10px 22px -6px rgba(0,0,0,.6);
-      --glass: rgba(27,27,30,.78); }
+      --glass: rgba(27,27,30,.78);
+      --pill: #2E353D; --paper: #0F0F11; --dot: #232327; }
   }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -141,7 +149,7 @@ const html = `<!DOCTYPE html>
   /* ปิดการซูมตอนแตะสองครั้ง (ยังถ่างนิ้วซูมได้ตามปกติ) */
   html, body, button, a, video, .pager, .nav { touch-action: manipulation; }
   body { min-height: 100vh; min-height: 100dvh; background: transparent; color: var(--ink); line-height: 1.55;
-    -webkit-font-smoothing: antialiased; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
+    -webkit-font-smoothing: antialiased; font-family: "Prompt", -apple-system, BlinkMacSystemFont, "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
   body::before { content: ""; position: fixed; inset: -20vh 0; z-index: -1; background: linear-gradient(165deg, var(--bg1), var(--bg2)); pointer-events: none; }
   main { max-width: 480px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(130px + env(safe-area-inset-bottom, 0px)); }
   /* ตัวเลขขั้นด้านบน (แบบ pagination) */
@@ -166,6 +174,23 @@ const html = `<!DOCTYPE html>
   .done-h { font-size: 2rem; margin-bottom: 8px; }
   .lead { color: var(--sub); margin: 0; font-size: 1.02rem; }
   .intro-text { margin: 4px 4px 18px; }
+  /* หน้าแรก: พื้นขาวลายจุด หัวข้อใหญ่ ชิป และผู้สร้าง */
+  html.intro { background: var(--paper); }
+  html.intro body::before { background: radial-gradient(circle, var(--dot) 1.1px, transparent 1.6px) 0 0 / 13px 13px, var(--paper); }
+  .brand { margin: 18px 6px 26px; }
+  .brand h1 { margin: 0; font-weight: 400; line-height: 1.12; letter-spacing: 0; }
+  .brand h1 span { display: block; }
+  .brand .l1 { font-size: clamp(1.9rem, 9vw, 2.4rem); }
+  .brand .l2 { font-size: clamp(2.5rem, 12.5vw, 3.3rem); font-weight: 700; letter-spacing: .005em; }
+  .brand .l3 { font-size: clamp(2.2rem, 10.6vw, 2.9rem); }
+  .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; }
+  .pills li, .maker .pill { background: var(--pill); color: var(--ink); border-radius: 999px; padding: 3px 14px 4px; font-size: 1.05rem; }
+  .maker { display: flex; align-items: center; gap: 16px; margin-top: 40px; }
+  .maker img { flex: none; width: 80px; height: auto; }
+  .maker p { margin: 0; line-height: 1.3; }
+  .maker .by { font-size: 1.08rem; }
+  .maker .bwy { font-size: 1.12rem; font-weight: 700; }
+  .maker .pill { display: inline-block; margin-top: 6px; font-size: .95rem; padding: 2px 12px 3px; }
   .hint { color: var(--sub); margin: 14px 2px 0; font-size: .95rem; }
   .head { display: flex; align-items: center; gap: 14px; margin: 0 2px 16px; }
   .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFFFFF; color: #0B0B0C; display: grid; place-items: center;
@@ -368,6 +393,7 @@ ${loader}
     if (i === cur) return;
     if (extra(i) && cur >= 0 && !extra(cur)) ret = cur;
     cur = i;
+    document.documentElement.classList.toggle("intro", i === 0);
     screens.forEach((s, j) => {
       s.classList.toggle("on", j === i);
       const v = s.querySelector("video");
