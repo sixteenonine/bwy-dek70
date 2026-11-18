@@ -9,12 +9,17 @@ const loader = `<script type="text/plain" id="loader">${loaderSrc}\n</script>`;
 const clip = (id, alt, h = 1702) => `<figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="${h}" style="aspect-ratio:828/${h}" poster="guide/${id}.jpg" aria-label="${alt}"><source src="guide/${id}.mp4" type="video/mp4"></video></div></figure>`;
 const list = items => `<ol class="do">${items.map(t => `<li><span>${t}</span></li>`).join("")}</ol>`;
 const k = t => `<b class="key">${t}</b>`;
-const note = (ic, label, text, cls = "") => `<div class="check ${cls}"><span class="ic" aria-hidden="true">${ic}</span><p><b>${label}</b>${text}</p></div>`;
+// text แบ่งย่อหน้าได้ด้วยบรรทัดว่าง (\n\n)
+const note = (ic, label, text, cls = "") => `<div class="check ${cls}"><span class="ic" aria-hidden="true">${ic}</span><div>${text.split("\n\n").map((t, j) => `<p>${j ? "" : `<b>${label}</b>`}${t}</p>`).join("")}</div></div>`;
 
 const STEPS = [
   { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>`,
-    info: { label: "Scriptable คืออะไร", text: "แอปฟรีสำหรับสร้าง Widget เอง จากนักพัฒนา Simon Støvring ผ่านการตรวจของ Apple เหมือนแอปทั่วไป ไม่ต้องสมัครหรือล็อกอิน และ iPhone จะถามเราก่อนทุกครั้งถ้าแอปจะเข้าถึงรูป รายชื่อ หรือตำแหน่ง" } },
+    info: { label: "Scriptable คืออะไร", text: [
+      "เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ",
+      "พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป มียอดดาวน์โหลดหลายล้านครั้งทั่วโลก (ประมาณการ) ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects ทั้งสาขาแอปใหม่ยอดเยี่ยมและสาขาที่ผู้อ่านโหวต เป็นแอปที่สายแต่งหน้าจอ iPhone ทั่วโลกใช้ทำ Widget ของตัวเอง",
+      "ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย",
+    ].join("\n\n") } },
   { title: "Copy โค้ด", body: `<p>โค้ดนี้คือหัวใจของ Widget ไม่มีโค้ดนี้ Widget จะว่างเปล่า</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้แค่โหลดตัวนับถอยหลังจากเว็บ BearWithYou ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ และไม่ต้องจ่ายเงิน</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
     check: "ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!" },
   { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
@@ -214,6 +219,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   /* กล่อง ต้องเห็น / ข้อมูล */
   .check { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; margin: 16px 0 0; padding: 12px 14px; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); }
   .check p { margin: 0; color: var(--ink); font-size: .98rem; }
+  .check p + p { margin-top: 8px; }
   .check b { display: block; font-size: .78rem; letter-spacing: .02em; color: var(--ok); margin-bottom: 1px; }
   .check .ic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: .95rem; color: #fff;
     background: linear-gradient(180deg, #3BB061, #1E7F3C); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 10px -3px rgba(30,127,60,.6); }

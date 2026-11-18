@@ -111,6 +111,7 @@
   /* กล่อง ต้องเห็น / ข้อมูล */
   .check { display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; margin: 16px 0 0; padding: 12px 14px; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); }
   .check p { margin: 0; color: var(--ink); font-size: .98rem; }
+  .check p + p { margin-top: 8px; }
   .check b { display: block; font-size: .78rem; letter-spacing: .02em; color: var(--ok); margin-bottom: 1px; }
   .check .ic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: .95rem; color: #fff;
     background: linear-gradient(180deg, #3BB061, #1E7F3C); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 10px -3px rgba(30,127,60,.6); }
@@ -255,49 +256,49 @@
     <div class="card"><div class="txt">
     <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
     </div><figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>
-    <div class="check info"><span class="ic" aria-hidden="true">i</span><p><b>Scriptable คืออะไร</b>แอปฟรีสำหรับสร้าง Widget เอง จากนักพัฒนา Simon Støvring ผ่านการตรวจของ Apple เหมือนแอปทั่วไป ไม่ต้องสมัครหรือล็อกอิน และ iPhone จะถามเราก่อนทุกครั้งถ้าแอปจะเข้าถึงรูป รายชื่อ หรือตำแหน่ง</p></div></div>
+    <div class="check info"><span class="ic" aria-hidden="true">i</span><div><p><b>Scriptable คืออะไร</b>เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ</p><p>พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป มียอดดาวน์โหลดหลายล้านครั้งทั่วโลก (ประมาณการ) ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects ทั้งสาขาแอปใหม่ยอดเยี่ยมและสาขาที่ผู้อ่านโหวต เป็นแอปที่สายแต่งหน้าจอ iPhone ทั่วโลกใช้ทำ Widget ของตัวเอง</p><p>ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย</p></div></div></div>
   </section>
   <section class="screen step" id="s2" data-hash="2" aria-labelledby="h2">
     <div class="head"><span class="num" aria-hidden="true">2</span><div><p class="chip">ขั้นที่ 2 / 7</p><h2 id="h2">Copy โค้ด</h2></div></div>
     <div class="card"><div class="txt">
     <p>โค้ดนี้คือหัวใจของ Widget ไม่มีโค้ดนี้ Widget จะว่างเปล่า</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้แค่โหลดตัวนับถอยหลังจากเว็บ BearWithYou ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ และไม่ต้องจ่ายเงิน</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
     </div>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!</p></div></div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!</p></div></div></div>
   </section>
   <section class="screen step" id="s3" data-hash="3" aria-labelledby="h3">
     <div class="head"><span class="num" aria-hidden="true">3</span><div><p class="chip">ขั้นที่ 3 / 7</p><h2 id="h3">เปิด Scriptable แล้วกด +</h2></div></div>
     <div class="card"><div class="txt">
     <ol class="do"><li><span>แตะไอคอน <b class="key">Scriptable</b> บนหน้าจอโฮม</span></li><li><span>กด <b class="key">+</b> มุมขวาบน</span></li></ol>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s3.jpg" aria-label="แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"><source src="guide/s3.mp4" type="video/mp4"></video></div></figure>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script</p></div></div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script</p></div></div></div>
   </section>
   <section class="screen step" id="s4" data-hash="4" aria-labelledby="h4">
     <div class="head"><span class="num" aria-hidden="true">4</span><div><p class="chip">ขั้นที่ 4 / 7</p><h2 id="h4">แตะค้าง แล้วกด Paste</h2></div></div>
     <div class="card"><div class="txt">
     <p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด <b class="key">Paste</b></p>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s4.jpg" aria-label="แตะค้างที่หน้าว่างแล้วกด Paste"><source src="guide/s4.mp4" type="video/mp4"></video></div></figure>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>โค้ดขึ้นเต็มหน้า</p></div></div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>โค้ดขึ้นเต็มหน้า</p></div></div></div>
   </section>
   <section class="screen step" id="s5" data-hash="5" aria-labelledby="h5">
     <div class="head"><span class="num" aria-hidden="true">5</span><div><p class="chip">ขั้นที่ 5 / 7</p><h2 id="h5">ตั้งชื่อว่า Dek70</h2></div></div>
     <div class="card"><div class="txt">
     <ol class="do"><li><span>แตะชื่อ <b class="key">Untitled Script</b> ด้านบน</span></li><li><span>ลบชื่อเดิม พิมพ์ <b class="key">Dek70</b></span></li><li><span>กด <b class="key">Rename</b></span></li><li><span>กด <b class="key">Done</b> มุมซ้ายบน</span></li></ol>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s5.jpg" aria-label="แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"><source src="guide/s5.mp4" type="video/mp4"></video></div></figure>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>การ์ดชื่อ Dek70 อยู่ในรายการ</p></div></div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>การ์ดชื่อ Dek70 อยู่ในรายการ</p></div></div></div>
   </section>
   <section class="screen step" id="s6" data-hash="6" aria-labelledby="h6">
     <div class="head"><span class="num" aria-hidden="true">6</span><div><p class="chip">ขั้นที่ 6 / 7</p><h2 id="h6">เพิ่ม Widget บนหน้าจอโฮม</h2></div></div>
     <div class="card"><div class="txt">
     <ol class="do"><li><span>กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น</span></li><li><span>กด <b class="key">Edit</b> มุมซ้ายบน แล้วกด <b class="key">Add Widget</b></span></li><li><span>พิมพ์ <b class="key">Scriptable</b> ในช่องค้นหา แล้วแตะชื่อแอป</span></li><li><span>กด <b class="key">Add Widget</b> (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)</span></li><li><span>กด <b class="key">Done</b> มุมขวาบน</span></li></ol>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done"><source src="guide/s6.mp4" type="video/mp4"></video></div></figure>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม</p></div></div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม</p></div></div></div>
   </section>
   <section class="screen step" id="s7" data-hash="7" aria-labelledby="h7">
     <div class="head"><span class="num" aria-hidden="true">7</span><div><p class="chip">ขั้นที่ 7 / 7</p><h2 id="h7">เลือกสคริปต์ Dek70</h2></div></div>
     <div class="card"><div class="txt">
     <ol class="do"><li><span>กดค้างที่กล่องนั้น แล้วกด <b class="key">Edit Widget</b></span></li><li><span>แตะ <b class="key">Choose</b> ที่แถว Script</span></li><li><span>เลือก <b class="key">Dek70</b></span></li><li><span>แตะที่ว่างนอกกล่องเพื่อปิด</span></li></ol>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s8.jpg" aria-label="กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"><source src="guide/s8.mp4" type="video/mp4"></video></div></figure>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><p><b>ต้องเห็น</b>Widget แสดงผลนับถอยหลังแล้ว</p></div></div>
+    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>Widget แสดงผลนับถอยหลังแล้ว</p></div></div></div>
   </section>
   <section class="screen" id="s8" data-hash="done" aria-labelledby="hd">
     <div class="intro-text"><p class="chip">ติดตั้งครบ 7 ขั้น</p>
@@ -315,7 +316,7 @@
     <ol class="do"><li><span>เปิดแอป <b class="key">Scriptable</b> แล้วแตะ <b class="key">Dek70</b></span></li><li><span>กด <b class="key">🌙 เปลี่ยนเป็นธีมมืด</b></span></li><li><span>กด <b class="key">โอเค</b></span></li><li><span>กลับหน้าจอโฮม รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)</span></li></ol>
     <p>อยากกลับเป็นธีมสว่าง ทำซ้ำแล้วกด <b class="key">☀️ เปลี่ยนเป็นธีมสว่าง</b></p>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/theme.jpg" aria-label="แตะไอคอน Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอโฮมเปลี่ยนเป็นสีมืด"><source src="guide/theme.mp4" type="video/mp4"></video></div></figure>
-    <div class="check info"><span class="ic" aria-hidden="true">i</span><p><b>อยากให้บางตัวเป็นธีมมืด</b>กดค้างที่ Widget ตัวนั้น กด <b class="key">Edit Widget</b> แล้วพิมพ์ <b class="key">dark</b> ในช่อง Parameter</p></div></div>
+    <div class="check info"><span class="ic" aria-hidden="true">i</span><div><p><b>อยากให้บางตัวเป็นธีมมืด</b>กดค้างที่ Widget ตัวนั้น กด <b class="key">Edit Widget</b> แล้วพิมพ์ <b class="key">dark</b> ในช่อง Parameter</p></div></div></div>
   </section>
   <section class="screen step narrow" id="s10" data-hash="options" aria-labelledby="ho">
     <div class="head"><span class="num" aria-hidden="true">⚙️</span><div><p class="chip">ไม่บังคับ</p><h2 id="ho">ปรับแบบด้วย Parameter</h2></div></div>
@@ -323,7 +324,7 @@
     <ol class="do"><li><span>กดค้างที่ Widget แล้วกด <b class="key">Edit Widget</b></span></li><li><span>แตะช่อง <b class="key">Parameter</b> แล้วพิมพ์คำจากตารางด้านล่าง</span></li><li><span>แตะที่ว่างนอกกล่องเพื่อปิด</span></li></ol>
     <div class="opts"><div class="opt"><span class="k"><code>tgat</code></span><span>นับถึงวันสอบ TGAT ตลอด</span></div><div class="opt"><span class="k"><code>alevel</code></span><span>นับถึงวันสอบ A-Level ตลอด</span></div><div class="opt"><span class="k"><code>dark</code> หรือ <code>มืด</code></span><span>ธีมมืด เฉพาะ Widget ตัวนี้</span></div><div class="opt"><span class="k"><code>light</code> หรือ <code>สว่าง</code></span><span>ธีมสว่าง เฉพาะ Widget ตัวนี้</span></div><div class="opt"><span class="k"><code>alevel dark</code></span><span>ใช้คู่กันได้ เว้นวรรคระหว่างคำ</span></div></div>
     </div>
-    <div class="check info"><span class="ic" aria-hidden="true">i</span><p><b>ไม่ใส่อะไรเลยก็ได้</b>Widget จะนับถึงวันสำคัญที่ใกล้ที่สุดให้เอง พิมพ์ตัวพิมพ์เล็กหรือใหญ่ก็ได้</p></div></div>
+    <div class="check info"><span class="ic" aria-hidden="true">i</span><div><p><b>ไม่ใส่อะไรเลยก็ได้</b>Widget จะนับถึงวันสำคัญที่ใกล้ที่สุดให้เอง พิมพ์ตัวพิมพ์เล็กหรือใหญ่ก็ได้</p></div></div></div>
   </section>
   <section class="screen step narrow" id="s11" data-hash="faq" aria-labelledby="hq">
     <div class="head"><span class="num" aria-hidden="true">💬</span><div><p class="chip">มีปัญหา?</p><h2 id="hq">คำถามที่เจอบ่อย</h2></div></div>
