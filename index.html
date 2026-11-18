@@ -164,6 +164,13 @@
   /* กล่องโค้ด (กดเปิด/ปิด) */
   .codebox p b { color: var(--ink); font-weight: 600; }
   .codebox pre.code { margin: 0 14px 14px; }
+  /* ตัวอย่างโค้ด 3 บรรทัดแรกเหนือปุ่ม Copy (แตะ = เปิดกล่องโค้ดเต็ม) */
+  .peek { display: block; position: relative; width: 100%; margin: 14px 0 0; padding: 12px 14px; border-radius: 18px; border: 1px solid #2A2A2E; text-align: left; cursor: pointer;
+    background: linear-gradient(180deg, #1C1C1F, #0E0E10); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); font: inherit; -webkit-tap-highlight-color: transparent; }
+  .peek pre { margin: 0; height: 55px; overflow: hidden; white-space: pre; color: #D8D8DE; font: 11.5px/1.6 ui-monospace, Menlo, Consolas, monospace;
+    -webkit-mask-image: linear-gradient(180deg, #000 35%, transparent 100%); mask-image: linear-gradient(180deg, #000 35%, transparent 100%); }
+  .peek-tag { position: absolute; right: 10px; bottom: 9px; padding: 3px 10px; border-radius: 999px; background: rgba(255,255,255,.14); color: #fff; font-size: .78rem; font-weight: 700; }
+  html:not(.js) .peek { display: none; }
   .fold .ic svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linejoin: round; }
   .fold .ic svg rect { fill: currentColor; }
   .btn.copy .tick { width: 0; height: 24px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; stroke-dashoffset: 22; }
@@ -306,6 +313,7 @@
     <div class="head"><span class="num" aria-hidden="true">2</span><div><p class="chip">ขั้นที่ 2 / 7</p><h2 id="h2">Copy โค้ด</h2></div></div>
     <div class="card"><div class="txt">
     <p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p>
+    <button class="peek" id="peek" type="button" aria-label="ดูโค้ดเต็ม"><pre id="peekCode" aria-hidden="true"></pre><span class="peek-tag">ดูโค้ดเต็ม ›</span></button>
     <div class="copywrap"><button class="btn copy" id="copy" type="button"><span class="lbl">Copy โค้ด</span></button>
     <div class="copied-card" id="copied" role="status" hidden><span class="deco" style="left:7%;top:10%">🐻</span><span class="deco" style="right:8%;top:9%">✨</span><span class="deco" style="left:6%;bottom:10%">⭐</span><span class="deco" style="right:7%;bottom:12%">💛</span>
       <span class="big" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 12.6l3.6 3.6 7.3-8"/></svg></span>
@@ -454,6 +462,9 @@ Script.complete();
   }
   const pre = document.getElementById("code");
   pre.textContent = code;
+  document.getElementById("peekCode").textContent = code.split("\n").slice(0, 3).join("\n");
+  const codebox = document.querySelector(".codebox");
+  document.getElementById("peek").addEventListener("click", () => { codebox.open = true; codebox.scrollIntoView({ block: "nearest", behavior: calm ? "auto" : "smooth" }); });
   async function doCopy() {
     try {
       await navigator.clipboard.writeText(code);
