@@ -2,6 +2,7 @@
 // รันจากโฟลเดอร์ repo: node tools/make-guide.js
 // โค้ดในปุ่ม Copy ดึงจาก loader.js ตรงๆ ห้ามพิมพ์เอง (test/check-loader.js เช็กว่าตรงกันทุกตัวอักษร)
 const fs = require("fs");
+const ICON = require("./guide-icons.js");
 const loaderSrc = fs.readFileSync("loader.js", "utf8").replace(/\r\n/g, "\n").trimEnd();
 if (loaderSrc.includes("</script")) throw new Error("loader.js มี </script ฝังในหน้าไม่ได้");
 const loader = `<script type="text/plain" id="loader">${loaderSrc}\n</script>`;
@@ -84,12 +85,12 @@ const screens = [
     <p class="lead">Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p></div>
     <div class="card">${hero}
     <p class="hint">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ ${N} อีกรอบ</p>
-    <div class="js-only"><button class="btn ghost" type="button" data-go="theme">🎨 ดูวิธีเปลี่ยนธีมสี</button>
-    <button class="btn ghost" type="button" data-go="options">⚙️ ปรับแต่งด้วย Parameter</button>
-    <button class="btn ghost" type="button" data-go="faq">💬 คำถามที่เจอบ่อย</button></div></div>
+    <div class="js-only"><button class="btn ghost" type="button" data-go="theme">${ICON.palette()}ดูวิธีเปลี่ยนธีมสี</button>
+    <button class="btn ghost" type="button" data-go="options">${ICON.gear()}ปรับแต่งด้วย Parameter</button>
+    <button class="btn ghost" type="button" data-go="faq">${ICON.help()}คำถามที่เจอบ่อย</button></div></div>
   </section>`,
   `<section class="screen step" id="s${N + 2}" data-hash="theme" aria-labelledby="ht">
-    <div class="head"><span class="num" aria-hidden="true">🎨</span><div><p class="chip">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
+    <div class="head"><span class="num" aria-hidden="true">${ICON.palette()}</span><div><p class="chip">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
     <div class="card"><div class="txt">
     ${list([`เปิดแอป ${k("Scriptable")} แล้วแตะ ${k("Dek70")}`, `กด ${k("🌙 เปลี่ยนเป็นธีมมืด")}`, `กด ${k("โอเค")}`, "กลับหน้าจอโฮม รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)"])}
     <p>อยากกลับเป็นธีมสว่าง ทำซ้ำแล้วกด ${k("☀️ เปลี่ยนเป็นธีมสว่าง")}</p>
@@ -97,7 +98,7 @@ const screens = [
     ${note("i", "อยากให้บางตัวเป็นธีมมืด", `กดค้างที่ Widget ตัวนั้น กด ${k("Edit Widget")} แล้วพิมพ์ ${k("dark")} ในช่อง Parameter`, "info")}</div>
   </section>`,
   `<section class="screen step narrow" id="s${N + 3}" data-hash="options" aria-labelledby="ho">
-    <div class="head"><span class="num" aria-hidden="true">⚙️</span><div><p class="chip">ไม่บังคับ</p><h2 id="ho">ปรับแต่งด้วย Parameter</h2></div></div>
+    <div class="head"><span class="num" aria-hidden="true">${ICON.gear()}</span><div><p class="chip">ไม่บังคับ</p><h2 id="ho">ปรับแต่งด้วย Parameter</h2></div></div>
     <div class="card"><div class="txt">
     ${list([`กดค้างที่ Widget แล้วกด ${k("Edit Widget")}`, `แตะช่อง ${k("Parameter")} แล้วพิมพ์คำจากตารางด้านล่าง`, "แตะที่ว่างนอกกล่องเพื่อปิด"])}
     <div class="opts">${PARAMS.map(([a, b]) => `<div class="opt"><span class="k">${a}</span><span>${b}</span></div>`).join("")}</div>
@@ -105,7 +106,7 @@ const screens = [
     ${note("i", "ไม่ใส่อะไรเลยก็ได้", "Widget จะนับถึงวันสำคัญที่ใกล้ที่สุดให้เอง พิมพ์ตัวพิมพ์เล็กหรือใหญ่ก็ได้", "info")}</div>
   </section>`,
   `<section class="screen step narrow" id="s${N + 4}" data-hash="faq" aria-labelledby="hq">
-    <div class="head"><span class="num" aria-hidden="true">💬</span><div><p class="chip">มีปัญหา?</p><h2 id="hq">คำถามที่เจอบ่อย</h2></div></div>
+    <div class="head"><span class="num" aria-hidden="true">${ICON.help()}</span><div><p class="chip">มีปัญหา?</p><h2 id="hq">คำถามที่เจอบ่อย</h2></div></div>
     <div class="card faq">${FAQ.map(([q, a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join("")}</div>
   </section>`,
 ];
@@ -205,6 +206,9 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .num { flex: none; width: 64px; height: 64px; border-radius: 50%; background: #FFFFFF; color: #0B0B0C; display: grid; place-items: center;
     font-size: 2rem; font-weight: 800; line-height: 1; box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 10px 24px -8px rgba(0,0,0,.25); border: 1px solid rgba(0,0,0,.04); }
   .head .chip { margin-bottom: 4px; }
+  .ico { display: block; flex: none; }
+  .num .ico { width: 32px; height: 32px; }
+  .btn .ico { width: 22px; height: 22px; margin-right: 10px; }
   /* เนื้อหาในการ์ด */
   .txt > p:not(.copied):not(.safe) { margin: 0 0 4px; color: var(--sub); font-size: 1.05rem; }
   .txt > :first-child { margin-top: 0 !important; }
@@ -328,7 +332,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     main { padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px)); }
     .pager { margin-bottom: 12px; padding: 5px; } .pager button { height: 32px; }
     .nav { padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); } .nav button { min-height: 44px; }
-    .head { margin-bottom: 10px; } .num { width: 48px; height: 48px; font-size: 1.5rem; }
+    .head { margin-bottom: 10px; } .num { width: 48px; height: 48px; font-size: 1.5rem; } .num .ico { width: 24px; height: 24px; }
     .step .card > .shot { width: clamp(170px, calc((100vh - 170px) * .462), 300px); }
     .step .card > .shot.wide { width: min(380px, 42vw); }
     h1, .done-h { font-size: 1.9rem; }
