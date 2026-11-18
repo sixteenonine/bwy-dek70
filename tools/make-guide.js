@@ -100,6 +100,8 @@ const html = `<!DOCTYPE html>
   html, body { margin: 0; }
   /* สีพื้นของทั้งหน้า (รวมส่วนที่ยืดออกตอนเลื่อนสุดขอบ) + ไล่สีที่ติดจอไว้ข้างหลัง */
   html { background: var(--bgx); }
+  /* ปิดการซูมตอนแตะสองครั้ง (ยังถ่างนิ้วซูมได้ตามปกติ) */
+  html, body, button, a, video, .pager, .nav { touch-action: manipulation; }
   body { min-height: 100vh; min-height: 100dvh; background: transparent; color: var(--ink); line-height: 1.55;
     -webkit-font-smoothing: antialiased; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
   body::before { content: ""; position: fixed; inset: -20vh 0; z-index: -1; background: linear-gradient(165deg, var(--bg1), var(--bg2)); pointer-events: none; }
