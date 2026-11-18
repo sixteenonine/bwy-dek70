@@ -4,18 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#EDEDED" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <title>วิธีติดตั้ง Dek70 Countdown (หน้าตัวอย่าง)</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐻</text></svg>">
 <style>
   :root {
-    --bg1: #F4F4F4; --bg2: #E6E6E6; --card: #FFFFFF; --inner: #F6F6F6; --ink: #0B0B0C; --sub: #6B6B70; --mute: #A3A3A8; --line: #ECECEC; --chip: #F2F2F2;
+    --bg1: #F3F3F3; --bg2: #E7E7E7; --bgx: #EDEDED; --card: #FFFFFF; --inner: #F6F6F6; --ink: #0B0B0C; --sub: #6B6B70; --mute: #A3A3A8; --line: #ECECEC; --chip: #F2F2F2;
     --ok: #1E7F3C; --ok-bg: #E9F6EC; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 18px 40px -12px rgba(0,0,0,.14);
     --btn: linear-gradient(180deg, #3B3B3D 0%, #161617 55%, #050505 100%); --btn-ink: #FFFFFF;
     --btn-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 3px rgba(0,0,0,.18), 0 10px 22px -6px rgba(0,0,0,.45);
     --glass: rgba(255,255,255,.78);
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg1: #141416; --bg2: #0A0A0B; --card: #1B1B1E; --inner: #232327; --ink: #F4F4F6; --sub: #A3A3AA; --mute: #6E6E76; --line: #2B2B30; --chip: #26262B;
+    :root { --bg1: #141416; --bg2: #0A0A0B; --bgx: #0F0F11; --card: #1B1B1E; --inner: #232327; --ink: #F4F4F6; --sub: #A3A3AA; --mute: #6E6E76; --line: #2B2B30; --chip: #26262B;
       --ok: #7EDB9A; --ok-bg: #16301F; --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 18px 40px -12px rgba(0,0,0,.7);
       --btn: linear-gradient(180deg, #FFFFFF 0%, #E9E9EB 60%, #D2D2D6 100%); --btn-ink: #0B0B0C;
       --btn-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 3px rgba(0,0,0,.4), 0 10px 22px -6px rgba(0,0,0,.6);
@@ -23,8 +25,11 @@
   }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { min-height: 100vh; background: linear-gradient(165deg, var(--bg1), var(--bg2)) fixed; color: var(--ink); line-height: 1.55;
+  /* สีพื้นของทั้งหน้า (รวมส่วนที่ยืดออกตอนเลื่อนสุดขอบ) + ไล่สีที่ติดจอไว้ข้างหลัง */
+  html { background: var(--bgx); }
+  body { min-height: 100vh; min-height: 100dvh; background: transparent; color: var(--ink); line-height: 1.55;
     -webkit-font-smoothing: antialiased; font-family: -apple-system, BlinkMacSystemFont, "Inter", "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
+  body::before { content: ""; position: fixed; inset: -20vh 0; z-index: -1; background: linear-gradient(165deg, var(--bg1), var(--bg2)); pointer-events: none; }
   main { max-width: 480px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(130px + env(safe-area-inset-bottom, 0px)); }
   .preview { margin: 0 0 12px; font-size: .78rem; color: var(--sub); text-align: center; }
   .preview b { font: 700 .66rem/1 ui-monospace, Menlo, monospace; letter-spacing: .08em; border: 1px solid currentColor; border-radius: 5px; padding: 2px 5px; margin-right: 6px; }
