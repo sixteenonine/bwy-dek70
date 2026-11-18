@@ -150,16 +150,33 @@
   .btn:focus-visible, .nav button:focus-visible, .pager button:focus-visible { outline: 3px solid #4C8DFF; outline-offset: 3px; }
   .copywrap { position: relative; }
   .btn.copy { gap: 8px; font-size: 1.15rem; min-height: 58px; }
+  .btn[hidden] { display: none; }
+  /* หลัง Copy: ปุ่มกลายเป็นการ์ดสำเร็จ */
+  .copied-card { position: relative; margin-top: 16px; text-align: center; padding: 22px 16px 12px; border-radius: 22px; background: var(--ok-bg); border: 1px solid rgba(59, 176, 97, .45); }
+  .copied-card[hidden] { display: none; }
+  .copied-card .big { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 10px; border-radius: 50%;
+    background: linear-gradient(180deg, #3BB061, #1E7F3C); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 22px -6px rgba(30,127,60,.6); }
+  .copied-card .big svg { width: 32px; height: 32px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .copied-card .t { margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--ink); }
+  .copied-card .s { margin: 4px 0 0; color: var(--sub); font-size: 1rem; }
+  .copied-card .again { margin-top: 6px; padding: 8px 12px; border: 0; background: none; font: inherit; font-size: .9rem; font-weight: 700; color: var(--ok); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .copied-card .deco { position: absolute; font-size: 20px; line-height: 1; pointer-events: none; }
+  .codefold { margin: 2px 0 0; text-align: center; }
+  .codefold summary { list-style: none; display: inline-block; padding: 6px 10px; font-size: .9rem; font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .codefold summary::-webkit-details-marker { display: none; }
+  .codefold summary::after { content: "›"; display: inline-block; margin-left: 6px; text-decoration: none; transition: transform .2s; }
+  .codefold[open] summary::after { transform: rotate(90deg); }
+  .codefold .why { margin: 4px 0 0; text-align: left; color: var(--sub); font-size: .88rem; }
+  .codefold pre.code { text-align: left; }
   .btn.copy .tick { width: 0; height: 24px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 22; stroke-dashoffset: 22; }
   .btn.copy.done { background: linear-gradient(180deg, #3BB061, #1E7F3C); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 22px -6px rgba(30,127,60,.6); }
   .btn.copy.done .tick { width: 24px; stroke-dashoffset: 0; }
-  .copied { margin: 10px 0 0; text-align: center; font-weight: 700; color: var(--ok); }
   pre.code { margin: 12px 0 0; max-height: 24vh; overflow: auto; padding: 14px; border-radius: 18px; background: linear-gradient(180deg, #1C1C1F, #0E0E10); color: #D8D8DE;
     border: 1px solid #2A2A2E; box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
     font: 11.5px/1.55 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; -webkit-user-select: text; user-select: text; }
-  .txt > p.safe { margin: 12px 0 0; font-size: .88rem; color: var(--sub); }
-  .txt > p.safe b { color: var(--ink); font-weight: 700; }
-  .burst { position: absolute; left: 50%; top: 42px; width: 0; height: 0; pointer-events: none; }
+  .txt > p.safe { margin: 12px 0 0; font-size: .88rem; color: var(--sub); text-align: center; }
+  .txt > p.safe b { color: var(--ink); font-weight: 600; }
+  .burst { position: absolute; left: 50%; top: 69px; width: 0; height: 0; pointer-events: none; }
   .burst i { position: absolute; left: 0; top: 0; font-style: normal; font-size: 22px; line-height: 1; opacity: 0; transform: translate(-50%, -50%); }
   .burst i.dot { width: 9px; height: 9px; border-radius: 50%; }
   @media (prefers-reduced-motion: no-preference) {
@@ -168,7 +185,8 @@
     .btn:active, .pager button:active { transform: scale(.96); }
     .btn.copy.pop { animation: pop .5s cubic-bezier(.2, 1.7, .4, 1); }
     .burst i { animation: fly .9s cubic-bezier(.15, .7, .3, 1) forwards; }
-    .copied:not([hidden]) { animation: rise .4s ease-out; }
+    .copied-card.pop { animation: popin .5s cubic-bezier(.2, 1.6, .4, 1); }
+    .codefold[open] .why, .codefold[open] pre { animation: rise .3s ease-out; }
     #next.nudge > span { animation: nudge 1.2s ease-in-out 2; }
     .screen.on { animation: enter .35s cubic-bezier(.2, .8, .3, 1); }
   }
@@ -176,6 +194,7 @@
   @keyframes pop { 0% { transform: scale(1); } 30% { transform: scale(.9); } 100% { transform: scale(1); } }
   @keyframes fly { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.4); }
     70% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1) rotate(var(--r)); } }
+  @keyframes popin { from { opacity: 0; transform: scale(.88); } }
   @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
   @media (prefers-reduced-motion: no-preference) {
     .fold .chev::before { transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
@@ -288,9 +307,17 @@
   <section class="screen step" id="s2" data-hash="2" aria-labelledby="h2">
     <div class="head"><span class="num" aria-hidden="true">2</span><div><p class="chip">ขั้นที่ 2 / 7</p><h2 id="h2">Copy โค้ด</h2></div></div>
     <div class="card"><div class="txt">
-    <p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
+    <p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p>
+    <div class="copywrap"><button class="btn copy" id="copy" type="button"><span class="lbl">Copy โค้ด</span></button>
+    <div class="copied-card" id="copied" role="status" hidden><span class="deco" style="left:7%;top:10%">🐻</span><span class="deco" style="right:8%;top:9%">✨</span><span class="deco" style="left:6%;bottom:10%">⭐</span><span class="deco" style="right:7%;bottom:12%">💛</span>
+      <span class="big" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 12.6l3.6 3.6 7.3-8"/></svg></span>
+      <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
+    <div class="burst" id="burst" aria-hidden="true"></div></div>
+    <p class="safe">🔒 <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
+    <details class="codefold"><summary>ดูโค้ด</summary><p class="why">โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
+    <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
     </div>
-    <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!</p></div></div></div>
+    </div>
   </section>
   <section class="screen step" id="s3" data-hash="3" aria-labelledby="h3">
     <div class="head"><span class="num" aria-hidden="true">3</span><div><p class="chip">ขั้นที่ 3 / 7</p><h2 id="h3">เปิด Scriptable แล้วกด +</h2></div></div>
@@ -412,7 +439,7 @@ Script.complete();
 (() => {
   const code = document.getElementById("loader").textContent;
   const copy = document.getElementById("copy"), ta = document.getElementById("fallback");
-  const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), copied = document.getElementById("copied");
+  const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), card = document.getElementById("copied"), again = document.getElementById("again");
   const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const BITS = ["🐻", "✨", "💛", "⭐", "✨", "🐻"], COLORS = ["#FFC94D", "#FF8FB1", "#7DDA98", "#6FB6FF", "#E5484D"];
   function party() {
@@ -425,17 +452,20 @@ Script.complete();
       el.style.setProperty("--r", (Math.random() * 120 - 60) + "deg"); el.style.animationDelay = Math.random() * 60 + "ms";
       burst.appendChild(el);
     }
-    copy.classList.remove("pop"); void copy.offsetWidth; copy.classList.add("pop");
-    const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
   }
   const pre = document.getElementById("code");
   pre.textContent = code;
-  copy.addEventListener("click", async () => {
+  async function doCopy() {
     try {
       await navigator.clipboard.writeText(code);
-      lbl.textContent = "Copied!"; copy.classList.add("done"); copied.hidden = false; party();
+      copy.hidden = true; card.hidden = false;
+      card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
+      const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
+      party();
     } catch (e) { ta.value = code; ta.style.display = "block"; ta.focus(); ta.select(); lbl.textContent = "เลือกทั้งหมดแล้วก๊อปจากกล่องด้านล่าง"; }
-  });
+  }
+  copy.addEventListener("click", doCopy);
+  again.addEventListener("click", doCopy);
 
   const screens = [...document.querySelectorAll(".screen")], LAST = screens.length - 1, HASH = screens.map(s => s.dataset.hash);
   const DONE = HASH.indexOf("done"), STEPS = DONE - 1;
