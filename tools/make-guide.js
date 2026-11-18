@@ -20,7 +20,7 @@ const STEPS = [
       "พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects",
       "ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย",
     ].join(" ") } },
-  { title: "Copy โค้ด", body: `<p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
+  { title: "Copy โค้ด", body: `<p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p><div class="copywrap"><button class="btn copy" id="copy" type="button" aria-live="polite"><span class="lbl">Copy โค้ด</span><svg class="tick" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><div class="burst" id="burst" aria-hidden="true"></div></div><p class="copied" id="copied" hidden>🐻 Copy โค้ดแล้ว</p><pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre><p class="safe">🔒 โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p><textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>`,
     check: "ปุ่มเปลี่ยนเป็นสีเขียว ขึ้นว่า Copied!" },
   { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
     check: "หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script" },
@@ -247,6 +247,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     border: 1px solid #2A2A2E; box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
     font: 11.5px/1.55 ui-monospace, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; -webkit-user-select: text; user-select: text; }
   .txt > p.safe { margin: 12px 0 0; font-size: .88rem; color: var(--sub); }
+  .txt > p.safe b { color: var(--ink); font-weight: 700; }
   .burst { position: absolute; left: 50%; top: 42px; width: 0; height: 0; pointer-events: none; }
   .burst i { position: absolute; left: 0; top: 0; font-style: normal; font-size: 22px; line-height: 1; opacity: 0; transform: translate(-50%, -50%); }
   .burst i.dot { width: 9px; height: 9px; border-radius: 50%; }
