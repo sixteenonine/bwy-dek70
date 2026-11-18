@@ -26,7 +26,7 @@ const STEPS = [
   { title: "Copy โค้ด", body: `<p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p>
     <button class="peek" id="peek" type="button" aria-label="ดูโค้ดเต็ม"><pre id="peekCode" aria-hidden="true"></pre><span class="peek-tag">ดูโค้ดเต็ม ›</span></button>
     <div class="copywrap"><button class="btn copy" id="copy" type="button"><span class="lbl">Copy โค้ด</span></button>
-    <div class="copied-card" id="copied" role="status" hidden><span class="deco" style="left:7%;top:10%">🐻</span><span class="deco" style="right:8%;top:9%">✨</span><span class="deco" style="left:6%;bottom:10%">⭐</span><span class="deco" style="right:7%;bottom:12%">💛</span>
+    <div class="copied-card" id="copied" role="status" hidden>
       <span class="big" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 12.6l3.6 3.6 7.3-8"/></svg></span>
       <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
     <div class="burst" id="burst" aria-hidden="true"></div></div>
@@ -272,15 +272,14 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .btn.copy { gap: 8px; font-size: 1.15rem; min-height: 58px; }
   .btn[hidden] { display: none; }
   /* หลัง Copy: ปุ่มกลายเป็นการ์ดสำเร็จ */
-  .copied-card { position: relative; margin-top: 16px; text-align: center; padding: 22px 16px 12px; border-radius: 22px; background: var(--ok-bg); border: 1px solid rgba(59, 176, 97, .45); }
+  .copied-card { position: relative; margin-top: 16px; text-align: center; padding: 22px 16px 16px; border-radius: 22px; background: var(--inner); border: 1px solid var(--line); }
   .copied-card[hidden] { display: none; }
-  .copied-card .big { display: grid; place-items: center; width: 62px; height: 62px; margin: 0 auto 10px; border-radius: 50%;
-    background: linear-gradient(180deg, #3BB061, #1E7F3C); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 10px 22px -6px rgba(30,127,60,.6); }
-  .copied-card .big svg { width: 32px; height: 32px; fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-  .copied-card .t { margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--ink); }
-  .copied-card .s { margin: 4px 0 0; color: var(--sub); font-size: 1rem; }
-  .copied-card .again { margin-top: 6px; padding: 8px 12px; border: 0; background: none; font: inherit; font-size: .9rem; font-weight: 700; color: var(--ok); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-  .copied-card .deco { position: absolute; font-size: 20px; line-height: 1; pointer-events: none; }
+  .copied-card .big { display: grid; place-items: center; width: 60px; height: 60px; margin: 0 auto 12px; border-radius: 18px; background: var(--btn); box-shadow: var(--btn-shadow); }
+  .copied-card .big svg { width: 30px; height: 30px; fill: none; stroke: var(--btn-ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .copied-card .t { margin: 0; font-size: 1.3rem; font-weight: 700; color: var(--ink); }
+  .copied-card .s { margin: 2px 0 0; color: var(--sub); font-size: .98rem; }
+  .copied-card .again { margin-top: 14px; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: .9rem; font-weight: 600; cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 6px 14px -8px rgba(0,0,0,.2); -webkit-tap-highlight-color: transparent; }
   /* กล่องโค้ด (กดเปิด/ปิด) */
   .codebox p b { color: var(--ink); font-weight: 600; }
   .codebox pre.code { margin: 0 14px 14px; }
@@ -325,7 +324,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     .fold .chev::before { transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
     .fold[open] p { animation: rise .3s ease-out; }
   }
-  @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); box-shadow: var(--btn-shadow), 0 0 0 6px rgba(46, 160, 80, .35); } }
+  @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); box-shadow: var(--btn-shadow), 0 0 0 6px rgba(120, 120, 128, .3); } }
   /* Parameter / คำถาม / ลิงก์เล็ก */
   .opts { margin: 16px 0 0; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); padding: 2px 14px; }
   .opt { display: grid; grid-template-columns: minmax(0, auto) 1fr; gap: 12px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--line); }
@@ -415,7 +414,7 @@ ${loader}
   const copy = document.getElementById("copy"), ta = document.getElementById("fallback");
   const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), card = document.getElementById("copied"), again = document.getElementById("again");
   const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const BITS = ["🐻", "✨", "💛", "⭐", "✨", "🐻"], COLORS = ["#FFC94D", "#FF8FB1", "#7DDA98", "#6FB6FF", "#E5484D"];
+  const BITS = ["🐻"], COLORS = ["#1C1C1E", "#8E8E93", "#C7C7CC", "#636366", "#AEAEB2"]; // โทนเทาเข้ากับธีม
   function party() {
     if (calm) return;
     burst.textContent = "";
