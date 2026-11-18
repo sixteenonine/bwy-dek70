@@ -70,9 +70,7 @@
   h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
   .mute { display: block; color: var(--mute); }
   /* หน้าเสร็จ: ไอคอนถูก + หัวข้อสองบรรทัด จัดกลาง */
-  .done-text { text-align: center; margin: 0 4px 18px; display: flex; flex-direction: column; justify-content: center;
-    min-height: calc(100vh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-    min-height: calc(100svh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+  .done-text { text-align: center; margin: 0 4px 28px; }
   .done-ic { display: block; width: 58px; height: 58px; margin: 0 auto 14px; color: var(--ink); }
   .done-ic .ico { width: 100%; height: 100%; }
   .done-h { font-size: clamp(2rem, 9.4vw, 2.5rem); line-height: 1.18; margin: 0 0 10px; font-weight: 400; letter-spacing: 0; }
@@ -84,9 +82,7 @@
   /* หน้าแรก: ไม่มีแถบเลขขั้น ส่วนหัวอยู่กลางจอแรก (เว้นที่ให้ปุ่มล่าง) การ์ดตัวอย่างอยู่ถัดลงไป */
   /* หน้าแรก/หน้าเสร็จ: หัวข้ออยู่กลางส่วนบน การ์ดถัดไปโผล่เหนือปุ่มล่างให้รู้ว่าเลื่อนลงได้ */
   html.solo .pager { display: none; } /* หน้าแรกและหน้าเสร็จ: ไม่มีแถบเลขขั้น */
-  .brand { margin: 0 6px 18px; display: flex; flex-direction: column; justify-content: center;
-    min-height: calc(100vh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-    min-height: calc(100svh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+  .brand { margin: 0 6px 28px; }
   .brand h1 { margin: 0; font-weight: 400; line-height: 1.12; letter-spacing: 0; }
   .brand h1 span { display: block; }
   .brand .l1 { font-size: clamp(1.9rem, 9vw, 2.4rem); }
@@ -446,6 +442,22 @@ Script.complete();
     v.addEventListener("click", () => { if (v.paused) { v.userPaused = false; play(v); } else { v.userPaused = true; v.pause(); } });
   });
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { const v = screens[cur] && screens[cur].querySelector("video"); if (v) play(v); } });
+  // มือถือแนวตั้ง หน้าแรก/หน้าเสร็จ: ส่วนหัวกับการ์ดติดกัน แล้วดันทั้งก้อนลงมาให้อยู่กลางจอ
+  // ที่ว่างที่เหลือแบ่งครึ่ง: ครึ่งหนึ่งไว้ด้านบน อีกครึ่งให้การ์ดโผล่เหนือปุ่มล่างมากขึ้น (โผล่อย่างน้อย PEEK)
+  const main = document.querySelector("main"), navBox = document.querySelector(".nav div"), wide = window.matchMedia("(min-width: 700px)"), PEEK = 140;
+  let placedW = 0;
+  function place() {
+    placedW = window.innerWidth;
+    screens.forEach(x => { x.style.paddingTop = ""; });
+    const s = screens[cur];
+    if (!s || wide.matches || !(cur === 0 || cur === DONE)) return;
+    const head = s.querySelector(".brand, .done-text");
+    const room = navBox.getBoundingClientRect().top - 12 - parseFloat(getComputedStyle(main).paddingTop);
+    const gap = parseFloat(getComputedStyle(head).marginBottom);
+    s.style.paddingTop = Math.max(0, Math.round((room - head.offsetHeight - gap - PEEK) / 2)) + "px";
+  }
+  window.addEventListener("resize", () => { if (window.innerWidth !== placedW) place(); }); // ไม่ขยับตามแถบ Safari ที่ยืด/หดตอนเลื่อน
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
   function show(i, push) {
     i = Math.max(0, Math.min(LAST, i));
     if (i === cur) return;
@@ -467,6 +479,7 @@ Script.complete();
     const ref = extra(i) ? ret : i;
     pager.forEach((b, j) => { const n = j + 1; b.classList.toggle("cur", n === i); b.classList.toggle("done", n < ref || ref > STEPS);
       if (n === i) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+    place();
     window.scrollTo(0, 0);
     if (push) history.pushState({ i }, "", i ? "#" + HASH[i] : location.pathname + location.search);
     const h = screens[i].querySelector("h1, h2");
