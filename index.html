@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#EDEDED" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#FEFEFE" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <title>Dek70 BWY Widget นับถอยหลังวันสอบ</title>
 <meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
@@ -42,12 +42,13 @@
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; }
   /* สีพื้นของทั้งหน้า (รวมส่วนที่ยืดออกตอนเลื่อนสุดขอบ) + ไล่สีที่ติดจอไว้ข้างหลัง */
-  html { background: var(--bgx); }
+  html { background: var(--paper); }
   /* ปิดการซูมตอนแตะสองครั้ง (ยังถ่างนิ้วซูมได้ตามปกติ) */
   html, body, button, a, video, .pager, .nav { touch-action: manipulation; }
   body { min-height: 100vh; min-height: 100dvh; background: transparent; color: var(--ink); line-height: 1.55;
     -webkit-font-smoothing: antialiased; font-family: "Prompt", -apple-system, BlinkMacSystemFont, "Sukhumvit Set", "Thonburi", "Leelawadee UI", "Segoe UI", sans-serif; }
-  body::before { content: ""; position: fixed; inset: -20vh 0; z-index: -1; background: linear-gradient(165deg, var(--bg1), var(--bg2)); pointer-events: none; }
+  body::before { content: ""; position: fixed; inset: -20vh 0; z-index: -1; pointer-events: none;
+    background: radial-gradient(circle, var(--dot) 1.1px, transparent 1.6px) 0 0 / 13px 13px, var(--paper); }
   main { max-width: 480px; margin: 0 auto; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(130px + env(safe-area-inset-bottom, 0px)); }
   /* ตัวเลขขั้นด้านบน (แบบ pagination) */
   .pager { display: flex; justify-content: space-between; gap: 6px; padding: 7px; margin: 0 0 22px; background: var(--card); border-radius: 22px; box-shadow: var(--shadow); }
@@ -72,8 +73,6 @@
   .lead { color: var(--sub); margin: 0; font-size: 1.02rem; }
   .intro-text { margin: 4px 4px 18px; }
   /* หน้าแรก: พื้นขาวลายจุด หัวข้อใหญ่ ชิป และผู้สร้าง */
-  html.intro { background: var(--paper); }
-  html.intro body::before { background: radial-gradient(circle, var(--dot) 1.1px, transparent 1.6px) 0 0 / 13px 13px, var(--paper); }
   /* หน้าแรก: ไม่มีแถบเลขขั้น ส่วนหัวอยู่กลางจอแรก (เว้นที่ให้ปุ่มล่าง) การ์ดตัวอย่างอยู่ถัดลงไป */
   html.intro .pager { display: none; }
   .brand { margin: 0 6px 18px; display: flex; flex-direction: column; justify-content: center; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
