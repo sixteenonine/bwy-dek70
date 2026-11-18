@@ -68,7 +68,7 @@ const screens = [
         <li>ใช้เวลาประมาณ 2 นาที (${N} ขั้น)</li>
         <li class="no">Android ยังใช้ไม่ได้</li>
       </ul>
-      <p class="more js-only">เคยติดตั้งแล้ว? <button class="link" type="button" data-go="options">ปรับแบบ</button> · <button class="link" type="button" data-go="faq">คำถามที่เจอบ่อย</button></p>
+      <p class="more js-only">เคยติดตั้งแล้ว? <button class="link" type="button" data-go="options">ปรับแต่ง</button> · <button class="link" type="button" data-go="faq">คำถามที่เจอบ่อย</button></p>
     </div>
   </section>`,
   ...STEPS.map((s, i) => `<section class="screen step" id="s${i + 1}" data-hash="${i + 1}" aria-labelledby="h${i + 1}">
@@ -85,7 +85,7 @@ const screens = [
     <div class="card">${hero}
     <p class="hint">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ ${N} อีกรอบ</p>
     <div class="js-only"><button class="btn ghost" type="button" data-go="theme">🎨 ดูวิธีเปลี่ยนธีมสี</button>
-    <button class="btn ghost" type="button" data-go="options">⚙️ ปรับแบบด้วย Parameter</button>
+    <button class="btn ghost" type="button" data-go="options">⚙️ ปรับแต่งด้วย Parameter</button>
     <button class="btn ghost" type="button" data-go="faq">💬 คำถามที่เจอบ่อย</button></div></div>
   </section>`,
   `<section class="screen step" id="s${N + 2}" data-hash="theme" aria-labelledby="ht">
@@ -97,7 +97,7 @@ const screens = [
     ${note("i", "อยากให้บางตัวเป็นธีมมืด", `กดค้างที่ Widget ตัวนั้น กด ${k("Edit Widget")} แล้วพิมพ์ ${k("dark")} ในช่อง Parameter`, "info")}</div>
   </section>`,
   `<section class="screen step narrow" id="s${N + 3}" data-hash="options" aria-labelledby="ho">
-    <div class="head"><span class="num" aria-hidden="true">⚙️</span><div><p class="chip">ไม่บังคับ</p><h2 id="ho">ปรับแบบด้วย Parameter</h2></div></div>
+    <div class="head"><span class="num" aria-hidden="true">⚙️</span><div><p class="chip">ไม่บังคับ</p><h2 id="ho">ปรับแต่งด้วย Parameter</h2></div></div>
     <div class="card"><div class="txt">
     ${list([`กดค้างที่ Widget แล้วกด ${k("Edit Widget")}`, `แตะช่อง ${k("Parameter")} แล้วพิมพ์คำจากตารางด้านล่าง`, "แตะที่ว่างนอกกล่องเพื่อปิด"])}
     <div class="opts">${PARAMS.map(([a, b]) => `<div class="opt"><span class="k">${a}</span><span>${b}</span></div>`).join("")}</div>
