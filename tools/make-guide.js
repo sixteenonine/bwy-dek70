@@ -80,9 +80,9 @@ const screens = [
     ${s.info ? note("i", s.info.label, s.info.text, "info") : note("✓", "ต้องเห็น", s.check)}</div>
   </section>`),
   `<section class="screen" id="s${N + 1}" data-hash="done" aria-labelledby="hd">
-    <div class="intro-text"><p class="chip">ติดตั้งครบ ${N} ขั้น</p>
-    <h2 id="hd" class="done-h"><span class="mute">เรียบร้อย</span> เสร็จแล้ว 🎉</h2>
-    <p class="lead">Widget จะอัปเดตวันให้เองทุกชั่วโมง ไม่ต้องทำอะไรอีก</p></div>
+    <div class="intro-text done-text"><span class="done-ic">${ICON.check()}</span>
+    <h2 id="hd" class="done-h"><b>BWY Widget</b> พร้อมใช้งานแล้ว</h2>
+    <p class="lead">ข้อมูลบน Widget จะอัปเดตให้อัตโนมัติ<br>ไม่ต้องทำอะไรต่อแล้ว</p></div>
     <div class="card">${hero}
     <p class="hint">ถ้าไม่ขึ้นแบบนี้ ลองย้อนกลับไปเช็กขั้นที่ ${N} อีกรอบ</p>
     <div class="js-only"><button class="btn ghost" type="button" data-go="theme">${ICON.palette()}ดูวิธีเปลี่ยนธีมสี</button>
@@ -178,7 +178,13 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 700; }
   h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
   .mute { display: block; color: var(--mute); }
-  .done-h { font-size: 2rem; margin-bottom: 8px; }
+  /* หน้าเสร็จ: ไอคอนถูก + หัวข้อสองบรรทัด จัดกลาง */
+  .done-text { text-align: center; margin: 22px 4px 24px; }
+  .done-ic { display: block; width: 58px; height: 58px; margin: 0 auto 14px; color: var(--ink); }
+  .done-ic .ico { width: 100%; height: 100%; }
+  .done-h { font-size: clamp(2rem, 9.4vw, 2.5rem); line-height: 1.18; margin: 0 0 10px; font-weight: 400; letter-spacing: 0; }
+  .done-h b { display: block; font-weight: 700; }
+  .done-text .lead { color: var(--ink); }
   .lead { color: var(--sub); margin: 0; font-size: 1.02rem; }
   .intro-text { margin: 4px 4px 18px; }
   /* หน้าแรก: พื้นขาวลายจุด หัวข้อใหญ่ ชิป และผู้สร้าง */

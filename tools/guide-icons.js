@@ -25,4 +25,10 @@ function help() {
     `<path d="M9.1 9.3c0-1.8 1.3-3 3-3s3 1.1 3 2.7c0 1.3-.8 2-1.8 2.6-.9.5-1.3 1.1-1.3 2v.5" fill="none" stroke="#000" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>` +
     `<circle cx="12" cy="17.2" r="1.45" fill="#000"/></mask><circle cx="12" cy="12" r="10.1" fill="currentColor" mask="url(#${id})"/></svg>`;
 }
-module.exports = { gear, palette, help };
+function check() {
+  const id = "bi" + uid++;
+  return `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><mask id="${id}"><rect width="24" height="24" fill="#fff"/>` +
+    `<path d="M7.4 12.4l3.1 3.1 6.1-6.6" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></mask>` +
+    `<circle cx="12" cy="12" r="11" fill="currentColor" mask="url(#${id})"/></svg>`;
+}
+module.exports = { gear, palette, help, check };
