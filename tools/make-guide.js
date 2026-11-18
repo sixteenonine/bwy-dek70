@@ -10,13 +10,15 @@ const loader = `<script type="text/plain" id="loader">${loaderSrc}\n</script>`;
 const clip = (id, alt, h = 1702) => `<figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="${h}" style="aspect-ratio:828/${h}" poster="guide/${id}.jpg" aria-label="${alt}"><source src="guide/${id}.mp4" type="video/mp4"></video></div></figure>`;
 const list = items => `<ol class="do">${items.map(t => `<li><span>${t}</span></li>`).join("")}</ol>`;
 const k = t => `<b class="key">${t}</b>`;
+// กล่องข้อมูลแบบกดเปิด/ปิด (ปิดไว้ก่อน ไม่ให้หน้ารก)
+const fold = (label, text) => `<details class="fold"><summary><span class="ic" aria-hidden="true">i</span><b>${label}</b><span class="chev" aria-hidden="true"></span></summary><p>${text}</p></details>`;
 // text แบ่งย่อหน้าได้ด้วยบรรทัดว่าง (\n\n)
 const note = (ic, label, text, cls = "") => `<div class="check ${cls}"><span class="ic" aria-hidden="true">${ic}</span><div>${text.split("\n\n").map((t, j) => `<p>${j ? "" : `<b>${label}</b>`}${t}</p>`).join("")}</div></div>`;
 
 const STEPS = [
   { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>`,
-    info: { label: "Scriptable คืออะไร", text: [
+    info: { label: "ทำไมต้องโหลด Scriptable?", text: [
       "เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ",
       "พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects",
       "ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย",
@@ -77,7 +79,7 @@ const screens = [
     <div class="card"><div class="txt">
     ${s.body}
     </div>${s.media || ""}
-    ${s.info ? note("i", s.info.label, s.info.text, "info") : note("✓", "ต้องเห็น", s.check)}</div>
+    ${s.info ? fold(s.info.label, s.info.text) : note("✓", "ต้องเห็น", s.check)}</div>
   </section>`),
   `<section class="screen" id="s${N + 1}" data-hash="done" aria-labelledby="hd">
     <div class="intro-text done-text"><span class="done-ic">${ICON.check()}</span>
@@ -233,6 +235,17 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .check .ic { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: .95rem; color: #fff;
     background: linear-gradient(180deg, #3BB061, #1E7F3C); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 4px 10px -3px rgba(30,127,60,.6); }
   .check.info .ic { background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); font-family: Georgia, serif; font-style: italic; }
+  /* กล่องกดเปิด/ปิด */
+  .fold { margin: 16px 0 0; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); }
+  .fold summary { list-style: none; display: flex; align-items: center; gap: 12px; padding: 11px 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .fold summary::-webkit-details-marker { display: none; }
+  .fold summary b { flex: 1; font-size: .98rem; color: var(--ink); }
+  .fold .ic { flex: none; width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font: italic 800 .95rem Georgia, serif;
+    background: var(--btn); color: var(--btn-ink); box-shadow: var(--btn-shadow); }
+  .fold .chev { flex: none; width: 26px; height: 26px; border-radius: 9px; background: var(--chip); position: relative; }
+  .fold .chev::before { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; border: solid var(--sub); border-width: 0 2px 2px 0; transform: translate(-50%, -70%) rotate(45deg); }
+  .fold[open] .chev::before { transform: translate(-50%, -30%) rotate(-135deg); }
+  .fold p { margin: 0; padding: 0 16px 14px 56px; color: var(--sub); font-size: .93rem; line-height: 1.6; }
   .check.info b { color: var(--ink); font-size: .95rem; letter-spacing: 0; }
   .check.info p { color: var(--sub); font-size: .93rem; }
   /* รายการก่อนเริ่ม */
@@ -275,6 +288,10 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   @keyframes fly { 0% { opacity: 1; transform: translate(-50%, -50%) scale(.4); }
     70% { opacity: 1; } 100% { opacity: 0; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1) rotate(var(--r)); } }
   @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .fold .chev::before { transition: transform .25s cubic-bezier(.3, 1.4, .5, 1); }
+    .fold[open] p { animation: rise .3s ease-out; }
+  }
   @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); box-shadow: var(--btn-shadow), 0 0 0 6px rgba(46, 160, 80, .35); } }
   /* Parameter / คำถาม / ลิงก์เล็ก */
   .opts { margin: 16px 0 0; border-radius: 18px; background: var(--inner); border: 1px solid var(--line); padding: 2px 14px; }
@@ -319,7 +336,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     /* การ์ดขั้นตอน: คำอธิบายซ้าย ภาพ/คลิปขวา */
     .step .card:not(.faq) { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto 1fr; column-gap: 36px; align-items: start; padding: 26px; }
     .step .card > .txt { grid-column: 1; grid-row: 1; }
-    .step .card > .check { grid-column: 1; grid-row: 2; align-self: start; }
+    .step .card > .check, .step .card > .fold { grid-column: 1; grid-row: 2; align-self: start; }
     .step .card > .shot { grid-column: 2; grid-row: 1 / span 2; }
     .step .card > .shot { margin: 0; width: clamp(240px, calc((100vh - 300px) * .462), 330px); width: clamp(240px, calc((100svh - 300px) * .462), 330px); }
     .step .card > .shot.wide { width: min(440px, 44vw); }
