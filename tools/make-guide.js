@@ -132,7 +132,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     --btn: linear-gradient(180deg, #3B3B3D 0%, #161617 55%, #050505 100%); --btn-ink: #FFFFFF;
     --btn-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 3px rgba(0,0,0,.18), 0 10px 22px -6px rgba(0,0,0,.45);
     --glass: rgba(255,255,255,.78);
-    --pill: #C8D1D9; --paper: #FEFEFE; --dot: #E4E4E6;
+    --paper: #FEFEFE; --dot: #E4E4E6;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg1: #141416; --bg2: #0A0A0B; --bgx: #0F0F11; --card: #1B1B1E; --inner: #232327; --ink: #F4F4F6; --sub: #A3A3AA; --mute: #6E6E76; --line: #2B2B30; --chip: #26262B;
@@ -140,7 +140,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
       --btn: linear-gradient(180deg, #FFFFFF 0%, #E9E9EB 60%, #D2D2D6 100%); --btn-ink: #0B0B0C;
       --btn-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 2px 3px rgba(0,0,0,.4), 0 10px 22px -6px rgba(0,0,0,.6);
       --glass: rgba(27,27,30,.78);
-      --pill: #2E353D; --paper: #0F0F11; --dot: #232327; }
+      --paper: #0F0F11; --dot: #232327; }
   }
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -177,14 +177,19 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   /* หน้าแรก: พื้นขาวลายจุด หัวข้อใหญ่ ชิป และผู้สร้าง */
   html.intro { background: var(--paper); }
   html.intro body::before { background: radial-gradient(circle, var(--dot) 1.1px, transparent 1.6px) 0 0 / 13px 13px, var(--paper); }
-  .brand { margin: 18px 6px 26px; }
+  /* หน้าแรก: ไม่มีแถบเลขขั้น ส่วนหัวอยู่กลางจอแรก (เว้นที่ให้ปุ่มล่าง) การ์ดตัวอย่างอยู่ถัดลงไป */
+  html.intro .pager { display: none; }
+  .brand { margin: 0 6px 18px; display: flex; flex-direction: column; justify-content: center; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 14px - env(safe-area-inset-top, 0px));
+    min-height: calc(100svh - 14px - env(safe-area-inset-top, 0px)); }
   .brand h1 { margin: 0; font-weight: 400; line-height: 1.12; letter-spacing: 0; }
   .brand h1 span { display: block; }
   .brand .l1 { font-size: clamp(1.9rem, 9vw, 2.4rem); }
   .brand .l2 { font-size: clamp(2.5rem, 12.5vw, 3.3rem); font-weight: 700; letter-spacing: .005em; }
-  .brand .l3 { font-size: clamp(2.2rem, 10.6vw, 2.9rem); }
+  .brand .l3 { font-size: clamp(1.7rem, 10.2vw, 2.9rem); }
   .pills { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; }
-  .pills li, .maker .pill { background: var(--pill); color: var(--ink); border-radius: 999px; padding: 3px 14px 4px; font-size: 1.05rem; }
+  .pills li, .maker .pill { background: var(--card); color: var(--ink); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 6px 14px -8px rgba(0,0,0,.18);
+    border-radius: 999px; padding: 3px 14px 4px; font-size: 1.05rem; }
   .maker { display: flex; align-items: center; gap: 16px; margin-top: 40px; }
   .maker img { flex: none; width: 80px; height: auto; }
   .maker p { margin: 0; line-height: 1.3; }
@@ -274,8 +279,6 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .more { margin: 16px 2px 0; color: var(--sub); font-size: .95rem; }
   .link { border: 0; background: none; padding: 0; font: inherit; font-weight: 700; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
   .js-only .btn + .btn { margin-top: 10px; }
-  footer { text-align: center; color: var(--sub); font-size: .9rem; margin: 28px 0 0; }
-  footer a { color: var(--ink); font-weight: 700; }
   textarea.fallback { width: 100%; height: 160px; margin-top: 10px; font-size: 12px; display: none; }
   /* แถบปุ่มล่าง: กล่องลอย */
   .nav { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 16px calc(14px + env(safe-area-inset-bottom, 0px)); pointer-events: none; }
@@ -310,6 +313,9 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     /* หน้าแรก / หน้าเสร็จ: ข้อความซ้าย การ์ดขวา */
     html:not(.js) #s0, #s0.on, #s${N + 1}.on { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); column-gap: 40px; align-items: center; }
     h1, .done-h { font-size: 2.6rem; }
+    /* หน้าแรกบนจอกว้าง: ทั้งสองคอลัมน์อยู่กลางจอ */
+    #s0.on, html:not(.js) #s0 { align-content: center; min-height: calc(100vh - 130px); min-height: calc(100svh - 130px); }
+    .brand { min-height: 0; margin-bottom: 0; padding-bottom: 0; }
   }
   /* มือถือแนวนอน (จอเตี้ย) */
   @media (orientation: landscape) and (max-height: 520px) {
@@ -332,7 +338,6 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
 <main>
   <nav class="pager" id="pager" aria-label="ไปที่ขั้น">${STEPS.map((_, i) => `<button type="button" data-go="${i + 1}" aria-label="ขั้นที่ ${i + 1}">${i + 1}</button>`).join("")}</nav>
   ${screens.join("\n  ")}
-  <footer>ติดตามเทคนิคพิชิตสอบได้ที่ <a href="https://x.com/WeBearTogether">@WeBearTogether</a></footer>
 </main>
 <nav class="nav" aria-label="เปลี่ยนขั้น"><div><button id="back" type="button">← ย้อนกลับ</button><button id="next" type="button">เริ่มติดตั้ง →</button></div></nav>
 ${loader}
