@@ -179,9 +179,9 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
   .mute { display: block; color: var(--mute); }
   /* หน้าเสร็จ: ไอคอนถูก + หัวข้อสองบรรทัด จัดกลาง */
-  .done-text { text-align: center; margin: 0 4px 18px; display: flex; flex-direction: column; justify-content: center; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    min-height: calc(100vh - 14px - env(safe-area-inset-top, 0px));
-    min-height: calc(100svh - 14px - env(safe-area-inset-top, 0px)); }
+  .done-text { text-align: center; margin: 0 4px 18px; display: flex; flex-direction: column; justify-content: center;
+    min-height: calc(100vh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100svh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
   .done-ic { display: block; width: 58px; height: 58px; margin: 0 auto 14px; color: var(--ink); }
   .done-ic .ico { width: 100%; height: 100%; }
   .done-h { font-size: clamp(2rem, 9.4vw, 2.5rem); line-height: 1.18; margin: 0 0 10px; font-weight: 400; letter-spacing: 0; }
@@ -191,10 +191,11 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .intro-text { margin: 4px 4px 18px; }
   /* หน้าแรก: พื้นขาวลายจุด หัวข้อใหญ่ ชิป และผู้สร้าง */
   /* หน้าแรก: ไม่มีแถบเลขขั้น ส่วนหัวอยู่กลางจอแรก (เว้นที่ให้ปุ่มล่าง) การ์ดตัวอย่างอยู่ถัดลงไป */
+  /* หน้าแรก/หน้าเสร็จ: หัวข้ออยู่กลางส่วนบน การ์ดถัดไปโผล่เหนือปุ่มล่างให้รู้ว่าเลื่อนลงได้ */
   html.solo .pager { display: none; } /* หน้าแรกและหน้าเสร็จ: ไม่มีแถบเลขขั้น */
-  .brand { margin: 0 6px 18px; display: flex; flex-direction: column; justify-content: center; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    min-height: calc(100vh - 14px - env(safe-area-inset-top, 0px));
-    min-height: calc(100svh - 14px - env(safe-area-inset-top, 0px)); }
+  .brand { margin: 0 6px 18px; display: flex; flex-direction: column; justify-content: center;
+    min-height: calc(100vh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100svh - 14px - 84px - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
   .brand h1 { margin: 0; font-weight: 400; line-height: 1.12; letter-spacing: 0; }
   .brand h1 span { display: block; }
   .brand .l1 { font-size: clamp(1.9rem, 9vw, 2.4rem); }
