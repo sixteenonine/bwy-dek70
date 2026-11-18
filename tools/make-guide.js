@@ -179,7 +179,9 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
   .mute { display: block; color: var(--mute); }
   /* หน้าเสร็จ: ไอคอนถูก + หัวข้อสองบรรทัด จัดกลาง */
-  .done-text { text-align: center; margin: 22px 4px 24px; }
+  .done-text { text-align: center; margin: 0 4px 18px; display: flex; flex-direction: column; justify-content: center; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 14px - env(safe-area-inset-top, 0px));
+    min-height: calc(100svh - 14px - env(safe-area-inset-top, 0px)); }
   .done-ic { display: block; width: 58px; height: 58px; margin: 0 auto 14px; color: var(--ink); }
   .done-ic .ico { width: 100%; height: 100%; }
   .done-h { font-size: clamp(2rem, 9.4vw, 2.5rem); line-height: 1.18; margin: 0 0 10px; font-weight: 400; letter-spacing: 0; }
@@ -189,7 +191,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   .intro-text { margin: 4px 4px 18px; }
   /* หน้าแรก: พื้นขาวลายจุด หัวข้อใหญ่ ชิป และผู้สร้าง */
   /* หน้าแรก: ไม่มีแถบเลขขั้น ส่วนหัวอยู่กลางจอแรก (เว้นที่ให้ปุ่มล่าง) การ์ดตัวอย่างอยู่ถัดลงไป */
-  html.intro .pager { display: none; }
+  html.solo .pager { display: none; } /* หน้าแรกและหน้าเสร็จ: ไม่มีแถบเลขขั้น */
   .brand { margin: 0 6px 18px; display: flex; flex-direction: column; justify-content: center; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     min-height: calc(100vh - 14px - env(safe-area-inset-top, 0px));
     min-height: calc(100svh - 14px - env(safe-area-inset-top, 0px)); }
@@ -330,8 +332,8 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
     html:not(.js) #s0, #s0.on, #s${N + 1}.on { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); column-gap: 40px; align-items: center; }
     h1, .done-h { font-size: 2.6rem; }
     /* หน้าแรกบนจอกว้าง: ทั้งสองคอลัมน์อยู่กลางจอ */
-    #s0.on, html:not(.js) #s0 { align-content: center; min-height: calc(100vh - 130px); min-height: calc(100svh - 130px); }
-    .brand { min-height: 0; margin-bottom: 0; padding-bottom: 0; }
+    #s0.on, html:not(.js) #s0, #s${N + 1}.on { align-content: center; min-height: calc(100vh - 130px); min-height: calc(100svh - 130px); }
+    .brand, .done-text { min-height: 0; margin-bottom: 0; padding-bottom: 0; }
   }
   /* มือถือแนวนอน (จอเตี้ย) */
   @media (orientation: landscape) and (max-height: 520px) {
@@ -415,6 +417,7 @@ ${loader}
     if (extra(i) && cur >= 0 && !extra(cur)) ret = cur;
     cur = i;
     document.documentElement.classList.toggle("intro", i === 0);
+    document.documentElement.classList.toggle("solo", i === 0 || i === DONE);
     screens.forEach((s, j) => {
       s.classList.toggle("on", j === i);
       const v = s.querySelector("video");
