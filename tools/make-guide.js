@@ -19,7 +19,7 @@ const STEPS = [
   { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" id="appstore" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>`,
     info: { label: "ทำไมต้องโหลด Scriptable?", text: [
-      "เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ",
+      "เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอ Home ได้ ติดตั้งครั้งเดียวจบ",
       "พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects",
       "ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย",
     ].join(" ") } },
@@ -31,15 +31,15 @@ const STEPS = [
       <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
     <div class="burst" id="burst" aria-hidden="true"></div></div>
     <details class="fold codebox"><summary><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.6"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></svg></span><b>โค้ดนี้ปลอดภัยไหม?</b><span class="chev" aria-hidden="true"></span></summary>
-      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮม และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
+      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้า Home และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
       <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>` },
-  { title: "เปิด Scriptable แล้วกด + และวางโค้ดที่ Copy มา", body: list([`แตะ icon ${k("Scriptable")} บนหน้าจอ Home`, `กด ${k("+")} มุมขวาบน`, "วางโค้ดที่ Copy มาตอนแรก"]),
+  { title: "เอาโค้ดไปวางที่ Scriptable", body: list([`แตะ icon ${k("Scriptable")} บนหน้าจอ Home`, `กด ${k("+")} มุมขวาบน`, "วางโค้ดที่ Copy มาตอนแรก"]),
     media: clip("s3", "แตะ icon Scriptable บนหน้าจอ Home กดปุ่มบวกมุมขวาบน แล้ววางโค้ดในหน้าว่าง"), check: "โค้ดขึ้นเต็มหน้า" },
   { title: "ตั้งชื่อว่า Dek70", body: list([`แตะชื่อ ${k("Untitled Script")} ด้านบน`, `ลบชื่อเดิม พิมพ์ ${k("Dek70")}`, `กด ${k("Rename")}`, `กด ${k("Done")} มุมซ้ายบน`]),
     media: clip("s5", "แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"), check: "การ์ดชื่อ Dek70 อยู่ในรายการ" },
   { title: "เพิ่ม Widget บนหน้าจอ Home", body: list(["กดค้างที่ว่างบนหน้าจอ Home จน icon สั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)`]),
-    media: clip("s6", "กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอ Home" },
+    media: clip("s6", "กดค้างที่หน้าจอ Home กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอ Home" },
   { title: "เลือกสคริปต์ Dek70", body: list([`กดค้างที่กล่องนั้น แล้วกด ${k("Edit Widget")}`, `แตะ ${k("Choose")} ที่แถว Script`, `เลือก ${k("Dek70")}`, "แตะที่ว่างนอกกล่องเพื่อปิด"]),
     media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"), check: "Widget แสดงผลนับถอยหลังแล้ว" },
 ];
@@ -101,9 +101,9 @@ const screens = [
   `<section class="screen step" id="s${N + 2}" data-hash="theme" aria-labelledby="ht">
     <div class="head"><span class="num" aria-hidden="true">${ICON.palette()}</span><div><p class="chip">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
     <div class="card"><div class="txt">
-    ${list([`เปิดแอป ${k("Scriptable")} แล้วแตะ ${k("Dek70")}`, `กด ${k("🌙 เปลี่ยนเป็นธีมมืด")}`, `กด ${k("โอเค")}`, "กลับหน้าจอโฮม รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)"])}
+    ${list([`เปิดแอป ${k("Scriptable")} แล้วแตะ ${k("Dek70")}`, `กด ${k("🌙 เปลี่ยนเป็นธีมมืด")}`, `กด ${k("โอเค")}`, "กลับหน้าจอ Home รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)"])}
     <p>อยากกลับเป็นธีมสว่าง ทำซ้ำแล้วกด ${k("☀️ เปลี่ยนเป็นธีมสว่าง")}</p>
-    </div>${clip("theme", "แตะไอคอน Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอโฮมเปลี่ยนเป็นสีมืด")}
+    </div>${clip("theme", "แตะ icon Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอ Home เปลี่ยนเป็นสีมืด")}
     ${note("i", "อยากให้บางตัวเป็นธีมมืด", `กดค้างที่ Widget ตัวนั้น กด ${k("Edit Widget")} แล้วพิมพ์ ${k("dark")} ในช่อง Parameter`, "info")}</div>
   </section>`,
   `<section class="screen step narrow" id="s${N + 3}" data-hash="options" aria-labelledby="ho">
@@ -128,9 +128,9 @@ const html = `<!DOCTYPE html>
 <meta name="theme-color" content="#FEFEFE" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <title>Dek70 BWY Widget นับถอยหลังวันสอบ</title>
-<meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
+<meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอ Home iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
 <meta property="og:title" content="Dek70 BWY Widget นับถอยหลังวันสอบ">
-<meta property="og:description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou">
+<meta property="og:description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอ Home iPhone/iPad ฟรีจาก BearWithYou">
 <meta property="og:image" content="https://bwy-widget.pages.dev/guide/hero.jpg">
 <meta property="og:url" content="https://bwy-widget.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
@@ -187,7 +187,7 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
   h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 700; }
   h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
   .mute { display: block; color: var(--mute); }
-  /* หน้าเสร็จ: ไอคอนถูก + หัวข้อสองบรรทัด จัดกลาง */
+  /* หน้าเสร็จ: icon ถูก + หัวข้อสองบรรทัด จัดกลาง */
   .done-text { text-align: center; margin: 0 4px 28px; }
   .done-ic { display: block; width: 58px; height: 58px; margin: 0 auto 14px; color: var(--ink); }
   .done-ic .ico { width: 100%; height: 100%; }

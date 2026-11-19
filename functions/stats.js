@@ -16,7 +16,7 @@ const SITE = "https://bwy-widget.pages.dev/";
 const SHARE = [["line", "LINE"], ["x", "X"], ["threads", "Threads"], ["lemon8", "Lemon8"], ["tiktok", "TikTok"], ["ig", "Instagram"]];
 const WRITE_LIMIT = 100000; // D1 แผนฟรี: เขียนได้ 100,000 แถว/วัน (รีเซ็ต 07:00 เวลาไทย)
 
-// ไอคอนเส้น (ไม่ใช้ emoji)
+// icon เส้น (ไม่ใช้ emoji)
 const ICON = {
   widget: '<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>',
   users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M15.5 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.4 3.5 5.2"/>',

@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#FEFEFE" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F0F11" media="(prefers-color-scheme: dark)">
 <title>Dek70 BWY Widget นับถอยหลังวันสอบ</title>
-<meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
+<meta name="description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอ Home iPhone/iPad ฟรีจาก BearWithYou ติดตั้งครั้งเดียว วันอัปเดตให้เอง">
 <meta property="og:title" content="Dek70 BWY Widget นับถอยหลังวันสอบ">
-<meta property="og:description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอโฮม iPhone/iPad ฟรีจาก BearWithYou">
+<meta property="og:description" content="Widget นับถอยหลัง TGAT และ A-Level บนหน้าจอ Home iPhone/iPad ฟรีจาก BearWithYou">
 <meta property="og:image" content="https://bwy-widget.pages.dev/guide/hero.jpg">
 <meta property="og:url" content="https://bwy-widget.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
@@ -69,7 +69,7 @@
   h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -.02em; margin: 0 0 8px; font-weight: 700; }
   h2 { font-size: 1.5rem; line-height: 1.25; letter-spacing: -.015em; margin: 0; font-weight: 700; }
   .mute { display: block; color: var(--mute); }
-  /* หน้าเสร็จ: ไอคอนถูก + หัวข้อสองบรรทัด จัดกลาง */
+  /* หน้าเสร็จ: icon ถูก + หัวข้อสองบรรทัด จัดกลาง */
   .done-text { text-align: center; margin: 0 4px 28px; }
   .done-ic { display: block; width: 58px; height: 58px; margin: 0 auto 14px; color: var(--ink); }
   .done-ic .ico { width: 100%; height: 100%; }
@@ -306,7 +306,7 @@
     <div class="card"><div class="txt">
     <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" id="appstore" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
     </div><figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>
-    <details class="fold"><summary><span class="ic" aria-hidden="true">i</span><b>ทำไมต้องโหลด Scriptable?</b><span class="chev" aria-hidden="true"></span></summary><p>เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย</p></details></div>
+    <details class="fold"><summary><span class="ic" aria-hidden="true">i</span><b>ทำไมต้องโหลด Scriptable?</b><span class="chev" aria-hidden="true"></span></summary><p>เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอ Home ได้ ติดตั้งครั้งเดียวจบ พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย</p></details></div>
   </section>
   <section class="screen step" id="s2" data-hash="2" aria-labelledby="h2">
     <div class="head"><span class="num" aria-hidden="true">2</span><div><p class="chip">ขั้นที่ 2 / 6</p><h2 id="h2">Copy โค้ด</h2></div></div>
@@ -319,14 +319,14 @@
       <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
     <div class="burst" id="burst" aria-hidden="true"></div></div>
     <details class="fold codebox"><summary><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.6"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></svg></span><b>โค้ดนี้ปลอดภัยไหม?</b><span class="chev" aria-hidden="true"></span></summary>
-      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮม และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
+      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้า Home และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
       <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
     </div>
     </div>
   </section>
   <section class="screen step" id="s3" data-hash="3" aria-labelledby="h3">
-    <div class="head"><span class="num" aria-hidden="true">3</span><div><p class="chip">ขั้นที่ 3 / 6</p><h2 id="h3">เปิด Scriptable แล้วกด + และวางโค้ดที่ Copy มา</h2></div></div>
+    <div class="head"><span class="num" aria-hidden="true">3</span><div><p class="chip">ขั้นที่ 3 / 6</p><h2 id="h3">เอาโค้ดไปวางที่ Scriptable</h2></div></div>
     <div class="card"><div class="txt">
     <ol class="do"><li><span>แตะ icon <b class="key">Scriptable</b> บนหน้าจอ Home</span></li><li><span>กด <b class="key">+</b> มุมขวาบน</span></li><li><span>วางโค้ดที่ Copy มาตอนแรก</span></li></ol>
     </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/s3.jpg" aria-label="แตะ icon Scriptable บนหน้าจอ Home กดปุ่มบวกมุมขวาบน แล้ววางโค้ดในหน้าว่าง"><source src="guide/s3.mp4" type="video/mp4"></video></div></figure>
@@ -343,7 +343,7 @@
     <div class="head"><span class="num" aria-hidden="true">5</span><div><p class="chip">ขั้นที่ 5 / 6</p><h2 id="h5">เพิ่ม Widget บนหน้าจอ Home</h2></div></div>
     <div class="card"><div class="txt">
     <ol class="do"><li><span>กดค้างที่ว่างบนหน้าจอ Home จน icon สั่น</span></li><li><span>กด <b class="key">Edit</b> มุมซ้ายบน แล้วกด <b class="key">Add Widget</b></span></li><li><span>พิมพ์ <b class="key">Scriptable</b> ในช่องค้นหา แล้วแตะชื่อแอป</span></li><li><span>กด <b class="key">Add Widget</b> (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)</span></li></ol>
-    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done"><source src="guide/s6.mp4" type="video/mp4"></video></div></figure>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1792" style="aspect-ratio:828/1792" poster="guide/s6.jpg" aria-label="กดค้างที่หน้าจอ Home กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done"><source src="guide/s6.mp4" type="video/mp4"></video></div></figure>
     <div class="check "><span class="ic" aria-hidden="true">✓</span><div><p><b>ต้องเห็น</b>กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอ Home</p></div></div></div>
   </section>
   <section class="screen step" id="s6" data-hash="6" aria-labelledby="h6">
@@ -366,9 +366,9 @@
   <section class="screen step" id="s8" data-hash="theme" aria-labelledby="ht">
     <div class="head"><span class="num" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><mask id="bi4"><rect width="24" height="24" fill="#fff"/><circle cx="7.9" cy="6.4" r="1.45" fill="#000"/><circle cx="12" cy="5.2" r="1.45" fill="#000"/><circle cx="16" cy="6.7" r="1.45" fill="#000"/><circle cx="18.5" cy="10.4" r="1.45" fill="#000"/><circle cx="17.7" cy="14.6" r="1.45" fill="#000"/><ellipse cx="8.4" cy="16.5" rx="2.2" ry="1.5" transform="rotate(-30 8.4 16.5)" fill="#000"/></mask><path d="M13 2.5C18.3 2.5 21.8 6.6 21.8 11.8c0 5.8-4.6 9.7-10.6 9.7-5.2 0-8.9-2.7-8.9-5.9 0-2.2 2.1-3.2 3.7-3.8 1.3-.5 1.4-1.4.1-1.8-2.1-.6-3.2-1.4-2.7-3.2C4.2 4.2 8.2 2.5 13 2.5Z" fill="currentColor" mask="url(#bi4)"/></svg></span><div><p class="chip">ไม่บังคับ</p><h2 id="ht">เปลี่ยนธีมสี สว่าง / มืด</h2></div></div>
     <div class="card"><div class="txt">
-    <ol class="do"><li><span>เปิดแอป <b class="key">Scriptable</b> แล้วแตะ <b class="key">Dek70</b></span></li><li><span>กด <b class="key">🌙 เปลี่ยนเป็นธีมมืด</b></span></li><li><span>กด <b class="key">โอเค</b></span></li><li><span>กลับหน้าจอโฮม รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)</span></li></ol>
+    <ol class="do"><li><span>เปิดแอป <b class="key">Scriptable</b> แล้วแตะ <b class="key">Dek70</b></span></li><li><span>กด <b class="key">🌙 เปลี่ยนเป็นธีมมืด</b></span></li><li><span>กด <b class="key">โอเค</b></span></li><li><span>กลับหน้าจอ Home รอ Widget เปลี่ยนสีเอง (บางทีทันที บางทีนานถึงประมาณ 1 ชั่วโมง)</span></li></ol>
     <p>อยากกลับเป็นธีมสว่าง ทำซ้ำแล้วกด <b class="key">☀️ เปลี่ยนเป็นธีมสว่าง</b></p>
-    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/theme.jpg" aria-label="แตะไอคอน Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอโฮมเปลี่ยนเป็นสีมืด"><source src="guide/theme.mp4" type="video/mp4"></video></div></figure>
+    </div><figure class="shot"><div class="frame"><video muted loop playsinline preload="none" width="828" height="1702" style="aspect-ratio:828/1702" poster="guide/theme.jpg" aria-label="แตะ icon Scriptable แตะ Dek70 กดเปลี่ยนเป็นธีมมืด กดโอเค แล้ว Widget บนหน้าจอ Home เปลี่ยนเป็นสีมืด"><source src="guide/theme.mp4" type="video/mp4"></video></div></figure>
     <div class="check info"><span class="ic" aria-hidden="true">i</span><div><p><b>อยากให้บางตัวเป็นธีมมืด</b>กดค้างที่ Widget ตัวนั้น กด <b class="key">Edit Widget</b> แล้วพิมพ์ <b class="key">dark</b> ในช่อง Parameter</p></div></div></div>
   </section>
   <section class="screen step narrow" id="s9" data-hash="options" aria-labelledby="ho">
