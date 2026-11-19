@@ -4,7 +4,7 @@
 // โหมดวางอิสระ: ทุกชิ้นมีพิกัดของตัวเอง (X, Y เป็น % ของความกว้าง/สูง widget)
 // ปรับหน้าตาได้ที่ Widget Studio แล้วกดคัดลอกทั้งไฟล์มาวางทับ
 
-module.exports.version = "7.8.7";
+module.exports.version = "7.8.8";
 
 // ==== DESIGN START ====
 const DESIGN = {
@@ -805,6 +805,37 @@ async function loadEvents() {
   return EVENT_LIST;
 }
 
+// ---------- สถิติแบบไม่ระบุตัวตน ----------
+// Widget แต่ละแบบในเครื่องส่งสัญญาณ "ยังใช้อยู่" วันละครั้ง (ขนาด ธีม เวอร์ชัน คำใน Parameter)
+// ไม่มีรหัสเครื่อง ไม่มีชื่อ ไม่มีข้อมูลส่วนตัว ส่งไม่ได้ก็ไม่เป็นไร widget ทำงานต่อปกติ
+// ตัวทดสอบ (Dek70 test) ส่งไปเว็บทดสอบ จะได้ไม่ปนกับตัวเลขจริง
+const STATS_HOST = (typeof module !== "undefined" && module && typeof module.filename === "string" && module.filename.indexOf("bwy-widget-test") !== -1)
+  ? "https://test.bwy-widget.pages.dev" : "https://bwy-widget.pages.dev";
+function statsFile() { const fm = FileManager.local(); return fm.joinPath(fm.joinPath(fm.documentsDirectory(), "bwy-dek70"), "stats.json"); }
+function localDay() { const d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+function statTokens(PARAM) {
+  const map = { "มืด": "dark", "สว่าง": "light" }, ok = ["tgat", "alevel", "bar", "dark", "light"];
+  const t = (PARAM || "").toLowerCase().split(/[\s,]+/).map(x => map[x] || x).filter(x => ok.includes(x));
+  return [...new Set(t)].sort();
+}
+async function ping(query) {
+  const req = new Request(STATS_HOST + "/api/w?" + query);
+  req.timeoutInterval = 4;
+  await req.loadString();
+  return !!req.response && req.response.statusCode < 300;
+}
+// ส่งวันละครั้งต่อ key (จำวันที่ส่งแล้วไว้ใน Documents/bwy-dek70/stats.json)
+async function reportDaily(key, query) {
+  try {
+    const fm = FileManager.local(), p = statsFile();
+    let st = {};
+    try { if (fm.fileExists(p)) st = JSON.parse(fm.readString(p)) || {}; } catch (e) {}
+    const day = localDay();
+    if (st[key] === day) return;
+    if (await ping(query)) { st[key] = day; fm.writeString(p, JSON.stringify(st)); }
+  } catch (e) {}
+}
+
 // ค่าที่น้องเลือกไว้ในแอป (เก็บในเครื่อง)
 function prefsPath() { const fm = FileManager.local(); return fm.joinPath(fm.joinPath(fm.documentsDirectory(), "bwy-dek70"), "prefs.json"); }
 function readPrefs() { try { const fm = FileManager.local(), p = prefsPath(); return fm.fileExists(p) ? JSON.parse(fm.readString(p)) || {} : {}; } catch (e) { return {}; } }
@@ -985,9 +1016,18 @@ module.exports.build = async function (FAMILY, PARAM, info) {
   LOADER = (info && Number(info.loader)) || 2;
   const lock = FAMILY && FAMILY.startsWith("accessory");
   const fam = lock ? null : pickFam(FAMILY || "large", PARAM);
+  // เครื่องใหม่ = ยังไม่เคยมีไฟล์ของ widget นี้ในเครื่องเลย (เช็กก่อน loadEvents เขียนสำเนา events.csv)
+  let fresh = false;
+  try { const fm = FileManager.local(), dir = fm.joinPath(fm.documentsDirectory(), "bwy-dek70"); fresh = !fm.fileExists(fm.joinPath(dir, "events.csv")) && !fm.fileExists(statsFile()); } catch (e) {}
   const list = await loadEvents();
   const { w, S } = lock ? buildLock(FAMILY, PARAM, list) : fam ? buildPainted(fam, PARAM, list) : notUsed();
-  w.url = "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD"; // แตะ widget แล้วเปิดลิงก์นี้
+  // แตะ widget = เปิดโฟลเดอร์ Google Drive ของ BearWithYou (ผ่าน /go/drive ที่นับจำนวนแตะ แล้วพาไป Drive ทันที)
+  w.url = STATS_HOST + "/go/drive?f=" + encodeURIComponent(FAMILY || "");
+  if (!(info && info.preview)) { // ตัวอย่างที่เปิดดูในแอปไม่นับเป็น Widget ที่ใช้งาน
+    const tk = statTokens(PARAM);
+    await reportDaily("w:" + (FAMILY || "") + ":" + tk.join("."), "k=active&f=" + encodeURIComponent(FAMILY || "") + "&m=" + (fam || "none") +
+      "&t=" + (isDarkFor(PARAM) ? "dark" : "light") + "&v=" + module.exports.version + "&l=" + LOADER + "&p=" + tk.join(".") + (fresh ? "&n=1" : ""));
+  }
   // รีเฟรชทุก ~1 ชม. / เที่ยงคืน / ตอนวินาทีวิ่งครบวัน (แบบไหนถึงก่อน)
   const now = Date.now();
   const times = [now + 60 * 60000];
@@ -1003,6 +1043,7 @@ module.exports.build = async function (FAMILY, PARAM, info) {
 // ---------- เมนูตอนรันในแอป Scriptable ----------
 module.exports.runInApp = async function (info) {
   LOADER = (info && Number(info.loader)) || 2;
+  await reportDaily("app", "k=app&v=" + module.exports.version);
   const D = DESIGN;
   const opts = [];
   if (D.useSmall) opts.push(["Small", "small", ""]);
@@ -1021,6 +1062,7 @@ module.exports.runInApp = async function (info) {
   if (i === -1) return;
   if (DESIGN_DARK && i === opts.length) {
     writePrefs(Object.assign(readPrefs(), { theme: dark ? "light" : "dark" }));
+    try { await ping("k=theme&t=" + (dark ? "light" : "dark")); } catch (e) {}
     const ok = new Alert();
     ok.title = dark ? "☀️ ธีมสว่าง" : "🌙 ธีมมืด";
     ok.message = "บันทึกแล้ว widget บนหน้าจอโฮมจะเปลี่ยนเองภายใน ~1 ชม.\n\nอยากให้ widget ตัวไหนใช้ธีมต่างจากนี้ พิมพ์ dark หรือ light ในช่อง Parameter ของตัวนั้น";
@@ -1029,7 +1071,7 @@ module.exports.runInApp = async function (info) {
     return;
   }
   const [, fam, prm] = opts[i];
-  const w = await module.exports.build(fam, prm, info);
+  const w = await module.exports.build(fam, prm, Object.assign({}, info, { preview: true }));
   if (fam === "small") await w.presentSmall();
   else if (fam === "medium") await w.presentMedium();
   else if (fam === "extraLarge") await w.presentExtraLarge();

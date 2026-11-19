@@ -17,3 +17,5 @@ jobs:
         run: node test/run.js
       - name: loader.js (เน็ตล่ม / ไฟล์พัง / ปกติ)
         run: node test/check-loader.js
+      - name: สถิติ (widget.js ส่งสัญญาณ + functions/ นับถูก)
+        run: node test/check-stats.js

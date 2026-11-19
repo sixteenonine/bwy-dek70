@@ -16,7 +16,7 @@ const fold = (label, text) => `<details class="fold"><summary><span class="ic" a
 const note = (ic, label, text, cls = "") => `<div class="check ${cls}"><span class="ic" aria-hidden="true">${ic}</span><div>${text.split("\n\n").map((t, j) => `<p>${j ? "" : `<b>${label}</b>`}${t}</p>`).join("")}</div></div>`;
 
 const STEPS = [
-  { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
+  { title: "โหลดแอป Scriptable", body: `<p>แอปฟรี กด ${k("Get")} แล้วรอโหลดเสร็จ</p><a class="btn ghost" id="appstore" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>`,
     media: `<figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>`,
     info: { label: "ทำไมต้องโหลด Scriptable?", text: [
       "เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ",
@@ -31,7 +31,7 @@ const STEPS = [
       <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
     <div class="burst" id="burst" aria-hidden="true"></div></div>
     <details class="fold codebox"><summary><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.6"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></svg></span><b>โค้ดนี้ปลอดภัยไหม?</b><span class="chev" aria-hidden="true"></span></summary>
-      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
+      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮม และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
       <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>` },
   { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
@@ -60,7 +60,7 @@ const FAQ = [
   ["ขึ้นว่า Unsupported widget หรือเป็นกล่องว่าง", `กดค้างที่ Widget กด ${k("Edit Widget")} แล้วเช็กว่าแถว Script เลือก ${k("Dek70")} อยู่ (ดูขั้นที่ ${N})`],
   ["ขึ้นว่า \"ขนาดนี้ยังไม่เปิดใช้\"", "ตอนนี้ใช้ได้ขนาด Small และ Medium ลบตัวนั้นออกแล้วเพิ่มใหม่เป็น Small หรือ Medium"],
   ["ขึ้นว่า \"ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ\"", "ครั้งแรกต้องมีเน็ตเพื่อโหลด Widget ต่อเน็ตแล้วเปิดแอป Scriptable แตะ Dek70 หนึ่งรอบ หลังจากนั้นไม่มีเน็ตก็ยังใช้ได้"],
-  ["กินแบตหรือเก็บข้อมูลอะไรไหม", "ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช Widget และไม่เก็บข้อมูลส่วนตัวใดๆ"],
+  ["กินแบตหรือเก็บข้อมูลอะไรไหม", "ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช Widget ไม่เก็บข้อมูลส่วนตัวและไม่มีรหัสเครื่อง เก็บแค่ตัวเลขรวม เช่น จำนวน Widget ที่ใช้งานในแต่ละวัน เพื่อเอาไปปรับปรุง Widget"],
   ["ใช้กับ Android ได้ไหม", "ตอนนี้ใช้ได้เฉพาะ iPhone และ iPad"],
 ];
 const hero = `<figure class="hero"><div class="frame"><img src="guide/hero.jpg" width="1011" height="350" alt="ตัวอย่าง Widget: ขนาด Small ธีมมืด นับถอยหลัง 58 วันถึงเปิดสมัคร A-Level และขนาด Medium ธีมสว่าง นับถอยหลังเป็นวินาที"></div></figure>`;
@@ -410,6 +410,22 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
 ${loader}
 <script>
 (() => {
+  // สถิติแบบไม่ระบุตัวตน: ส่งเองเงียบๆ (เปิดหน้า / ถึงขั้นไหน / กด Copy) ครั้งเดียวต่อการเปิดหน้า ไม่มีรหัสเครื่อง ไม่มี cookie
+  const SRC = (new URLSearchParams(location.search).get("src") || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 24);
+  const REF = (() => { try { return document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) { return ""; } })();
+  const tracked = new Set();
+  function track(e, s) {
+    const key = e + ":" + (s || "");
+    try { const seen = JSON.parse(sessionStorage.getItem("bwy-seen") || "[]"); if (seen.includes(key)) return; seen.push(key); sessionStorage.setItem("bwy-seen", JSON.stringify(seen)); }
+    catch (x) { if (tracked.has(key)) return; }
+    tracked.add(key);
+    if (!/^https?:$/.test(location.protocol) || /^(localhost|127\.)/.test(location.hostname)) return;
+    const body = JSON.stringify({ e, s: s || "", src: SRC, ref: REF });
+    try { if (!(navigator.sendBeacon && navigator.sendBeacon("/api/e", new Blob([body], { type: "application/json" })))) fetch("/api/e", { method: "POST", body, keepalive: true }).catch(() => {}); } catch (x) {}
+  }
+  track("visit");
+  document.getElementById("appstore").addEventListener("click", () => track("appstore"));
+  document.querySelectorAll("details.fold").forEach(d => d.addEventListener("toggle", () => { if (d.open) track("fold", d.classList.contains("codebox") ? "code" : "why"); }));
   const code = document.getElementById("loader").textContent;
   const copy = document.getElementById("copy"), ta = document.getElementById("fallback");
   const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), card = document.getElementById("copied"), again = document.getElementById("again");
@@ -434,7 +450,7 @@ ${loader}
   async function doCopy() {
     try {
       await navigator.clipboard.writeText(code);
-      copy.hidden = true; card.hidden = false;
+      copy.hidden = true; card.hidden = false; track("copy");
       card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
       const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
       party();
@@ -489,6 +505,7 @@ ${loader}
     if (i === cur) return;
     if (extra(i) && cur >= 0 && !extra(cur)) ret = cur;
     cur = i;
+    track("step", HASH[i] || "intro");
     document.documentElement.classList.toggle("intro", i === 0);
     document.documentElement.classList.toggle("solo", i === 0 || i === DONE);
     screens.forEach((s, j) => {

@@ -304,7 +304,7 @@
   <section class="screen step" id="s1" data-hash="1" aria-labelledby="h1">
     <div class="head"><span class="num" aria-hidden="true">1</span><div><p class="chip">ขั้นที่ 1 / 7</p><h2 id="h1">โหลดแอป Scriptable</h2></div></div>
     <div class="card"><div class="txt">
-    <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
+    <p>แอปฟรี กด <b class="key">Get</b> แล้วรอโหลดเสร็จ</p><a class="btn ghost" id="appstore" href="https://apps.apple.com/app/scriptable/id1405459188">เปิด App Store</a>
     </div><figure class="shot wide"><div class="frame"><img src="guide/s1.jpg" width="828" height="590" alt="หน้า Scriptable ใน App Store กดปุ่ม Get"></div></figure>
     <details class="fold"><summary><span class="ic" aria-hidden="true">i</span><b>ทำไมต้องโหลด Scriptable?</b><span class="chev" aria-hidden="true"></span></summary><p>เป็นแอปฟรีที่เป็นตัวกลางช่วยให้ Widget ของเราขึ้นบนหน้าจอโฮมได้ ติดตั้งครั้งเดียวจบ พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย</p></details></div>
   </section>
@@ -319,7 +319,7 @@
       <p class="t">Copy แล้ว!</p><p class="s">กด ถัดไป เพื่อไปวางใน Scriptable</p><button class="again" id="again" type="button">Copy อีกครั้ง</button></div>
     <div class="burst" id="burst" aria-hidden="true"></div></div>
     <details class="fold codebox"><summary><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.6"/><path d="M8.4 10.5V8a3.6 3.6 0 0 1 7.2 0v2.5"/></svg></span><b>โค้ดนี้ปลอดภัยไหม?</b><span class="chev" aria-hidden="true"></span></summary>
-      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮมเท่านั้น <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
+      <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮม และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
       <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>
     </div>
@@ -388,7 +388,7 @@
   </section>
   <section class="screen step narrow" id="s11" data-hash="faq" aria-labelledby="hq">
     <div class="head"><span class="num" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><mask id="bi6"><rect width="24" height="24" fill="#fff"/><path d="M9.1 9.3c0-1.8 1.3-3 3-3s3 1.1 3 2.7c0 1.3-.8 2-1.8 2.6-.9.5-1.3 1.1-1.3 2v.5" fill="none" stroke="#000" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="17.2" r="1.45" fill="#000"/></mask><circle cx="12" cy="12" r="10.1" fill="currentColor" mask="url(#bi6)"/></svg></span><div><p class="chip">มีปัญหา?</p><h2 id="hq">คำถามที่เจอบ่อย</h2></div></div>
-    <div class="card faq"><details><summary>ต้องอัปเดตเองไหม</summary><p>ไม่ต้อง ติดตั้งครั้งเดียวจบ ถ้า ทปอ. เลื่อนวัน Widget จะเปลี่ยนตามให้เอง</p></details><details><summary>ทำไมตัวเลขยังไม่เปลี่ยน</summary><p>iPhone รีเฟรช Widget เองประมาณชั่วโมงละครั้ง ถ้าอยากให้เปลี่ยนทันที เปิดแอป Scriptable แล้วแตะ Dek70 หนึ่งรอบ</p></details><details><summary>ขึ้นว่า Unsupported widget หรือเป็นกล่องว่าง</summary><p>กดค้างที่ Widget กด <b class="key">Edit Widget</b> แล้วเช็กว่าแถว Script เลือก <b class="key">Dek70</b> อยู่ (ดูขั้นที่ 7)</p></details><details><summary>ขึ้นว่า "ขนาดนี้ยังไม่เปิดใช้"</summary><p>ตอนนี้ใช้ได้ขนาด Small และ Medium ลบตัวนั้นออกแล้วเพิ่มใหม่เป็น Small หรือ Medium</p></details><details><summary>ขึ้นว่า "ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ"</summary><p>ครั้งแรกต้องมีเน็ตเพื่อโหลด Widget ต่อเน็ตแล้วเปิดแอป Scriptable แตะ Dek70 หนึ่งรอบ หลังจากนั้นไม่มีเน็ตก็ยังใช้ได้</p></details><details><summary>กินแบตหรือเก็บข้อมูลอะไรไหม</summary><p>ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช Widget และไม่เก็บข้อมูลส่วนตัวใดๆ</p></details><details><summary>ใช้กับ Android ได้ไหม</summary><p>ตอนนี้ใช้ได้เฉพาะ iPhone และ iPad</p></details></div>
+    <div class="card faq"><details><summary>ต้องอัปเดตเองไหม</summary><p>ไม่ต้อง ติดตั้งครั้งเดียวจบ ถ้า ทปอ. เลื่อนวัน Widget จะเปลี่ยนตามให้เอง</p></details><details><summary>ทำไมตัวเลขยังไม่เปลี่ยน</summary><p>iPhone รีเฟรช Widget เองประมาณชั่วโมงละครั้ง ถ้าอยากให้เปลี่ยนทันที เปิดแอป Scriptable แล้วแตะ Dek70 หนึ่งรอบ</p></details><details><summary>ขึ้นว่า Unsupported widget หรือเป็นกล่องว่าง</summary><p>กดค้างที่ Widget กด <b class="key">Edit Widget</b> แล้วเช็กว่าแถว Script เลือก <b class="key">Dek70</b> อยู่ (ดูขั้นที่ 7)</p></details><details><summary>ขึ้นว่า "ขนาดนี้ยังไม่เปิดใช้"</summary><p>ตอนนี้ใช้ได้ขนาด Small และ Medium ลบตัวนั้นออกแล้วเพิ่มใหม่เป็น Small หรือ Medium</p></details><details><summary>ขึ้นว่า "ต่อเน็ตแล้วเปิดใหม่อีกครั้งนะ"</summary><p>ครั้งแรกต้องมีเน็ตเพื่อโหลด Widget ต่อเน็ตแล้วเปิดแอป Scriptable แตะ Dek70 หนึ่งรอบ หลังจากนั้นไม่มีเน็ตก็ยังใช้ได้</p></details><details><summary>กินแบตหรือเก็บข้อมูลอะไรไหม</summary><p>ไม่กินแบต เพราะทำงานแค่ตอน iPhone รีเฟรช Widget ไม่เก็บข้อมูลส่วนตัวและไม่มีรหัสเครื่อง เก็บแค่ตัวเลขรวม เช่น จำนวน Widget ที่ใช้งานในแต่ละวัน เพื่อเอาไปปรับปรุง Widget</p></details><details><summary>ใช้กับ Android ได้ไหม</summary><p>ตอนนี้ใช้ได้เฉพาะ iPhone และ iPad</p></details></div>
   </section>
 </main>
 <nav class="nav" aria-label="เปลี่ยนขั้น"><div><button id="back" type="button"><span>← ย้อนกลับ</span></button><button id="next" type="button"><span>เริ่มติดตั้ง →</span></button></div></nav>
@@ -443,6 +443,22 @@ Script.complete();
 </script>
 <script>
 (() => {
+  // สถิติแบบไม่ระบุตัวตน: ส่งเองเงียบๆ (เปิดหน้า / ถึงขั้นไหน / กด Copy) ครั้งเดียวต่อการเปิดหน้า ไม่มีรหัสเครื่อง ไม่มี cookie
+  const SRC = (new URLSearchParams(location.search).get("src") || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 24);
+  const REF = (() => { try { return document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) { return ""; } })();
+  const tracked = new Set();
+  function track(e, s) {
+    const key = e + ":" + (s || "");
+    try { const seen = JSON.parse(sessionStorage.getItem("bwy-seen") || "[]"); if (seen.includes(key)) return; seen.push(key); sessionStorage.setItem("bwy-seen", JSON.stringify(seen)); }
+    catch (x) { if (tracked.has(key)) return; }
+    tracked.add(key);
+    if (!/^https?:$/.test(location.protocol) || /^(localhost|127.)/.test(location.hostname)) return;
+    const body = JSON.stringify({ e, s: s || "", src: SRC, ref: REF });
+    try { if (!(navigator.sendBeacon && navigator.sendBeacon("/api/e", new Blob([body], { type: "application/json" })))) fetch("/api/e", { method: "POST", body, keepalive: true }).catch(() => {}); } catch (x) {}
+  }
+  track("visit");
+  document.getElementById("appstore").addEventListener("click", () => track("appstore"));
+  document.querySelectorAll("details.fold").forEach(d => d.addEventListener("toggle", () => { if (d.open) track("fold", d.classList.contains("codebox") ? "code" : "why"); }));
   const code = document.getElementById("loader").textContent;
   const copy = document.getElementById("copy"), ta = document.getElementById("fallback");
   const lbl = copy.querySelector(".lbl"), burst = document.getElementById("burst"), card = document.getElementById("copied"), again = document.getElementById("again");
@@ -467,7 +483,7 @@ Script.complete();
   async function doCopy() {
     try {
       await navigator.clipboard.writeText(code);
-      copy.hidden = true; card.hidden = false;
+      copy.hidden = true; card.hidden = false; track("copy");
       card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
       const nx = document.getElementById("next"); nx.classList.remove("nudge"); void nx.offsetWidth; nx.classList.add("nudge");
       party();
@@ -522,6 +538,7 @@ Script.complete();
     if (i === cur) return;
     if (extra(i) && cur >= 0 && !extra(cur)) ret = cur;
     cur = i;
+    track("step", HASH[i] || "intro");
     document.documentElement.classList.toggle("intro", i === 0);
     document.documentElement.classList.toggle("solo", i === 0 || i === DONE);
     screens.forEach((s, j) => {
