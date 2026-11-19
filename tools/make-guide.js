@@ -410,19 +410,31 @@ ${[400, 600, 700].map(w => `  @font-face { font-family: "Prompt"; font-style: no
 ${loader}
 <script>
 (() => {
-  // สถิติแบบไม่ระบุตัวตน: ส่งเองเงียบๆ (เปิดหน้า / ถึงขั้นไหน / กด Copy) ครั้งเดียวต่อการเปิดหน้า ไม่มีรหัสเครื่อง ไม่มี cookie
+  // สถิติแบบไม่ระบุตัวตน: จดไว้ในเครื่องก่อน (เปิดหน้า / ถึงขั้นไหน / กด Copy) แล้วส่งเป็นชุดเดียวตอนออกจากหน้า
+  // นับครั้งเดียวต่อการเปิดหน้า (รีเฟรชไม่นับซ้ำ) ไม่มีรหัสเครื่อง ไม่มี cookie
   const SRC = (new URLSearchParams(location.search).get("src") || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 24);
   const REF = (() => { try { return document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) { return ""; } })();
-  const tracked = new Set();
-  function track(e, s) {
-    const key = e + ":" + (s || "");
-    try { const seen = JSON.parse(sessionStorage.getItem("bwy-seen") || "[]"); if (seen.includes(key)) return; seen.push(key); sessionStorage.setItem("bwy-seen", JSON.stringify(seen)); }
-    catch (x) { if (tracked.has(key)) return; }
-    tracked.add(key);
-    if (!/^https?:$/.test(location.protocol) || /^(localhost|127\.)/.test(location.hostname)) return;
-    const body = JSON.stringify({ e, s: s || "", src: SRC, ref: REF });
-    try { if (!(navigator.sendBeacon && navigator.sendBeacon("/api/e", new Blob([body], { type: "application/json" })))) fetch("/api/e", { method: "POST", body, keepalive: true }).catch(() => {}); } catch (x) {}
+  const LIVE = /^https?:$/.test(location.protocol) && !/^(localhost|127\\.)/.test(location.hostname);
+  let seen = [];
+  try { seen = JSON.parse(sessionStorage.getItem("bwy-seen")) || []; } catch (x) {}
+  const queue = [];
+  let flushTimer;
+  function track(e, s = "") {
+    const key = e + ":" + s;
+    if (seen.includes(key)) return;
+    seen.push(key);
+    try { sessionStorage.setItem("bwy-seen", JSON.stringify(seen)); } catch (x) {}
+    queue.push([e, s]);
+    clearTimeout(flushTimer); flushTimer = setTimeout(flush, 15000); // เปิดค้างไว้นานๆ (เช่นบนคอม) ก็ยังส่ง
   }
+  function flush() {
+    if (!queue.length) return;
+    const body = JSON.stringify({ src: SRC, ref: REF, ev: queue.splice(0) });
+    if (!LIVE) return;
+    try { if (!(navigator.sendBeacon && navigator.sendBeacon("/api/e", body))) fetch("/api/e", { method: "POST", body, keepalive: true }).catch(() => {}); } catch (x) {}
+  }
+  document.addEventListener("visibilitychange", () => { if (document.hidden) flush(); }); // ออกไปแอปอื่น (App Store, Scriptable) หรือปิดแท็บ
+  window.addEventListener("pagehide", flush);
   track("visit");
   document.getElementById("appstore").addEventListener("click", () => track("appstore"));
   document.querySelectorAll("details.fold").forEach(d => d.addEventListener("toggle", () => { if (d.open) track("fold", d.classList.contains("codebox") ? "code" : "why"); }));
@@ -505,7 +517,7 @@ ${loader}
     if (i === cur) return;
     if (extra(i) && cur >= 0 && !extra(cur)) ret = cur;
     cur = i;
-    track("step", HASH[i] || "intro");
+    if (i) track("step", HASH[i]); // หน้าแรกนับรวมกับ "visit" แล้ว
     document.documentElement.classList.toggle("intro", i === 0);
     document.documentElement.classList.toggle("solo", i === 0 || i === DONE);
     screens.forEach((s, j) => {

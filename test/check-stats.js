@@ -1,6 +1,6 @@
 // ทดสอบระบบสถิติแบบไม่ระบุตัวตน
 //  1) widget.js ส่งสัญญาณวันละครั้ง ไม่ส่งตอนดูตัวอย่างในแอป ส่งไม่ได้ก็ยังวาด widget ได้ แตะแล้วไป /go/drive
-//  2) functions/ (Cloudflare Pages) นับถูก ตอบเร็ว ไม่มีฐานข้อมูลก็ไม่พัง /go/drive พาไป Drive เสมอ /stats ต้องมีรหัส
+//  2) functions/ (Cloudflare Pages) นับถูก เขียนน้อย ไม่มีฐานข้อมูลก็ไม่พัง · go/drive.html พาไป Drive เสมอ · /stats ต้องมีรหัส
 // ใช้: node test/check-stats.js   (ต้องใช้ Node 22 ขึ้นไป เพราะใช้ node:sqlite แทน D1)
 "use strict";
 process.env.TZ = "Asia/Bangkok";
@@ -61,7 +61,7 @@ function fakeD1() {
 
 async function serverSide() {
   const imp = p => import("file://" + path.join(root, p));
-  const E = await imp("functions/api/e.js"), W = await imp("functions/api/w.js"), G = await imp("functions/go/drive.js"), ST = await imp("functions/stats.js");
+  const E = await imp("functions/api/e.js"), W = await imp("functions/api/w.js"), ST = await imp("functions/stats.js");
   const IG = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 350.0";
   const TT = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 musical_ly_37.0 BytedanceWebview/d8a21c6";
   const SA = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
@@ -73,42 +73,44 @@ async function serverSide() {
     return res;
   };
   const post = (ua, o, env) => call(E.onRequestPost, "https://bwy-widget.pages.dev/api/e", { ua, body: JSON.stringify(o), env });
+  const ping = (q, env) => call(W.onRequestGet, "https://bwy-widget.pages.dev/api/w?" + q, { env, ua: "Scriptable" });
 
-  // ไม่มีฐานข้อมูล: ต้องไม่พัง
-  ok((await post(IG, { e: "visit" }, {})).status === 204, "server: ยังไม่ได้ผูก D1 ก็ตอบ 204 ไม่พัง");
-  const r0 = await call(G.onRequestGet, "https://bwy-widget.pages.dev/go/drive?f=small", { env: {} });
-  ok(r0.status === 302 && r0.headers.get("location") === G.DRIVE, "server: /go/drive พาไป Drive ได้แม้ไม่มีฐานข้อมูล");
+  ok((await post(IG, { ev: [["visit"]] }, {})).status === 204, "server: ยังไม่ได้ผูก D1 ก็ตอบ 204 ไม่พัง");
+
+  // หน้า /go/drive เป็นไฟล์ static: พาไป Drive เสมอ (ไม่พึ่ง Functions) และส่งสัญญาณ tap
+  const go = fs.readFileSync(path.join(root, "go/drive.html"), "utf8");
+  const DRIVE = "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD";
+  ok(go.includes(`location.replace("${DRIVE}")`) && go.includes(`url=${DRIVE}`) && go.includes('["tap"'), "go/drive.html: พาไป Drive (มีสำรองกรณีไม่มี JS) และส่งสัญญาณแตะ");
+  ok(!fs.existsSync(path.join(root, "functions/go")), "go/drive: ไม่มี Function ทับหน้า static");
 
   const env = { DB: fakeD1(), STATS_KEY: "test-key-123456" };
-  await post(IG, { e: "visit", src: "ig-bio" }, env);
-  await post(IG, { e: "step", s: "intro" }, env);
-  await post(IG, { e: "step", s: "2" }, env);
-  await post(IG, { e: "copy" }, env);
-  await post(TT, { e: "visit" }, env);
-  await post(TT, { e: "step", s: "intro" }, env);
-  await post(SA, { e: "visit", ref: "t.co" }, env);
-  await post("Googlebot/2.1", { e: "visit" }, env);
-  await post(IG, { e: "hack" }, env);
-  await post(IG, { e: "step", s: "<script>" }, env);
-  await call(W.onRequestGet, "https://bwy-widget.pages.dev/api/w?k=active&f=small&m=small&t=dark&v=7.8.8&l=3&p=tgat&n=1", { env, ua: "Scriptable" });
-  await call(W.onRequestGet, "https://bwy-widget.pages.dev/api/w?k=active&f=medium&m=mediumBar&t=light&v=7.8.8&l=3&p=", { env, ua: "Scriptable" });
-  const r1 = await call(G.onRequestGet, "https://bwy-widget.pages.dev/go/drive?f=medium", { env });
-  ok(r1.status === 302, "server: /go/drive ตอบ 302");
-  const rows = env.DB.db.prepare("SELECT kind, k1, k2, n FROM stats ORDER BY kind, k1, k2").all();
-  const get = (kind, k1, k2) => (rows.find(r => r.kind === kind && r.k1 === k1 && (k2 === undefined || r.k2 === k2)) || {}).n || 0;
-  ok(get("visit", "instagram", "ig-bio") === 1 && get("visit", "tiktok") === 1 && get("visit", "x") === 1, "server: แยกแอปที่มาได้ (Instagram / TikTok / X จาก t.co) และเก็บป้าย ?src=");
-  ok(get("step", "2", "instagram") === 1 && get("copy", "-", "instagram") === 1, "server: นับขั้นและการกด Copy แยกตามแอป");
+  // คนจาก IG ทำครบทุกขั้น ส่งเป็นชุดเดียว
+  await post(IG, { src: "ig-bio", ev: [["visit", ""], ["step", "1"], ["appstore", ""], ["fold", "why"], ["step", "2"], ["copy", ""], ["step", "3"], ["step", "4"], ["step", "5"], ["step", "6"], ["step", "7"], ["step", "done"]] }, env);
+  const writes1 = sum(env.DB.db.prepare("SELECT n FROM daily").all());
+  ok(writes1 === 13, `server: คนที่ทำครบทุกขั้นเขียนแค่ ${writes1} แถว (เดิม ~28) และส่งคำขอครั้งเดียว`);
+  await post(TT, { ev: [["visit", ""], ["step", "1"]] }, env);
+  await post(SA, { ref: "t.co", ev: [["visit", ""]] }, env);
+  await post("Googlebot/2.1", { ev: [["visit", ""]] }, env);
+  await post(IG, { ev: [["hack", ""], ["step", "<script>"]] }, env);
+  await post(SA, { ev: [["tap", "small"]] }, env);
+  const before = sum(env.DB.db.prepare("SELECT n FROM daily").all());
+  await ping("k=active&f=small&m=small&t=dark&v=7.8.8&l=3&p=tgat&n=1", env);
+  await ping("k=active&f=medium&m=mediumBar&t=light&v=7.8.8&l=3&p=", env);
+  const widgetWrites = sum(env.DB.db.prepare("SELECT n FROM daily").all()) - before;
+  ok(widgetWrites === 3, `server: Widget 1 ตัวเขียน 1 แถว/วัน (+1 ถ้าเครื่องใหม่) = ${widgetWrites} แถวจาก 2 ตัว (เดิม ~8)`);
+  const rows = env.DB.db.prepare("SELECT kind, k1, k2, n FROM daily").all();
+  const get = (kind, k1, k2) => sum(rows.filter(r => r.kind === kind && r.k1 === k1 && (k2 === undefined || r.k2 === k2)));
+  ok(get("visit", "instagram", "iphone") === 1 && get("visit", "tiktok") === 1 && get("visit", "x") === 1 && get("src", "ig-bio", "instagram") === 1, "server: แยกแอปที่มา (Instagram / TikTok / X จาก t.co) อุปกรณ์ และป้าย ?src=");
+  ok(get("step", "2", "instagram") === 1 && get("copy", "-", "instagram") === 1 && get("fold", "why") === 1, "server: นับขั้น การกด Copy และกล่องที่เปิด แยกตามแอป");
   ok(!rows.some(r => r.kind === "hack") && get("step", "other", "instagram") === 1, "server: ไม่รับ event แปลก และกรองข้อความแปลกเป็น other");
   ok(sum(rows.filter(r => r.kind === "visit")) === 3, "server: ไม่นับบอท");
-  ok(get("active", "small:small", "dark") === 1 && get("active", "medium:mediumbar", "light") === 1 && get("new", "small") === 1, "server: นับ Widget ใช้งาน แยกขนาด/ธีม และนับเครื่องใหม่");
-  ok(get("param", "tgat") === 1 && get("param", "-") === 1 && get("tap", "medium") === 1, "server: นับคำใน Parameter และการแตะไป Drive");
+  ok(get("active", "small:small:dark", "7.8.8:3:tgat") === 1 && get("active", "medium:mediumbar:light", "7.8.8:3:-") === 1 && get("new", "small") === 1 && get("tap", "small") === 1, "server: Widget ใช้งาน (ขนาด ธีม เวอร์ชัน Parameter ในแถวเดียว) เครื่องใหม่ และการแตะ");
   ok(!JSON.stringify(rows).includes("Mozilla") && !JSON.stringify(rows).includes("Instagram 350"), "server: ไม่เก็บ User-Agent ลงฐานข้อมูล");
 
   ok((await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats", { env })).status === 404, "stats: ไม่มีรหัสเปิดไม่ได้ (404)");
   ok((await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=wrong", { env })).status === 404, "stats: รหัสผิดเปิดไม่ได้");
-  const page = await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456&d=14", { env });
-  const html = await page.text();
-  ok(page.status === 200 && html.includes("มาจากแอปไหน") && html.includes("Instagram") && html.includes("หลุดขั้นไหน") && !/undefined|NaN/.test(html), "stats: รหัสถูกเปิดได้ มีตัวเลขครบ ไม่มีค่าแปลก");
+  const html = await (await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456&d=14", { env })).text();
+  ok(html.includes("Instagram") && html.includes("หลุดขั้นไหน") && html.includes("Medium นับวินาที") && html.includes("tgat") && html.includes("ใช้โควตาฟรีวันนี้") && !/undefined|NaN/.test(html), "stats: เปิดได้ มีตัวเลขครบ (แอป ขั้น ขนาด Parameter โควตา) ไม่มีค่าแปลก");
   const empty = await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456", { env: { DB: fakeD1(), STATS_KEY: "test-key-123456" } });
   ok(empty.status === 200 && !/undefined|NaN/.test(await empty.text()), "stats: ฐานข้อมูลว่าง (ยังไม่มีตาราง) ก็เปิดได้");
 }

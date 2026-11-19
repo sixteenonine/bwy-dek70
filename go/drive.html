@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<!-- แตะ Widget แล้วมาที่นี่ (/go/drive): ส่งสัญญาณนับ 1 แล้วพาไปโฟลเดอร์ Google Drive ของ BearWithYou ทันที
+     เป็นไฟล์ static (ไม่จำกัดจำนวนครั้ง) ต่อให้โควตา Functions เต็ม การแตะก็ยังพาไป Drive ได้เสมอ -->
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="1;url=https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD">
+<title>BearWithYou</title>
+<style>html { background: #FEFEFE; } @media (prefers-color-scheme: dark) { html { background: #0F0F11; } }</style>
+<script>
+  try { navigator.sendBeacon("/api/e", JSON.stringify({ ev: [["tap", (new URLSearchParams(location.search).get("f") || "").slice(0, 16)]] })); } catch (e) {}
+  location.replace("https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD");
+</script>
+</head>
+<body></body>
+</html>
