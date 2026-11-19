@@ -1,48 +1,31 @@
-// GET /stats?k=รหัสลับ  หน้าสรุปตัวเลขของเจได (รหัสลับตั้งเป็นตัวแปร STATS_KEY ใน Cloudflare Pages)
-// เลือกช่วงวันได้ด้วย &d=7 / 14 / 30
+// GET /stats?k=รหัสลับ  แดชบอร์ดสถิติของเจได (รหัสลับตั้งเป็นตัวแปร STATS_KEY ใน Cloudflare Pages)
+// เลือกช่วงวันได้ด้วย &d=7 / 14 / 30 · ตัวเลขเทียบกับช่วงก่อนหน้าที่ยาวเท่ากัน
 import { bkkDay, SCHEMA } from "../lib/stats.js";
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fmt = n => Number(n || 0).toLocaleString("en-US");
 const APP = { tiktok: "TikTok", lemon8: "Lemon8", threads: "Threads", instagram: "Instagram", line: "LINE", facebook: "Facebook / Messenger", x: "X", google: "Google", web: "เว็บอื่น", safari: "Safari (พิมพ์เอง / ไม่รู้ที่มา)", chrome: "Chrome", other: "อื่นๆ" };
 const DEV = { iphone: "iPhone", ipad: "iPad", android: "Android (ติดตั้งไม่ได้)", computer: "คอม", other: "อื่นๆ" };
 const STEP = { visit: "หน้าแรก", 1: "1 โหลด Scriptable", 2: "2 Copy โค้ด", 3: "3 เปิด Scriptable กด +", 4: "4 Paste", 5: "5 ตั้งชื่อ Dek70", 6: "6 เพิ่ม Widget", 7: "7 เลือก Dek70", done: "หน้าเสร็จ" };
 const FAM = { "small:small": "Small", "medium:mediumbar": "Medium นับวินาที", "medium:medium": "Medium", "large:large": "Large", "extralarge:xl": "Extra Large", "extralarge:large": "Extra Large (แบบ Large)" };
 const famName = k => FAM[k] || (k.endsWith(":none") ? k.split(":")[0] + " (ยังไม่เปิดใช้)" : k);
+const TH_M = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+const thDate = d => `${+d.slice(8, 10)} ${TH_M[+d.slice(5, 7) - 1]}`;
 // ลิงก์สำหรับส่งให้น้องๆ แยกตามช่องทาง (ป้าย ?src= บอกว่าคนมาจากไหน แม่นกว่าการเดาจากแอป)
 const SITE = "https://bwy-widget.pages.dev/";
 const SHARE = [["line", "LINE"], ["x", "X"], ["threads", "Threads"], ["lemon8", "Lemon8"], ["tiktok", "TikTok"], ["ig", "Instagram"]];
 const WRITE_LIMIT = 100000; // D1 แผนฟรี: เขียนได้ 100,000 แถว/วัน (รีเซ็ต 07:00 เวลาไทย)
 
-function page(body) {
-  return new Response(`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><title>สถิติ BWY Widget</title>
-<style>
-:root{--bg:#F3F3F3;--card:#FFF;--ink:#0B0B0C;--sub:#6B6B70;--line:#ECECEC;--bar:#0B0B0C;--track:#EFEFEF}
-@media (prefers-color-scheme:dark){:root{--bg:#0F0F11;--card:#1B1B1E;--ink:#F4F4F6;--sub:#A3A3AA;--line:#2B2B30;--bar:#F4F4F6;--track:#26262B}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Sukhumvit Set","Segoe UI",sans-serif}
-main{max-width:760px;margin:0 auto;padding:20px 16px 60px}h1{font-size:1.6rem;margin:0 0 4px}h2{font-size:1.05rem;margin:0 0 10px}
-.sub{color:var(--sub);font-size:.88rem;margin:0}.range{display:flex;gap:6px;margin:12px 0 18px}.range a{padding:5px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:.88rem}
-.range a.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
-.kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}.kpi b{display:block;font-size:1.7rem;line-height:1.1}.kpi span{color:var(--sub);font-size:.82rem}
-.card{margin-top:12px}.row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,2fr) auto;gap:10px;align-items:center;padding:5px 0;font-size:.92rem}
-.row .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.b{height:8px;border-radius:4px;background:var(--track);overflow:hidden}.b i{display:block;height:100%;background:var(--bar);border-radius:4px}
-.row .n{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}.row .n small{color:var(--sub)}
-table{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums}th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--sub);font-weight:600}
-.note{color:var(--sub);font-size:.82rem;margin:8px 0 0}.empty{color:var(--sub);font-size:.9rem}
-.link{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.link:last-of-type{border-bottom:0}
-.link b{font-size:.95rem}.link b small{color:var(--sub);font-size:.8rem;font-weight:400;margin-left:6px}
-.link code{grid-column:1;min-width:0;overflow-wrap:anywhere;font:12.5px ui-monospace,Menlo,monospace;color:var(--sub);-webkit-user-select:all;user-select:all}
-.link button{grid-column:2;grid-row:1/span 2;border:0;border-radius:10px;padding:9px 16px;background:var(--ink);color:var(--bg);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap}
-</style></head><body><main>${body}</main>
-<script>
-document.querySelectorAll(".link button").forEach(b => b.addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText(b.dataset.url); b.textContent = "Copied!"; }
-  catch (e) { getSelection().selectAllChildren(b.parentNode.querySelector("code")); b.textContent = "กดค้างเพื่อ Copy"; }
-  setTimeout(() => { b.textContent = "Copy"; }, 1800);
-}));
-</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
-}
+// ไอคอนเส้น (ไม่ใช้ emoji)
+const ICON = {
+  widget: '<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M15.5 4.8a3.3 3.3 0 0 1 0 6.4M18 14.8c2 .7 3.2 2.4 3.5 5.2"/>',
+  copy: '<rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6A2.5 2.5 0 0 0 13 3.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5"/>',
+  install: '<path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4 15.5v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2"/>',
+  tap: '<path d="M14 4.5h5.5V10M19.5 4.5 11 13M18 14v3.5a3 3 0 0 1-3 3H7.5a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3H11"/>',
+  up: '<path d="M12 19V5M6 11l6-6 6 6"/>', down: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+};
+const ico = (k, cls = "") => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
 
 const sum = rows => rows.reduce((a, r) => a + r.n, 0);
 function group(rows, key) {
@@ -50,78 +33,215 @@ function group(rows, key) {
   rows.forEach(r => { const k = key(r); m.set(k, (m.get(k) || 0) + r.n); });
   return [...m.entries()].sort((a, b) => b[1] - a[1]);
 }
+// รายการแบบชื่อ + ตัวเลข แล้วมีแถบด้านล่าง
 function bars(list, name = x => x) {
   if (!list.length) return `<p class="empty">ยังไม่มีข้อมูล</p>`;
   const max = Math.max(...list.map(x => x[1]), 1), all = list.reduce((a, x) => a + x[1], 0) || 1;
-  return list.map(([k, n]) => `<div class="row"><span class="t">${esc(name(k))}</span><span class="b"><i style="width:${(n / max * 100).toFixed(1)}%"></i></span><span class="n">${n.toLocaleString()} <small>${Math.round(n / all * 100)}%</small></span></div>`).join("");
+  return `<ul class="bars">${list.map(([k, n]) => `<li><span class="bl">${esc(name(k))}</span><span class="bn">${fmt(n)} <small>${Math.round(n / all * 100)}%</small></span><span class="track"><i style="width:${Math.max(1.5, n / max * 100).toFixed(1)}%"></i></span></li>`).join("")}</ul>`;
 }
-const card = (title, html, note) => `<div class="card"><h2>${title}</h2>${html}${note ? `<p class="note">${note}</p>` : ""}</div>`;
+const card = (cls, title, html, { note = "", aside = "" } = {}) =>
+  `<section class="card ${cls}"><header><h2>${title}</h2>${aside}</header>${html}${note ? `<p class="note">${note}</p>` : ""}</section>`;
+
+// กราฟเส้นรายวัน 1 ตัวเลข (ไม่มีแกนคู่) ชี้/แตะเพื่อดูค่ารายวัน
+const CW = 640, CH = 240, PL = 58, PR = 16, PT = 16, PB = 34;
+function niceMax(m) { if (m <= 4) return 4; const p = Math.pow(10, Math.floor(Math.log10(m))), f = m / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; }
+function lineChart(id, series, hidden) {
+  const max = niceMax(Math.max(...series.map(p => p[1]), 0));
+  const n = series.length, x = i => PL + (n < 2 ? (CW - PL - PR) / 2 : i * (CW - PL - PR) / (n - 1)), y = v => PT + (CH - PT - PB) * (1 - v / max);
+  const xs = series.map((_, i) => +x(i).toFixed(1)), ys = series.map(p => +y(p[1]).toFixed(1));
+  const path = xs.map((v, i) => (i ? "L" : "M") + v + " " + ys[i]).join("");
+  const grid = [0, 0.25, 0.5, 0.75, 1].map(f => `<line class="gl" vector-effect="non-scaling-stroke" x1="${PL}" x2="${CW - PR}" y1="${y(max * f)}" y2="${y(max * f)}"/><text class="ax" x="${PL - 8}" y="${y(max * f) + 4}" text-anchor="end">${fmt(Math.round(max * f))}</text>`).join("");
+  const ticks = [...new Set([0, Math.round((n - 1) / 2), n - 1])].map(i => `<text class="ax" x="${xs[i]}" y="${CH - 8}" text-anchor="${i === 0 ? "start" : i === n - 1 ? "end" : "middle"}">${thDate(series[i][0])}</text>`).join("");
+  return `<div class="chart" id="${id}"${hidden ? " hidden" : ""} data-x="${esc(JSON.stringify(xs))}" data-y="${esc(JSON.stringify(ys))}" data-v="${esc(JSON.stringify(series.map(p => [thDate(p[0]), p[1]])))}">
+<svg viewBox="0 0 ${CW} ${CH}" role="img" aria-label="กราฟรายวัน"><defs><linearGradient id="g-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="ga"/><stop offset="1" class="gb"/></linearGradient></defs>${grid}<path class="area" fill="url(#g-${id})" d="${path}L${xs[n - 1]} ${y(0)}L${xs[0]} ${y(0)}Z"/><path class="line" vector-effect="non-scaling-stroke" d="${path}"/>
+<circle class="end" cx="${xs[n - 1]}" cy="${ys[n - 1]}" r="4.5"/>${ticks}<line class="cross" vector-effect="non-scaling-stroke" x1="0" x2="0" y1="${PT}" y2="${y(0)}"/><circle class="dot" cx="0" cy="0" r="5"/><rect class="hit" x="0" y="0" width="${CW}" height="${CH}"/></svg>
+<div class="tip" hidden></div></div>`;
+}
+// เกจครึ่งวงกลม (โควตา)
+function gauge(pct) {
+  const r = 80, len = Math.PI * r, v = Math.min(100, Math.max(0, pct));
+  return `<svg class="gauge" viewBox="0 0 200 116" role="img" aria-label="ใช้โควตาไป ${v.toFixed(1)}%"><path class="gt" d="M20 100a80 80 0 0 1 160 0"/><path class="gv" d="M20 100a80 80 0 0 1 160 0" stroke-dasharray="${(len * v / 100).toFixed(1)} ${len.toFixed(1)}"/>
+<text x="100" y="92" text-anchor="middle" class="gp">${v < 10 ? v.toFixed(1) : Math.round(v)}%</text></svg>`;
+}
+function delta(cur, prev) {
+  if (!prev) return `<span class="delta flat">${cur ? "ใหม่" : "—"}</span>`;
+  const p = Math.round((cur - prev) / prev * 100);
+  return `<span class="delta">${p === 0 ? "" : ico(p > 0 ? "up" : "down")}${Math.abs(p)}%</span>`;
+}
+
+const CSS = `
+@font-face{font-family:"Prompt";font-weight:400;src:url(/guide/fonts/prompt-thai-400.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:"Prompt";font-weight:600;src:url(/guide/fonts/prompt-thai-600.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:"Prompt";font-weight:400;src:url(/guide/fonts/prompt-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193;font-display:swap}
+@font-face{font-family:"Prompt";font-weight:600;src:url(/guide/fonts/prompt-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193;font-display:swap}
+:root{color-scheme:light;--bg:#F4F4F5;--card:#FFFFFF;--soft:#F7F7F8;--line:#EAEAEC;--ink:#0B0B0C;--sub:#6B6B70;--mute:#A3A3A8;--track:#EFEFF1;--shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.18)}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0F0F11;--card:#1A1A1D;--soft:#222226;--line:#2B2B30;--ink:#F4F4F6;--sub:#A3A3AA;--mute:#6E6E76;--track:#2A2A2F;--shadow:0 1px 0 rgba(255,255,255,.03) inset}}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--ink);font:15px/1.5 "Prompt",-apple-system,BlinkMacSystemFont,"Sukhumvit Set","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:1180px;margin:0 auto;padding:22px 16px 56px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:600}
+.mark{width:34px;height:34px;border-radius:10px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:600;font-size:15px;letter-spacing:-.02em}
+.crumb{color:var(--sub);font-weight:400}.top .sp{flex:1}
+.seg{display:inline-flex;flex-wrap:wrap;max-width:100%;padding:4px;gap:2px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.seg a,.seg button{border:0;background:none;color:var(--sub);font:inherit;font-size:.86rem;padding:6px 12px;border-radius:9px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.seg .on{background:var(--ink);color:var(--bg);font-weight:600}
+h1{font-size:1.7rem;line-height:1.2;margin:0;font-weight:600;letter-spacing:-.01em}.lead{color:var(--sub);margin:4px 0 0;font-size:.9rem}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:18px 0 12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:start}
+.kpi .k{color:var(--sub);font-size:.84rem}.kpi .v{font-size:1.85rem;line-height:1.15;font-weight:600;font-variant-numeric:tabular-nums;grid-column:1}
+.kpi .tile{grid-column:2;grid-row:1/span 2;width:40px;height:40px;border-radius:12px;background:var(--soft);border:1px solid var(--line);display:grid;place-items:center}
+.kpi .tile .ico{width:20px;height:20px}.kpi .s{grid-column:1/-1;color:var(--mute);font-size:.78rem;display:flex;gap:6px;align-items:center}
+.ico{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.delta{display:inline-flex;align-items:center;gap:2px;color:var(--ink);font-weight:600;font-size:.78rem;padding:1px 7px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}.delta .ico{width:12px;height:12px;stroke-width:2.4}.delta.flat{color:var(--sub);font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);min-width:0}
+.card header{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}.card h2{font-size:1rem;margin:0;font-weight:600}
+.s4{grid-column:span 4}.s5{grid-column:span 5}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px;align-items:start}
+@media (max-width:900px){.grid>*{grid-column:1/-1}}
+.note{color:var(--mute);font-size:.78rem;margin:12px 0 0}.empty{color:var(--sub);font-size:.88rem;margin:4px 0}
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:12px}.bars li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px 10px;font-size:.9rem}
+.bl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bn{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}.bn small{color:var(--mute);font-weight:400;margin-left:4px}
+.track{grid-column:1/-1;height:6px;border-radius:3px;background:var(--track);overflow:hidden}.track i{display:block;height:100%;border-radius:3px;background:var(--ink)}
+.chart{position:relative}.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.gl{stroke:var(--line);stroke-width:1}.ax{fill:var(--mute);font-size:11px;font-family:inherit}
+.line{fill:none;stroke:var(--ink);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.ga{stop-color:var(--ink);stop-opacity:.12}.gb{stop-color:var(--ink);stop-opacity:0}
+.end{fill:var(--ink);stroke:var(--card);stroke-width:2}.cross{stroke:var(--mute);stroke-dasharray:3 3;opacity:0}.dot{fill:var(--card);stroke:var(--ink);stroke-width:2;opacity:0}
+.chart.hover .cross,.chart.hover .dot{opacity:1}.hit{fill:transparent;cursor:crosshair;touch-action:pan-y}
+@media (max-width:600px){.ax{font-size:20px}.end{r:7px}.dot{r:8px}}
+.tip{position:absolute;top:0;transform:translateX(-50%);box-shadow:0 6px 16px -6px rgba(0,0,0,.35);background:var(--ink);color:var(--bg);font-size:.78rem;padding:5px 9px;border-radius:8px;white-space:nowrap;pointer-events:none}.tip b{font-size:.9rem;margin-right:4px}
+details.table{margin-top:10px}details.table summary{cursor:pointer;color:var(--sub);font-size:.84rem}
+table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--sub);font-weight:400;font-size:.8rem}tr:last-child td{border-bottom:0}
+.scroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+.fun{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(0,2fr) 64px 48px;gap:10px;align-items:center;padding:7px 0;font-size:.88rem;border-bottom:1px solid var(--line)}.fun:last-of-type{border-bottom:0}
+.fun .track{grid-column:auto;height:10px;border-radius:5px}.fun .fn{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}.fun .fp{text-align:right;color:var(--sub);font-variant-numeric:tabular-nums}
+.fun .dr{grid-column:1/-1;margin-top:-6px;color:var(--mute);font-size:.75rem;padding-left:0}
+@media (max-width:520px){.fun{grid-template-columns:minmax(0,1fr) 56px 42px}.fun .track{grid-column:1/-1;grid-row:2}}
+.gwrap{display:grid;place-items:center;padding:4px 0 0}.gauge{width:min(240px,100%)}.gt,.gv{fill:none;stroke-width:16;stroke-linecap:round}.gt{stroke:var(--track)}.gv{stroke:var(--ink)}.gp{fill:var(--ink);font-size:30px;font-weight:600;font-family:inherit}
+.gsub{text-align:center;color:var(--sub);font-size:.86rem;margin:2px 0 0}.gsub b{color:var(--ink)}
+.link{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.link:last-of-type{border-bottom:0}
+.link b{font-size:.92rem;font-weight:600}.link b small{color:var(--mute);font-size:.78rem;font-weight:400;margin-left:6px}
+.link code{grid-column:1;min-width:0;overflow-wrap:anywhere;font:12px ui-monospace,Menlo,monospace;color:var(--sub);-webkit-user-select:all;user-select:all}
+.link button{grid-column:2;grid-row:1/span 2;border:1px solid var(--line);border-radius:10px;padding:7px 14px;background:var(--soft);color:var(--ink);font:inherit;font-weight:600;font-size:.82rem;cursor:pointer;white-space:nowrap}
+.link button.done{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.foot{color:var(--mute);font-size:.78rem;margin-top:22px;text-align:center}
+`;
+
+// ชี้/แตะกราฟ = ขึ้นค่าของวันนั้น, แท็บสลับกราฟ, ปุ่ม Copy ลิงก์ (ไม่ใช้ template literal ในนี้ เพราะทั้งก้อนอยู่ใน template ของหน้า)
+const JS = `
+document.querySelectorAll(".chart").forEach(function (c) {
+  var xs = JSON.parse(c.dataset.x), ys = JSON.parse(c.dataset.y), vs = JSON.parse(c.dataset.v);
+  var svg = c.querySelector("svg"), cross = c.querySelector(".cross"), dot = c.querySelector(".dot"), tip = c.querySelector(".tip");
+  function move(e) {
+    var r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) / r.width * ${CW}, i = 0;
+    xs.forEach(function (x, j) { if (Math.abs(x - vx) < Math.abs(xs[i] - vx)) i = j; });
+    cross.setAttribute("x1", xs[i]); cross.setAttribute("x2", xs[i]); dot.setAttribute("cx", xs[i]); dot.setAttribute("cy", ys[i]);
+    tip.innerHTML = "<b>" + vs[i][1].toLocaleString("en-US") + "</b>" + vs[i][0]; tip.hidden = false;
+    var py = ys[i] / ${CH} * r.height; // ป้ายอยู่เหนือจุด ถ้าที่ไม่พอให้อยู่ใต้จุด
+    tip.style.left = Math.min(88, Math.max(12, xs[i] / ${CW} * 100)) + "%"; tip.style.top = (py > 46 ? py - 42 : py + 14) + "px"; c.classList.add("hover");
+  }
+  svg.addEventListener("pointermove", move); svg.addEventListener("pointerdown", move);
+  svg.addEventListener("pointerleave", function (e) { if (e.pointerType !== "mouse") return; c.classList.remove("hover"); tip.hidden = true; }); // แตะบนมือถือ: ค่าค้างไว้ให้อ่าน
+});
+document.querySelectorAll("[data-tab]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.querySelectorAll("[data-tab]").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+    document.querySelectorAll(".chart").forEach(function (c) { c.hidden = c.id !== b.dataset.tab; });
+  });
+});
+document.querySelectorAll(".link button").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var done = function (t) { b.textContent = t; b.classList.add("done"); setTimeout(function () { b.textContent = "Copy"; b.classList.remove("done"); }, 1600); };
+    navigator.clipboard.writeText(b.dataset.url).then(function () { done("Copied!"); }, function () { getSelection().selectAllChildren(b.parentNode.querySelector("code")); done("กดค้างเพื่อ Copy"); });
+  });
+});`;
+
+function page(body) {
+  return new Response(`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><title>สถิติ BWY Widget</title><style>${CSS}</style></head>
+<body><main>${body}</main><script>${JS}</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+}
+const topbar = right => `<div class="top"><div class="brand"><span class="mark" aria-hidden="true">B</span>BWY Widget <span class="crumb">/ สถิติ</span></div><span class="sp"></span>${right || ""}</div>`;
 
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
   const key = env.STATS_KEY || "";
   if (key.length < 8 || url.searchParams.get("k") !== key) return new Response("Not found", { status: 404 });
-  if (!env.DB) return page(`<h1>สถิติ BWY Widget</h1><p class="sub">ยังไม่ได้ผูกฐานข้อมูล D1 ชื่อ DB กับโปรเจกต์นี้ (ดู RUNBOOK.md หัวข้อ "สถิติ")</p>`);
+  if (!env.DB) return page(`${topbar()}<h1>ภาพรวม</h1><p class="lead">ยังไม่ได้ผูกฐานข้อมูล D1 ชื่อ DB กับโปรเจกต์นี้ (ดู RUNBOOK.md หัวข้อ "สถิติ")</p>`);
   const days = [7, 14, 30].includes(+url.searchParams.get("d")) ? +url.searchParams.get("d") : 7;
-  const today = bkkDay(), from = bkkDay(Date.now() - (days - 1) * 864e5), yesterday = bkkDay(Date.now() - 864e5);
-  let all = [];
-  try { all = (await env.DB.prepare("SELECT day, kind, k1, k2, n FROM daily WHERE day >= ?1").bind(from).all()).results || []; }
+  const ago = i => bkkDay(Date.now() - i * 864e5);
+  const today = ago(0), yesterday = ago(1), from = ago(days - 1), prevFrom = ago(days * 2 - 1);
+  let rows = [];
+  try { rows = (await env.DB.prepare("SELECT day, kind, k1, k2, n FROM daily WHERE day >= ?1").bind(prevFrom).all()).results || []; }
   catch (e) { if (/no such table/i.test(String(e && e.message || e))) await env.DB.prepare(SCHEMA).run(); else throw e; }
-  const of = kind => all.filter(r => r.kind === kind);
+  const all = rows.filter(r => r.day >= from), prevRows = rows.filter(r => r.day < from);
+  const of = (kind, list = all) => list.filter(r => r.kind === kind);
+  const perDay = (list, d) => sum(list.filter(r => r.day === d));
   const visits = of("visit"), steps = of("step"), copies = of("copy"), active = of("active");
-  const perDay = (rows, d) => sum(rows.filter(r => r.day === d));
   const latest = perDay(active, yesterday) ? yesterday : today, latestName = latest === today ? "วันนี้" : "เมื่อวาน";
   const live = active.filter(r => r.day === latest);
   const part = (s, i) => String(s).split(":")[i] || "-";
+  const dayList = Array.from({ length: days }, (_, i) => ago(days - 1 - i)); // เก่า → ใหม่
+
+  // การ์ดตัวเลขหลัก (เทียบกับช่วงก่อนหน้า, Widget ใช้งานเทียบวันก่อนหน้า)
+  const activeNow = perDay(of("active", rows), latest), activeBefore = perDay(of("active", rows), latest === today ? yesterday : ago(2));
+  const kpi = (icon, label, value, prev, sub) => `<div class="kpi"><span class="k">${label}</span><span class="v">${fmt(value)}</span><span class="tile">${ico(icon)}</span><span class="s">${delta(value, prev)}${sub}</span></div>`;
+  const kpis = `<div class="kpis">
+${kpi("widget", "Widget ใช้งานจริง", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน")}
+${kpi("users", "คนเปิดหน้าติดตั้ง", sum(visits), sum(of("visit", prevRows)), `เทียบ ${days} วันก่อน`)}
+${kpi("copy", "กด Copy โค้ด", sum(copies), sum(of("copy", prevRows)), `เทียบ ${days} วันก่อน`)}
+${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), sum(of("new", prevRows)), "Widget ทำงานครั้งแรก")}
+${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prevRows)), `เทียบ ${days} วันก่อน`)}
+</div>`;
+
+  // กราฟรายวัน (แท็บละ 1 ตัวเลข)
+  const CHARTS = [["c-active", "Widget ใช้งาน", active], ["c-visit", "เปิดหน้า", visits], ["c-new", "ติดตั้งใหม่", of("new")], ["c-tap", "แตะไป Drive", of("tap")]];
+  const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CHARTS.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
+  const charts = CHARTS.map(([id, , list], i) => lineChart(id, dayList.map(d => [d, perDay(list, d)]), i > 0)).join("");
+  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td><td>${fmt(perDay(active, d))}</td><td>${fmt(perDay(visits, d))}</td><td>${fmt(perDay(copies, d))}</td><td>${fmt(perDay(of("new"), d))}</td><td>${fmt(perDay(of("tap"), d))}</td></tr>`).join("")}</table></div></details>`;
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
-  const order = ["visit", "1", "2", "3", "4", "5", "6", "7", "done"];
-  const base = reach("visit") || 1;
+  const order = ["visit", "1", "2", "3", "4", "5", "6", "7", "done"], base = reach("visit") || 1;
   const funnel = order.map((k, i) => {
     const n = reach(k), prev = i ? reach(order[i - 1]) : n, drop = i && prev ? Math.round((1 - n / prev) * 100) : 0;
-    return `<tr><td>${esc(STEP[k])}${k === "2" ? ` <span class="sub">(กด Copy ${sum(copies).toLocaleString()})</span>` : ""}</td><td>${n.toLocaleString()}</td><td>${Math.round(n / base * 100)}%</td><td>${i ? (drop > 0 ? "−" + drop + "%" : "0%") : ""}</td></tr>`;
+    return `<div class="fun"><span>${esc(STEP[k])}</span><span class="track"><i style="width:${Math.max(1.5, n / base * 100).toFixed(1)}%"></i></span><span class="fn">${fmt(n)}</span><span class="fp">${Math.round(n / base * 100)}%</span>${drop > 0 ? `<span class="dr">หลุดจากขั้นก่อน ${drop}%${k === "2" ? ` · กด Copy ${fmt(sum(copies))} ครั้ง` : ""}</span>` : ""}</div>`;
   }).join("");
 
   // แต่ละแอป: เข้าเว็บ → กด Copy → ถึงหน้าเสร็จ
-  const apps = group(visits, r => r.k1).map(([a, n]) => {
+  const appRows = group(visits, r => r.k1).map(([a, n]) => {
     const c = sum(copies.filter(r => r.k2 === a)), d = sum(steps.filter(r => r.k1 === "done" && r.k2 === a));
-    return `<tr><td>${esc(APP[a] || a)}</td><td>${n.toLocaleString()}</td><td>${c.toLocaleString()}</td><td>${d.toLocaleString()}</td><td>${Math.round(d / (n || 1) * 100)}%</td></tr>`;
+    return `<tr><td>${esc(APP[a] || a)}</td><td>${fmt(n)}</td><td>${fmt(c)}</td><td>${fmt(d)}</td><td>${Math.round(d / (n || 1) * 100)}%</td></tr>`;
   }).join("");
 
-  const dayList = Array.from({ length: days }, (_, i) => bkkDay(Date.now() - i * 864e5));
-  const daily = dayList.map(d => `<tr><td>${d.slice(5)}${d === today ? " (วันนี้)" : ""}</td><td>${perDay(visits, d)}</td><td>${perDay(copies, d)}</td><td>${perDay(of("new"), d)}</td><td>${perDay(active, d)}</td><td>${perDay(of("tap"), d)}</td></tr>`).join("");
+  const links = SHARE.map(([src, name]) => `<div class="link"><b>${name}<small>เข้ามา ${fmt(sum(of("src").filter(r => r.k1 === src)))} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`).join("");
 
-  // โควตา: ตาราง WITHOUT ROWID บวกเลข 1 ครั้ง = เขียน 1 แถว ผลรวมของวันนี้จึงเท่ากับจำนวนแถวที่เขียนไป (นับตามวันไทย ใกล้เคียงรอบของ Cloudflare)
-  const writes = perDay(all, today), pct = Math.min(100, writes / WRITE_LIMIT * 100);
+  // โควตา: ตาราง WITHOUT ROWID บวกเลข 1 ครั้ง = เขียน 1 แถว ผลรวมของวันนี้จึงเท่ากับจำนวนแถวที่เขียนไป
+  const writes = perDay(all, today);
 
-  const range = [7, 14, 30].map(d => `<a class="${d === days ? "on" : ""}" href="?k=${encodeURIComponent(key)}&d=${d}">${d} วัน</a>`).join("");
-  return page(`<h1>สถิติ BWY Widget</h1><p class="sub">${from} ถึง ${today} (เวลาไทย) · ตัวเลขรวมแบบไม่ระบุตัวตน</p>
-<div class="range">${range}</div>
-<div class="kpis">
-  <div class="kpi"><b>${perDay(active, latest).toLocaleString()}</b><span>Widget ใช้งานจริง (${latest === today ? "วันนี้ ยังนับไม่ครบวัน" : "เมื่อวาน"})</span></div>
-  <div class="kpi"><b>${sum(visits).toLocaleString()}</b><span>คนเปิดหน้าติดตั้ง</span></div>
-  <div class="kpi"><b>${sum(copies).toLocaleString()}</b><span>กด Copy โค้ด</span></div>
-  <div class="kpi"><b>${sum(of("new")).toLocaleString()}</b><span>เครื่องที่ติดตั้งใหม่ (Widget ทำงานครั้งแรก)</span></div>
-  <div class="kpi"><b>${sum(of("tap")).toLocaleString()}</b><span>แตะ Widget ไปเปิด Drive</span></div>
+  const extra = [...group(of("fold"), r => r.k1).map(([k, n]) => [k === "why" ? "กล่อง ทำไมต้องโหลด Scriptable?" : k === "code" ? "กล่อง โค้ดนี้ปลอดภัยไหม?" : k, n]),
+    ...group(steps.filter(r => ["theme", "options", "faq"].includes(r.k1)), r => r.k1).map(([k, n]) => [{ theme: "หน้า เปลี่ยนธีมสี", options: "หน้า ปรับแต่งด้วย Parameter", faq: "หน้า คำถามที่เจอบ่อย" }[k], n]),
+    ["กดปุ่ม App Store", sum(of("appstore"))], ["เปิดสคริปต์ในแอป Scriptable", sum(of("app"))], ["เปลี่ยนธีมในแอป", sum(of("theme"))]].filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+
+  const range = `<nav class="seg" aria-label="ช่วงเวลา">${[7, 14, 30].map(d => `<a class="${d === days ? "on" : ""}" href="?k=${encodeURIComponent(key)}&d=${d}">${d} วัน</a>`).join("")}</nav>`;
+  return page(`${topbar(range)}
+<h1>ภาพรวม</h1><p class="lead">${thDate(from)} – ${thDate(today)} ${today.slice(0, 4)} (เวลาไทย) · ตัวเลขรวมแบบไม่ระบุตัวตน</p>
+${kpis}
+<div class="grid">
+${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "Widget ใช้งาน = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
+${card("s4", "มาจากแอปไหน", bars(group(visits, r => r.k1), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s7", "หลุดขั้นไหน", funnel, { note: "นับคนละ 1 ครั้งต่อการเปิดหน้า เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
+${card("s5", "ลิงก์สำหรับส่งน้องๆ", links, { note: `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (a-z 0-9 . _ - ไม่เกิน 24 ตัว) จะขึ้นในการ์ด "ป้ายลิงก์"` })}
+${card("s8", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
+${card("s4", "ใช้โควตาฟรีวันนี้", `<div class="gwrap">${gauge(writes / WRITE_LIMIT * 100)}</div><p class="gsub">เขียน D1 <b>${fmt(writes)}</b> / 100,000 แถว</p>`, { note: "ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ" })}
 </div>
-${card("ลิงก์สำหรับส่งน้องๆ", SHARE.map(([src, name]) => {
-    const n = sum(of("src").filter(r => r.k1 === src));
-    return `<div class="link"><b>${name}<small>เข้ามา ${n.toLocaleString()} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`;
-  }).join(""), `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · แปะลิงก์ให้ตรงช่องทาง จะรู้ว่าคนมาจากไหนแน่นอน อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (ใช้ได้แค่ a-z 0-9 . _ - ยาวไม่เกิน 24 ตัว) จะขึ้นแยกในการ์ด "ป้ายลิงก์" ด้านล่าง`)}
-${card("ใช้โควตาฟรีวันนี้", `<div class="row"><span class="t">เขียน D1</span><span class="b"><i style="width:${pct.toFixed(1)}%"></i></span><span class="n">${writes.toLocaleString()} <small>/ 100,000</small></span></div>`,
-  "ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ คำขอ Functions มีไม่เกินจำนวนนี้ (ลิมิต 100,000 ครั้ง/วัน)")}
-${card("มาจากแอปไหน", bars(group(visits, r => r.k1), a => APP[a] || a), "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดลิงก์ผ่าน Safari ตรงๆ จะนับเป็น Safari")}
-${card("ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)), "ใส่ท้ายลิงก์ที่แปะแต่ละที่ เช่น bwy-widget.pages.dev/?src=tiktok-bio จะรู้ว่าโพสต์ไหนพาคนมา")}
-${card("หลุดขั้นไหน", `<table><tr><th>ขั้น</th><th>คน</th><th>จากหน้าแรก</th><th>หลุดจากขั้นก่อน</th></tr>${funnel}</table>`, "นับคนละ 1 ครั้งต่อการเปิดหน้า ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ")}
-${card("แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${apps || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table>`)}
-${card("รายวัน", `<table><tr><th>วัน</th><th>เข้าเว็บ</th><th>Copy</th><th>ติดตั้งใหม่</th><th>Widget ใช้งาน</th><th>แตะไป Drive</th></tr>${daily}</table>`, "\"Widget ใช้งาน\" = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)")}
-${card(`ขนาดที่ใช้ (${latestName})`, bars(group(live, r => part(r.k1, 0) + ":" + part(r.k1, 1)), famName))}
-${card(`ธีม (${latestName})`, bars(group(live, r => part(r.k1, 2)), t => (t === "dark" ? "มืด" : "สว่าง")))}
-${card(`คำใน Parameter (${latestName})`, bars(group(live.flatMap(r => part(r.k2, 2).split(".").map(p => ({ k: p, n: r.n }))), r => r.k), p => (p === "-" ? "ไม่ใส่" : p)), "Widget ที่ใส่หลายคำนับทุกคำ")}
-${card(`เวอร์ชัน widget.js (${latestName})`, bars(group(live, r => part(r.k2, 0))))}
-${card("อุปกรณ์ที่เปิดหน้าติดตั้ง", bars(group(visits, r => r.k2), d => DEV[d] || d))}
-${card("เปิดดูเพิ่ม", bars([...group(of("fold"), r => r.k1).map(([k, n]) => [k === "why" ? "กล่อง ทำไมต้องโหลด Scriptable?" : k === "code" ? "กล่อง โค้ดนี้ปลอดภัยไหม?" : k, n]),
-  ...group(steps.filter(r => ["theme", "options", "faq"].includes(r.k1)), r => r.k1).map(([k, n]) => [{ theme: "หน้า เปลี่ยนธีมสี", options: "หน้า ปรับแต่งด้วย Parameter", faq: "หน้า คำถามที่เจอบ่อย" }[k], n])].sort((a, b) => b[1] - a[1])),
-  `กดปุ่ม App Store ในขั้นที่ 1: ${sum(of("appstore")).toLocaleString()} ครั้ง · เปิดสคริปต์ในแอป Scriptable: ${sum(of("app")).toLocaleString()} ครั้ง · เปลี่ยนธีมในแอป: ${sum(of("theme")).toLocaleString()} ครั้ง`)}`);
+<div class="minis">
+${card("", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)))}
+${card("", `ขนาดที่ใช้ (${latestName})`, bars(group(live, r => part(r.k1, 0) + ":" + part(r.k1, 1)), famName))}
+${card("", `ธีม (${latestName})`, bars(group(live, r => part(r.k1, 2)), t => (t === "dark" ? "มืด" : "สว่าง")))}
+${card("", `คำใน Parameter (${latestName})`, bars(group(live.flatMap(r => part(r.k2, 2).split(".").map(p => ({ k: p, n: r.n }))), r => r.k), p => (p === "-" ? "ไม่ใส่" : p)), { note: "Widget ที่ใส่หลายคำนับทุกคำ" })}
+${card("", `เวอร์ชัน widget.js (${latestName})`, bars(group(live, r => part(r.k2, 0))))}
+${card("", "อุปกรณ์ที่เปิดหน้าติดตั้ง", bars(group(visits, r => r.k2), d => DEV[d] || d))}
+${card("", "เปิดดูเพิ่ม", bars(extra))}
+</div>
+<p class="foot">ไม่มีรหัสเครื่อง ไม่มี IP ไม่มี cookie · เก็บเป็นตัวเลขรวมรายวันเท่านั้น</p>`);
 }
