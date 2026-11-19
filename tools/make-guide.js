@@ -23,7 +23,7 @@ const STEPS = [
       "พัฒนาโดย Simon B. Støvring อยู่บน App Store มาตั้งแต่ปี 2018 และผ่านการตรวจของ Apple เหมือนแอปทั่วไป ได้คะแนนรีวิวเฉลี่ยกว่า 4.5 ดาว และเคยได้รองชนะเลิศรางวัล MacStories Selects",
       "ผู้พัฒนาแจ้งว่าแอปไม่เก็บข้อมูลส่วนตัวใดๆ ซึ่งตัวแอปทำงานภายใต้ระบบความปลอดภัยของ iOS และไม่ต้องสมัครหรือล็อกอินอะไรเลย",
     ].join(" ") } },
-  { title: "Copy โค้ด", body: `<p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p>
+  { title: "กด Copy โค้ด", body: `<p>เอาโค้ดไปวางที่แอป Scriptable เพื่อเชื่อมกับ BWY Widget</p>
     <button class="peek" id="peek" type="button" aria-label="ดูโค้ดเต็ม"><pre id="peekCode" aria-hidden="true"></pre><span class="peek-tag">ดูโค้ดเต็ม ›</span></button>
     <div class="copywrap"><button class="btn copy" id="copy" type="button"><span class="lbl">Copy โค้ด</span></button>
     <div class="copied-card" id="copied" role="status" hidden>
@@ -34,14 +34,14 @@ const STEPS = [
       <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้า Home และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
       <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>` },
-  { title: "เอาโค้ดไปวางที่ Scriptable", body: list([`แตะ icon ${k("Scriptable")} บนหน้าจอ Home`, `กด ${k("+")} มุมขวาบน`, "วางโค้ดที่ Copy มาตอนแรก"]),
-    media: clip("s3", "แตะ icon Scriptable บนหน้าจอ Home กดปุ่มบวกมุมขวาบน แล้ววางโค้ดในหน้าว่าง"), check: "โค้ดขึ้นเต็มหน้า" },
+  { title: "เอาโค้ดไปวางที่ Scriptable", body: list([`เข้าแอป ${k("Scriptable")}`, `กด ${k("+")} มุมขวาบน`, "วางโค้ดที่ Copy มา"]),
+    media: clip("s3", "แตะ icon Scriptable บนหน้าจอ Home กดปุ่มบวกมุมขวาบน แล้ววางโค้ดในหน้าว่าง") },
   { title: "ตั้งชื่อว่า Dek70", body: list([`แตะชื่อ ${k("Untitled Script")} ด้านบน`, `ลบชื่อเดิม พิมพ์ ${k("Dek70")}`, `กด ${k("Rename")}`, `กด ${k("Done")} มุมซ้ายบน`]),
-    media: clip("s5", "แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"), check: "การ์ดชื่อ Dek70 อยู่ในรายการ" },
-  { title: "เพิ่ม Widget บนหน้าจอ Home", body: list(["กดค้างที่ว่างบนหน้าจอ Home จน icon สั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)`]),
-    media: clip("s6", "กดค้างที่หน้าจอ Home กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอ Home" },
-  { title: "เลือกสคริปต์ Dek70", body: list([`กดค้างที่กล่องนั้น แล้วกด ${k("Edit Widget")}`, `แตะ ${k("Choose")} ที่แถว Script`, `เลือก ${k("Dek70")}`, "แตะที่ว่างนอกกล่องเพื่อปิด"]),
-    media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"), check: "Widget แสดงผลนับถอยหลังแล้ว" },
+    media: clip("s5", "แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done") },
+  { title: "เพิ่ม Widget บนหน้าจอ Home", body: list(["กดค้างที่ว่างบนหน้าจอ Home จน icon สั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปุ่มน้ำเงิน)`]),
+    media: clip("s6", "กดค้างที่หน้าจอ Home กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792) },
+  { title: "เลือกสคริปต์ Dek70", body: list([`กดค้างที่ Widget นั้น แล้วกด ${k("Edit Widget")}`, `แตะ ${k("Choose")} ที่แถว Script`, `เลือก ${k("Dek70")}`, "แตะที่ว่างเพื่อปิด"]),
+    media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง") },
 ];
 const N = STEPS.length;
 const code = t => `<code>${t}</code>`;
@@ -86,7 +86,7 @@ const screens = [
     <div class="card"><div class="txt">
     ${s.body}
     </div>${s.media || ""}
-    ${s.info ? fold(s.info.label, s.info.text) : s.check ? note("✓", "ต้องเห็น", s.check) : ""}</div>
+    ${s.info ? fold(s.info.label, s.info.text) : ""}</div>
   </section>`),
   `<section class="screen" id="s${N + 1}" data-hash="done" aria-labelledby="hd">
     <div class="intro-text done-text"><span class="done-ic">${ICON.check()}</span>
