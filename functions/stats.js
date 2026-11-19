@@ -3,11 +3,14 @@
 import { bkkDay, SCHEMA } from "../lib/stats.js";
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const APP = { tiktok: "TikTok", instagram: "Instagram", line: "LINE", facebook: "Facebook / Messenger", x: "X", google: "Google", web: "เว็บอื่น", safari: "Safari (พิมพ์เอง / ไม่รู้ที่มา)", chrome: "Chrome", other: "อื่นๆ" };
+const APP = { tiktok: "TikTok", lemon8: "Lemon8", threads: "Threads", instagram: "Instagram", line: "LINE", facebook: "Facebook / Messenger", x: "X", google: "Google", web: "เว็บอื่น", safari: "Safari (พิมพ์เอง / ไม่รู้ที่มา)", chrome: "Chrome", other: "อื่นๆ" };
 const DEV = { iphone: "iPhone", ipad: "iPad", android: "Android (ติดตั้งไม่ได้)", computer: "คอม", other: "อื่นๆ" };
 const STEP = { visit: "หน้าแรก", 1: "1 โหลด Scriptable", 2: "2 Copy โค้ด", 3: "3 เปิด Scriptable กด +", 4: "4 Paste", 5: "5 ตั้งชื่อ Dek70", 6: "6 เพิ่ม Widget", 7: "7 เลือก Dek70", done: "หน้าเสร็จ" };
 const FAM = { "small:small": "Small", "medium:mediumbar": "Medium นับวินาที", "medium:medium": "Medium", "large:large": "Large", "extralarge:xl": "Extra Large", "extralarge:large": "Extra Large (แบบ Large)" };
 const famName = k => FAM[k] || (k.endsWith(":none") ? k.split(":")[0] + " (ยังไม่เปิดใช้)" : k);
+// ลิงก์สำหรับส่งให้น้องๆ แยกตามช่องทาง (ป้าย ?src= บอกว่าคนมาจากไหน แม่นกว่าการเดาจากแอป)
+const SITE = "https://bwy-widget.pages.dev/";
+const SHARE = [["line", "LINE"], ["x", "X"], ["threads", "Threads"], ["lemon8", "Lemon8"], ["tiktok", "TikTok"], ["ig", "Instagram"]];
 const WRITE_LIMIT = 100000; // D1 แผนฟรี: เขียนได้ 100,000 แถว/วัน (รีเซ็ต 07:00 เวลาไทย)
 
 function page(body) {
@@ -27,7 +30,18 @@ main{max-width:760px;margin:0 auto;padding:20px 16px 60px}h1{font-size:1.6rem;ma
 .row .n{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}.row .n small{color:var(--sub)}
 table{width:100%;border-collapse:collapse;font-size:.88rem;font-variant-numeric:tabular-nums}th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--sub);font-weight:600}
 .note{color:var(--sub);font-size:.82rem;margin:8px 0 0}.empty{color:var(--sub);font-size:.9rem}
-</style></head><body><main>${body}</main></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+.link{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.link:last-of-type{border-bottom:0}
+.link b{font-size:.95rem}.link b small{color:var(--sub);font-size:.8rem;font-weight:400;margin-left:6px}
+.link code{grid-column:1;min-width:0;overflow-wrap:anywhere;font:12.5px ui-monospace,Menlo,monospace;color:var(--sub);-webkit-user-select:all;user-select:all}
+.link button{grid-column:2;grid-row:1/span 2;border:0;border-radius:10px;padding:9px 16px;background:var(--ink);color:var(--bg);font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap}
+</style></head><body><main>${body}</main>
+<script>
+document.querySelectorAll(".link button").forEach(b => b.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(b.dataset.url); b.textContent = "Copied!"; }
+  catch (e) { getSelection().selectAllChildren(b.parentNode.querySelector("code")); b.textContent = "กดค้างเพื่อ Copy"; }
+  setTimeout(() => { b.textContent = "Copy"; }, 1800);
+}));
+</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 }
 
 const sum = rows => rows.reduce((a, r) => a + r.n, 0);
@@ -91,6 +105,10 @@ export async function onRequestGet({ request, env }) {
   <div class="kpi"><b>${sum(of("new")).toLocaleString()}</b><span>เครื่องที่ติดตั้งใหม่ (Widget ทำงานครั้งแรก)</span></div>
   <div class="kpi"><b>${sum(of("tap")).toLocaleString()}</b><span>แตะ Widget ไปเปิด Drive</span></div>
 </div>
+${card("ลิงก์สำหรับส่งน้องๆ", SHARE.map(([src, name]) => {
+    const n = sum(of("src").filter(r => r.k1 === src));
+    return `<div class="link"><b>${name}<small>เข้ามา ${n.toLocaleString()} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`;
+  }).join(""), `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · แปะลิงก์ให้ตรงช่องทาง จะรู้ว่าคนมาจากไหนแน่นอน อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (ใช้ได้แค่ a-z 0-9 . _ - ยาวไม่เกิน 24 ตัว) จะขึ้นแยกในการ์ด "ป้ายลิงก์" ด้านล่าง`)}
 ${card("ใช้โควตาฟรีวันนี้", `<div class="row"><span class="t">เขียน D1</span><span class="b"><i style="width:${pct.toFixed(1)}%"></i></span><span class="n">${writes.toLocaleString()} <small>/ 100,000</small></span></div>`,
   "ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ คำขอ Functions มีไม่เกินจำนวนนี้ (ลิมิต 100,000 ครั้ง/วัน)")}
 ${card("มาจากแอปไหน", bars(group(visits, r => r.k1), a => APP[a] || a), "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดลิงก์ผ่าน Safari ตรงๆ จะนับเป็น Safari")}

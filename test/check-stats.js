@@ -105,12 +105,14 @@ async function serverSide() {
   ok(!rows.some(r => r.kind === "hack") && get("step", "other", "instagram") === 1, "server: ไม่รับ event แปลก และกรองข้อความแปลกเป็น other");
   ok(sum(rows.filter(r => r.kind === "visit")) === 3, "server: ไม่นับบอท");
   ok(get("active", "small:small:dark", "7.8.8:3:tgat") === 1 && get("active", "medium:mediumbar:light", "7.8.8:3:-") === 1 && get("new", "small") === 1 && get("tap", "small") === 1, "server: Widget ใช้งาน (ขนาด ธีม เวอร์ชัน Parameter ในแถวเดียว) เครื่องใหม่ และการแตะ");
+  const L = await imp("lib/stats.js");
+  ok(L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Barcelona 300.0.0.0") === "threads" && L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Lemon8/6.0 BytedanceWebview") === "lemon8" && L.appFrom("Mozilla/5.0 (iPhone) Safari/604.1", "www.threads.net") === "threads", "server: รู้จัก Threads และ Lemon8 (ไม่ปนกับ TikTok)");
   ok(!JSON.stringify(rows).includes("Mozilla") && !JSON.stringify(rows).includes("Instagram 350"), "server: ไม่เก็บ User-Agent ลงฐานข้อมูล");
 
   ok((await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats", { env })).status === 404, "stats: ไม่มีรหัสเปิดไม่ได้ (404)");
   ok((await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=wrong", { env })).status === 404, "stats: รหัสผิดเปิดไม่ได้");
   const html = await (await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456&d=14", { env })).text();
-  ok(html.includes("Instagram") && html.includes("หลุดขั้นไหน") && html.includes("Medium นับวินาที") && html.includes("tgat") && html.includes("ใช้โควตาฟรีวันนี้") && !/undefined|NaN/.test(html), "stats: เปิดได้ มีตัวเลขครบ (แอป ขั้น ขนาด Parameter โควตา) ไม่มีค่าแปลก");
+  ok(html.includes("Instagram") && html.includes("หลุดขั้นไหน") && html.includes("Medium นับวินาที") && html.includes("tgat") && html.includes("ใช้โควตาฟรีวันนี้") && ["line", "x", "threads", "lemon8", "tiktok"].every(x => html.includes("https://bwy-widget.pages.dev/?src=" + x)) && !/undefined|NaN/.test(html), "stats: เปิดได้ มีตัวเลขครบ (แอป ขั้น ขนาด Parameter โควตา) มีลิงก์แยก 5 ช่องทาง ไม่มีค่าแปลก");
   const empty = await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456", { env: { DB: fakeD1(), STATS_KEY: "test-key-123456" } });
   ok(empty.status === 200 && !/undefined|NaN/.test(await empty.text()), "stats: ฐานข้อมูลว่าง (ยังไม่มีตาราง) ก็เปิดได้");
 }
