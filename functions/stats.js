@@ -6,7 +6,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 const fmt = n => Number(n || 0).toLocaleString("en-US");
 const APP = { tiktok: "TikTok", lemon8: "Lemon8", threads: "Threads", instagram: "Instagram", line: "LINE", facebook: "Facebook / Messenger", x: "X", google: "Google", web: "เว็บอื่น", safari: "Safari (พิมพ์เอง / ไม่รู้ที่มา)", chrome: "Chrome", other: "อื่นๆ" };
 const DEV = { iphone: "iPhone", ipad: "iPad", android: "Android (ติดตั้งไม่ได้)", computer: "คอม", other: "อื่นๆ" };
-const STEP = { visit: "หน้าแรก", 1: "1 โหลด Scriptable", 2: "2 Copy โค้ด", 3: "3 เปิด Scriptable กด +", 4: "4 Paste", 5: "5 ตั้งชื่อ Dek70", 6: "6 เพิ่ม Widget", 7: "7 เลือก Dek70", done: "หน้าเสร็จ" };
+const STEP = { visit: "หน้าแรก", 1: "1 โหลด Scriptable", 2: "2 Copy โค้ด", 3: "3 เปิด Scriptable กด + และวางโค้ด", 4: "4 ตั้งชื่อ Dek70", 5: "5 เพิ่ม Widget", 6: "6 เลือก Dek70", done: "หน้าเสร็จ" };
 const FAM = { "small:small": "Small", "medium:mediumbar": "Medium นับวินาที", "medium:medium": "Medium", "large:large": "Large", "extralarge:xl": "Extra Large", "extralarge:large": "Extra Large (แบบ Large)" };
 const famName = k => FAM[k] || (k.endsWith(":none") ? k.split(":")[0] + " (ยังไม่เปิดใช้)" : k);
 const TH_M = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
@@ -201,7 +201,7 @@ ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prev
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
-  const order = ["visit", "1", "2", "3", "4", "5", "6", "7", "done"], base = reach("visit") || 1;
+  const order = ["visit", "1", "2", "3", "4", "5", "6", "done"], base = reach("visit") || 1;
   const funnel = order.map((k, i) => {
     const n = reach(k), prev = i ? reach(order[i - 1]) : n, drop = i && prev ? Math.round((1 - n / prev) * 100) : 0;
     return `<div class="fun"><span>${esc(STEP[k])}</span><span class="track"><i style="width:${Math.max(1.5, n / base * 100).toFixed(1)}%"></i></span><span class="fn">${fmt(n)}</span><span class="fp">${Math.round(n / base * 100)}%</span>${drop > 0 ? `<span class="dr">หลุดจากขั้นก่อน ${drop}%${k === "2" ? ` · กด Copy ${fmt(sum(copies))} ครั้ง` : ""}</span>` : ""}</div>`;

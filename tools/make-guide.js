@@ -34,14 +34,12 @@ const STEPS = [
       <p>โค้ดนี้มีหน้าที่ดึงการทำงานของ Widget จากเซิร์ฟเวอร์หลักของ BearWithYou ให้มาแสดงผลบนหน้าโฮม และส่งสถิติรวมแบบไม่ระบุตัวตนวันละครั้ง <b>ไม่เข้าถึงรูป รายชื่อ ตำแหน่ง หรือบัญชีใดๆ</b></p>
       <pre class="code" id="code" aria-label="โค้ดที่จะ Copy"></pre></details>
     <textarea class="fallback" id="fallback" readonly aria-label="โค้ดสำหรับก๊อป"></textarea>` },
-  { title: "เปิด Scriptable แล้วกด +", body: list([`แตะไอคอน ${k("Scriptable")} บนหน้าจอโฮม`, `กด ${k("+")} มุมขวาบน`]), media: clip("s3", "แตะไอคอน Scriptable บนหน้าจอโฮม แล้วกดปุ่มบวกมุมขวาบน"),
-    check: "หน้าว่าง ชื่อด้านบนเขียนว่า Untitled Script" },
-  { title: "แตะค้าง แล้วกด Paste", body: `<p>แตะค้างที่ว่างบนหน้าจอ 1 วินาที แล้วกด ${k("Paste")}</p>`, media: clip("s4", "แตะค้างที่หน้าว่างแล้วกด Paste"),
-    check: "โค้ดขึ้นเต็มหน้า" },
+  { title: "เปิด Scriptable แล้วกด + และวางโค้ดที่ Copy มา", body: list([`แตะ icon ${k("Scriptable")} บนหน้าจอ Home`, `กด ${k("+")} มุมขวาบน`, "วางโค้ดที่ Copy มาตอนแรก"]),
+    media: clip("s3", "แตะ icon Scriptable บนหน้าจอ Home กดปุ่มบวกมุมขวาบน แล้ววางโค้ดในหน้าว่าง"), check: "โค้ดขึ้นเต็มหน้า" },
   { title: "ตั้งชื่อว่า Dek70", body: list([`แตะชื่อ ${k("Untitled Script")} ด้านบน`, `ลบชื่อเดิม พิมพ์ ${k("Dek70")}`, `กด ${k("Rename")}`, `กด ${k("Done")} มุมซ้ายบน`]),
     media: clip("s5", "แตะชื่อด้านบน พิมพ์ Dek70 กด Rename แล้วกด Done"), check: "การ์ดชื่อ Dek70 อยู่ในรายการ" },
-  { title: "เพิ่ม Widget บนหน้าจอโฮม", body: list(["กดค้างที่ว่างบนหน้าจอโฮมจนไอคอนสั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)`, `กด ${k("Done")} มุมขวาบน`]),
-    media: clip("s6", "กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอโฮม" },
+  { title: "เพิ่ม Widget บนหน้าจอ Home", body: list(["กดค้างที่ว่างบนหน้าจอ Home จน icon สั่น", `กด ${k("Edit")} มุมซ้ายบน แล้วกด ${k("Add Widget")}`, `พิมพ์ ${k("Scriptable")} ในช่องค้นหา แล้วแตะชื่อแอป`, `กด ${k("Add Widget")} (ปัดซ้ายก่อนถ้าอยากได้ขนาด Medium)`]),
+    media: clip("s6", "กดค้างที่หน้าจอโฮม กด Edit แล้ว Add Widget ค้นหา Scriptable กด Add Widget แล้วกด Done", 1792), check: "กล่องสีเทาเขียนว่า Configure widget อยู่บนหน้าจอ Home" },
   { title: "เลือกสคริปต์ Dek70", body: list([`กดค้างที่กล่องนั้น แล้วกด ${k("Edit Widget")}`, `แตะ ${k("Choose")} ที่แถว Script`, `เลือก ${k("Dek70")}`, "แตะที่ว่างนอกกล่องเพื่อปิด"]),
     media: clip("s8", "กดค้างที่ Widget กด Edit Widget แตะ Choose เลือก Dek70 แล้วแตะที่ว่าง"), check: "Widget แสดงผลนับถอยหลังแล้ว" },
 ];
