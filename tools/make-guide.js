@@ -73,12 +73,11 @@ const screens = [
     </div>
     <div class="card intro-card">${hero}
       <ul class="need" aria-label="ก่อนเริ่ม">
-        <li>iPhone หรือ iPad</li>
-        <li>ต่อเน็ตอยู่</li>
-        <li>ใช้เวลาประมาณ 2 นาที (${N} ขั้น)</li>
-        <li class="no">Android ยังใช้ไม่ได้</li>
+        <li>ใช้ได้เฉพาะระบบ iOS</li>
+        <li>ต้องเชื่อม Internet ระหว่างติดตั้ง</li>
+        <li>ติดตั้งครั้งเดียวจบ</li>
+        <li>กด "เริ่มติดตั้ง" เพื่อทำตามขั้นตอน</li>
       </ul>
-      <p class="more js-only">เคยติดตั้งแล้ว? <button class="link" type="button" data-go="options">ปรับแต่ง</button> · <button class="link" type="button" data-go="faq">คำถามที่เจอบ่อย</button></p>
     </div>
   </section>`,
   ...STEPS.map((s, i) => `<section class="screen step" id="s${i + 1}" data-hash="${i + 1}" aria-labelledby="h${i + 1}">
