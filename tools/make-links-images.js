@@ -1,4 +1,4 @@
-// สร้างรูปของหน้ารวมลิงก์: links/og.png (ภาพตัวอย่างตอนแปะลิงก์ใน LINE / X / Facebook 1200x630) + links/icon.png (icon แท็บ / Home 180x180)
+// สร้างรูปของหน้ารวมลิงก์: links/og.jpg (ภาพตัวอย่างตอนแปะลิงก์ใน LINE / X / Facebook 1200x630 เป็น jpg ไฟล์เล็กกว่า png ราวครึ่งหนึ่ง) + links/icon.png (icon แท็บ / Home 180x180)
 // รันเมื่อเปลี่ยนชื่อ คำแนะนำตัว หรือรูป: node tools/make-links-images.js (ต้องมี Playwright + Chromium)
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path");
@@ -18,10 +18,10 @@ img{width:300px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.16))}h1{font-size:96p
 const icon = `<style>*{margin:0}body{width:180px;height:180px;background:#FEFEFE;display:grid;place-items:center}img{width:150px}</style><img src="${JEDI}">`;
 (async () => {
   const b = await chromium.launch();
-  for (const [file, html, w, h] of [["og.png", og, 1200, 630], ["icon.png", icon, 180, 180]]) {
+  for (const [file, html, w, h] of [["og.jpg", og, 1200, 630], ["icon.png", icon, 180, 180]]) {
     const p = await b.newPage({ viewport: { width: w, height: h } });
     await p.setContent(html); await p.evaluate(() => document.fonts.ready);
-    await p.screenshot({ path: path.join(DIR, file) }); console.log("เขียน links/" + file);
+    await p.screenshot({ path: path.join(DIR, file), ...(file.endsWith(".jpg") ? { type: "jpeg", quality: 86 } : {}) }); console.log("เขียน links/" + file);
   }
   await b.close();
 })();

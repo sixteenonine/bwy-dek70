@@ -64,7 +64,7 @@ function hub(cfg, src) {
 <meta property="og:url" content="${site}/">
 <meta property="og:title" content="${esc(p.name)}">
 <meta property="og:description" content="${esc(desc)}">
-<meta property="og:image" content="${site}/og.png">
+<meta property="og:image" content="${site}/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">

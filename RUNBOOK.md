@@ -137,14 +137,14 @@ node test/check-loader.js   # loader
 - `entry` = ลิงก์แปะ bio · `short` = ลิงก์ย่อ
 - `id` / ชื่อ ใช้ได้แค่ a-z 0-9 - ไม่เกิน 24 ตัว (id ขึ้นในสถิติ เปลี่ยนแล้วยอดเก่าจะแยกเป็นอีกแถว) ลิงก์ต้องเป็น https://
 - หน้าตาอยู่ที่ `tools/links-render.js` (ใช้ร่วมกับตัวอย่างใน Links Studio)
-- เปลี่ยนชื่อ / คำแนะนำตัว / รูป: รัน `node tools/make-links-images.js` ด้วย (`og.png` ภาพตอนแปะลิงก์ + `icon.png`)
+- เปลี่ยนชื่อ / คำแนะนำตัว / รูป: รัน `node tools/make-links-images.js` ด้วย (`og.jpg` ภาพตอนแปะลิงก์ + `icon.png`)
 - เทสต์ (`test/check-stats.js`) เช็กว่าไฟล์ตรงกับ `links.json` ถ้าลืมรันสคริปต์ เครื่องหมายจะเป็นสีแดง
 
 **ตั้งค่า Cloudflare (ครั้งเดียว)**
 1. Workers & Pages → Create → Pages → Connect to Git → repo `bwy-dek70`
 2. Project name `bearwithyou` · Production branch `main` · Framework preset None · Build command ว่าง · Build output directory ว่าง · Root directory `links`
 3. Save and Deploy
-4. Settings → Builds → Build watch paths → Include paths `links/*` (แก้ส่วนอื่นของ repo จะไม่ build โปรเจกต์นี้ ประหยัดโควตา build)
+4. Settings → Build → Build watch paths → Include paths **`*`** (นับจากใน Root directory อยู่แล้ว ถ้าใส่ `links/*` จะกลายเป็นหา `links/links/` แล้วข้ามทุกครั้ง: "skipped because no changed files matched")
 5. ถ้าได้ชื่อไม่ตรง (โดนต่อท้ายตัวอักษรสุ่ม) แก้ `site` ใน `links.json` แล้วรัน 2 สคริปต์ข้างบนใหม่
 - โปรเจกต์นี้ไม่ต้องผูก D1 และไม่ต้องตั้ง STATS_KEY
 - สร้างแล้ว 21 พ.ย. 69 ได้ชื่อ `bearwithyou.pages.dev` ตรงๆ (ไม่มีตัวอักษรสุ่มต่อท้าย) · ถ้าลืมใส่ Root directory `links` เว็บจะกลายเป็นหน้าติดตั้ง Widget ทั้ง repo (แก้ที่ Settings → Build → Build configuration)
