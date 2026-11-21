@@ -3,6 +3,7 @@
 //   links/<entry>.html         หน้ารวมลิงก์แบบติดป้ายที่มา เช่น /tt /ig (หน้าเดียวกันทุกอย่าง แค่บอกสถิติว่ามาจากไหน)
 //   links/<short>.html         ลิงก์ย่อ เช่น /mock พาไปปลายทางทันที
 //   lib/links.js               รายการสำหรับหน้า /stats ของ bwy-widget
+//   links/robots.txt + sitemap.xml  ให้ Google หาหน้ารวมลิงก์เจอ
 // เช็กว่าไฟล์ตรงกับ links.json (ใช้ในเทสต์): node tools/make-links.js --check
 // ใช้ไฟล์จาก Links Studio: node tools/make-links.js ไฟล์.json (ตรวจแล้วแทน links/links.json รูปที่ฝังมาแยกเป็นไฟล์ links/img/)
 // ส่งค่าปัจจุบันกลับไปให้ Links Studio: node tools/make-links.js --studio ไฟล์.json (รูปฝังกลับเป็น data:)
@@ -129,6 +130,9 @@ export const LINKS = ${JSON.stringify(data, null, 2)};
 function build(file) {
   const { cfg, warn } = load(file);
   const out = { "links/index.html": hub(cfg), "lib/links.js": statsList(cfg) };
+  // ให้ Google หาหน้ารวมลิงก์เจอ (ลิงก์ย่อเป็น noindex, /tt /ig ชี้ canonical มาที่หน้าแรก)
+  out["links/robots.txt"] = `User-agent: *\nAllow: /\nSitemap: ${cfg.site}/sitemap.xml\n`;
+  out["links/sitemap.xml"] = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${cfg.site}/</loc></url></urlset>\n`;
   for (const e of cfg.entry || []) out[`links/${e.name}.html`] = hub(cfg, e.name);
   for (const s of cfg.short || []) out[`links/${s.name}.html`] = shortPage(s, cfg);
   return { out, warn, cfg };
