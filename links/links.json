@@ -1,33 +1,122 @@
 {
-  "site": "https://bearwithyou.pages.dev",
-  "profile": {
-    "name": "BearWithYou",
-    "by": "สร้างโดยพี่เจได",
-    "school": "นศ. ปี2 ศึกษาศาสตร์ TESOL KKU",
-    "bio": "ติวอังกฤษ A-Level ให้เข้าใจง่าย มี Mock Exam และแบบฝึกหัดให้ลองทำ"
-  },
   "blocks": [
-    { "type": "button", "id": "mock", "style": "main", "icon": "folder", "title": "Mock Exam & แบบฝึกหัด A-Level", "note": "โฟลเดอร์ Google Drive", "badge": "", "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD" },
-    { "type": "button", "id": "widget", "style": "card", "icon": "widget", "title": "Widget นับถอยหลังวันสอบ Dek70", "note": "ฟรี ติดตั้งบน iPhone / iPad", "badge": "", "url": "https://bwy-widget.pages.dev/?src=bio" },
-    { "type": "button", "id": "openchat", "style": "card", "icon": "chat", "title": "LINE OpenChat", "note": "ถามตอบ แจ้งข่าวสอบ", "badge": "", "url": "https://example.com/openchat" },
-    { "type": "socials", "title": "ติดตาม BearWithYou", "items": [
-      { "id": "tiktok", "title": "TikTok", "url": "https://example.com/tiktok" },
-      { "id": "instagram", "title": "Instagram", "url": "https://example.com/instagram" },
-      { "id": "x", "title": "X", "url": "https://example.com/x" },
-      { "id": "threads", "title": "Threads", "url": "https://example.com/threads" },
-      { "id": "lemon8", "title": "Lemon8", "url": "https://example.com/lemon8" }
-    ] }
+    {
+      "badge": "รวม 178 ข้อ",
+      "hidden": false,
+      "icon": "folder",
+      "id": "mock",
+      "image": "img/mock-d5fd8f62.webp",
+      "imageH": 398,
+      "imageStyle": "cover",
+      "imageW": 720,
+      "note": "",
+      "size": "slim",
+      "style": "main",
+      "title": "Google Drive",
+      "type": "button",
+      "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD"
+    },
+    {
+      "badge": "เฉพาะ iOS",
+      "icon": "widget",
+      "id": "widget",
+      "image": "img/widget-783f0529.webp",
+      "imageH": 420,
+      "imageStyle": "cover",
+      "imageW": 720,
+      "note": "",
+      "style": "main",
+      "title": "นับถอยหลังวันสำคัญ",
+      "type": "button",
+      "url": "https://bwy-widget.pages.dev/?src=bio"
+    },
+    {
+      "badge": "BearWithYou_˚✮",
+      "icon": "chat",
+      "id": "openchat",
+      "image": "img/openchat-212e9835.webp",
+      "imageH": 438,
+      "imageStyle": "cover",
+      "imageW": 720,
+      "note": "",
+      "style": "main",
+      "title": "LINE OpenChat",
+      "type": "button",
+      "url": "https://line.me/ti/g2/XaunxJjN36RqM0Febwc7-tvzH9c39IR8-aUNeA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default"
+    },
+    {
+      "items": [
+        {
+          "id": "tiktok",
+          "title": "TikTok",
+          "url": "https://www.tiktok.com/@bearwithyou21?is_from_webapp=1&sender_device=pc"
+        },
+        {
+          "id": "instagram",
+          "title": "Instagram",
+          "url": "https://www.instagram.com/bearwithyou_exam?avpt=ZDNlZDc0MzIxNw=="
+        },
+        {
+          "id": "x",
+          "title": "X",
+          "url": "https://x.com/webeartogether?s=11"
+        },
+        {
+          "id": "threads",
+          "title": "Threads",
+          "url": "https://www.threads.com/@bearwithyou__"
+        },
+        {
+          "id": "lemon8",
+          "title": "Lemon8",
+          "url": "https://s.lemon8-app.com/s/GgTkhYTdMh"
+        }
+      ],
+      "title": "ติดตาม BearWithYou",
+      "type": "socials"
+    }
   ],
   "entry": [
-    { "name": "tt", "title": "TikTok" },
-    { "name": "ig", "title": "Instagram" },
-    { "name": "x", "title": "X" },
-    { "name": "th", "title": "Threads" },
-    { "name": "l8", "title": "Lemon8" },
-    { "name": "line", "title": "LINE" }
+    {
+      "name": "tt",
+      "title": "TikTok"
+    },
+    {
+      "name": "ig",
+      "title": "Instagram"
+    },
+    {
+      "name": "x",
+      "title": "X"
+    },
+    {
+      "name": "th",
+      "title": "Threads"
+    },
+    {
+      "name": "l8",
+      "title": "Lemon8"
+    },
+    {
+      "name": "line",
+      "title": "LINE"
+    }
   ],
+  "profile": {
+    "bio": "",
+    "by": "สร้างโดยพี่เจได",
+    "name": "BearWithYou",
+    "school": "นศ. ปี2 ศึกษาศาสตร์ TESOL KKU"
+  },
   "short": [
-    { "name": "mock", "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD" },
-    { "name": "widget", "url": "https://bwy-widget.pages.dev/?src=short" }
-  ]
+    {
+      "name": "mock",
+      "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD"
+    },
+    {
+      "name": "widget",
+      "url": "https://bwy-widget.pages.dev/?src=short"
+    }
+  ],
+  "site": "https://bearwithyou.pages.dev"
 }
