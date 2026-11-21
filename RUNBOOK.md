@@ -147,3 +147,4 @@ node test/check-loader.js   # loader
 4. Settings → Builds → Build watch paths → Include paths `links/*` (แก้ส่วนอื่นของ repo จะไม่ build โปรเจกต์นี้ ประหยัดโควตา build)
 5. ถ้าได้ชื่อไม่ตรง (โดนต่อท้ายตัวอักษรสุ่ม) แก้ `site` ใน `links.json` แล้วรัน 2 สคริปต์ข้างบนใหม่
 - โปรเจกต์นี้ไม่ต้องผูก D1 และไม่ต้องตั้ง STATS_KEY
+- สร้างแล้ว 21 พ.ย. 69 ได้ชื่อ `bearwithyou.pages.dev` ตรงๆ (ไม่มีตัวอักษรสุ่มต่อท้าย) · ถ้าลืมใส่ Root directory `links` เว็บจะกลายเป็นหน้าติดตั้ง Widget ทั้ง repo (แก้ที่ Settings → Build → Build configuration)
