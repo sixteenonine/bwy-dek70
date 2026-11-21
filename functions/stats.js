@@ -65,9 +65,9 @@ function gauge(pct) {
   return `<svg class="gauge" viewBox="0 0 200 116" role="img" aria-label="ใช้โควตาไป ${v.toFixed(1)}%"><path class="gt" d="M20 100a80 80 0 0 1 160 0"/><path class="gv" d="M20 100a80 80 0 0 1 160 0" stroke-dasharray="${(len * v / 100).toFixed(1)} ${len.toFixed(1)}"/>
 <text x="100" y="92" text-anchor="middle" class="gp">${v < 10 ? v.toFixed(1) : Math.round(v)}%</text></svg>`;
 }
-// แถบสรุปด้านบน (ตัวเลขสำคัญ 3 ตัว) item = [ชื่อ, ค่า, ค่าก่อนหน้า (null = ไม่เทียบ), บรรทัดเล็ก]
+// แถบสรุปด้านบน (ตัวเลขสำคัญ 3 ตัว) item = [ชื่อ, ค่า, ค่าก่อนหน้า (null = ไม่เทียบ), บรรทัดเล็ก, หน่วย]
 function hero(items, warn = "") {
-  return `<section class="hero" aria-label="สรุป">${items.map(([label, value, prev, sub]) => `<div class="hk"><span class="k">${label}</span><span class="v${typeof value === "string" ? " txt" : ""}">${typeof value === "string" ? esc(value) : fmt(value)}</span><span class="s">${prev === null ? "" : delta(value, prev)}${sub}</span></div>`).join("")}${warn ? `<p class="warn">${warn}</p>` : ""}</section>`;
+  return `<section class="hero" aria-label="สรุป">${items.map(([label, value, prev, sub, unit = ""]) => `<div class="hk"><span class="k">${label}</span><span class="v${typeof value === "string" ? " txt" : ""}">${typeof value === "string" ? esc(value) : fmt(value)}${unit ? `<small class="u">${unit}</small>` : ""}</span><span class="s">${prev === null ? "" : delta(value, prev)}${sub}</span></div>`).join("")}${warn ? `<p class="warn">${warn}</p>` : ""}</section>`;
 }
 const tier = (title, desc = "") => `<div class="tier"><h2>${title}</h2>${desc ? `<p>${desc}</p>` : ""}</div>`;
 const more = (n, html) => `<details class="more"><summary>รายละเอียดเพิ่มเติม <small>${n} การ์ด · ไม่ต้องดูทุกวัน</small></summary>${html}</details>`;
@@ -141,7 +141,7 @@ table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:
 .hero{background:var(--ink);color:var(--bg);border-radius:22px;padding:20px 22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:16px 0 4px;box-shadow:var(--shadow)}
 .hero .hk{display:grid;gap:4px;align-content:start;min-width:0}.hero .hk+.hk{border-left:1px solid var(--hl);padding-left:20px}
 .hero .k{font-size:.86rem;opacity:.75}.hero .v{font-size:2.5rem;line-height:1.08;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.hero .v.txt{font-size:1.3rem;line-height:1.3;padding:6px 0 4px}
+.hero .v.txt{font-size:1.3rem;line-height:1.3;padding:6px 0 4px}.hero .v .u{font-size:.95rem;font-weight:400;opacity:.75;margin-left:8px}
 .hero .s{font-size:.8rem;opacity:.8;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .hero .delta{background:var(--hc);border-color:transparent;color:inherit}.hero .delta.flat{color:inherit;opacity:.8}
 .hero .warn{grid-column:1/-1;border-top:1px solid var(--hl);padding-top:12px;font-size:.86rem;font-weight:600}
@@ -249,7 +249,7 @@ ${tier("รายละเอียดสำคัญ", "เรียงจา�
 ${card("s6", "กดปุ่มไหน", bars(ids.map(([id, list]) => [id, sum(list)]), id => titles.get(id) || id), { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกตามแอปดูในรายละเอียดเพิ่มเติมด้านล่าง" })}
 ${card("s6", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (/tt /ig ...)" })}
 ${card("s8", "รายวัน", charts + table, { aside: tabs })}
-${card("s4", "มาจากแอปไหน", bars(group(opens, r => r.k2), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s4", "เปิดเว็บจาก", bars(group(opens, r => r.k2), a => APP[a] || a), { note: "นับทุกเครื่องที่เปิดหน้ารวมลิงก์ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
 </div>
 ${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
 <div class="grid">
@@ -303,10 +303,10 @@ export async function onRequestGet({ request, env }) {
   const doneAll = sum(steps.filter(r => r.k1 === "done"));
 
   // กราฟรายวัน (แท็บละ 1 ตัวเลข)
-  const CHARTS = [["c-active", "Widget ใช้งาน", "active"], ["c-visit", "เปิดหน้า", "visit"], ["c-new", "ติดตั้งใหม่", "new"], ["c-tap", "แตะไป Drive", "tap"]];
+  const CHARTS = [["c-visit", "เปิดเว็บ", "visit"], ["c-new", "ติดตั้งจริง", "new"], ["c-active", "มี Widget", "active"], ["c-tap", "แตะไป Drive", "tap"]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CHARTS.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
   const charts = CHARTS.map(([id, , kind], i) => lineChart(id, dayList.map(d => [d, perDay(kind, d)]), i > 0)).join("");
-  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${["active", "visit", "copy", "new", "tap"].map(k => `<td>${fmt(perDay(k, d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
+  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>เปิดเว็บ</th><th>ติดตั้งจริง</th><th>มี Widget</th><th>Copy</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${["visit", "new", "active", "copy", "tap"].map(k => `<td>${fmt(perDay(k, d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
@@ -343,17 +343,17 @@ ${views}
 <section class="view" id="v-widget"${view === "widget" ? "" : " hidden"}>
 <h1>Widget</h1>${lead}
 ${hero([
-    ["เครื่องที่ติดตั้งใหม่", sum(of("new")), prevSum("new"), `Widget ทำงานครั้งแรก · เทียบ ${days} วันก่อน`],
-    ["Widget ใช้งานจริง", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน"],
-    ["เครื่องที่เปิดหน้าติดตั้ง", sum(visits), prevSum("visit"), `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}% · เทียบ ${days} วันก่อน`],
+    ["เปิดเว็บ", sum(visits), prevSum("visit"), `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}% · เทียบ ${days} วันก่อน`, "เครื่อง"],
+    ["ติดตั้งจริง", sum(of("new")), prevSum("new"), `นับจากตัว Widget · เทียบ ${days} วันก่อน`, "เครื่อง"],
+    ["มี Widget", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน", "อัน"],
   ], warn)}
 ${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
 <div class="grid">
-${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "Widget ใช้งาน = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
-${card("s4", "มาจากแอปไหน", bars(group(visits, r => r.k1), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "มี Widget = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
+${card("s4", "เปิดเว็บจาก", bars(group(visits, r => r.k1), a => APP[a] || a), { note: "นับทุกเครื่องที่เปิดเว็บ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s12", "ติดตั้งสำเร็จ", `<div class="scroll"><table><tr><th>เปิดเว็บจาก</th><th>เปิดเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`, { note: "แยกตามแอปที่ใช้เปิดเว็บ · สำเร็จ = ถึงหน้าเสร็จเทียบกับเปิดเว็บ" })}
 ${card("s7", "หลุดขั้นไหน", funnel, { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เข้าๆ ออกๆ ไม่นับซ้ำ) เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
-${card("s5", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)), { note: "มาจากลิงก์ไหน · bio-tt = มาจาก bio TikTok ผ่านหน้ารวมลิงก์" })}
-${card("s12", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
+${card("s5", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)), { note: "มาจากลิงก์ไหน (นับเฉพาะลิงก์ที่มีป้าย) · bio-tt = มาจาก bio TikTok ผ่านหน้ารวมลิงก์" })}
 </div>
 ${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
 <div class="grid">
