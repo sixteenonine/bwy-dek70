@@ -172,7 +172,7 @@ details.adv[open] summary { margin-bottom: 10px; }
 </div></header>
 
 <div class="wrap">
-  <section class="edit" id="edit" aria-label="แก้ไขหน้ารวมลิงก์">
+  <section class="edit" id="edit" aria-label="แก้ไข BearLink">
     <div class="banner" id="banner" hidden></div>
     <div id="editor"><div class="box empty"><b>กำลังโหลดหน้าของพี่เจได</b>รอสักครู่</div></div>
   </section>
@@ -387,7 +387,7 @@ function renderStatus() {
   save.disabled = !db || !canWrite || saving || !dirty() || errs > 0;
   const b = $("#banner");
   if (remote) { b.hidden = false; b.innerHTML = `<p>มีการบันทึกใหม่จากอีกเครื่อง (${E(thTime(remote.savedAt))}) ขณะที่หน้านี้ยังมีที่แก้ค้างอยู่</p><button class="btn sm" type="button" data-act="take-remote">ใช้ฉบับใหม่</button><button class="btn sm" type="button" data-act="keep-mine">ใช้ของหน้านี้ต่อ</button>`; }
-  else if (justSaved) { b.hidden = false; b.innerHTML = `<p><b>บันทึกแล้ว</b> ขั้นต่อไป: พิมพ์บอก Claude ว่า "อัปเดตหน้ารวมลิงก์" Claude จะเอาขึ้นเว็บทดสอบให้ดูก่อน แล้วรอเจไดสั่ง merge</p><button class="btn sm" type="button" data-act="close-banner">ปิด</button>`; }
+  else if (justSaved) { b.hidden = false; b.innerHTML = `<p><b>บันทึกแล้ว</b> ขั้นต่อไป: พิมพ์บอก Claude ว่า "อัปเดต BearLink" Claude จะเอาขึ้นเว็บทดสอบให้ดูก่อน แล้วรอเจไดสั่ง merge</p><button class="btn sm" type="button" data-act="close-banner">ปิด</button>`; }
   else if (restored) { b.hidden = false; b.innerHTML = `<p>เปิดแบบร่างที่ยังไม่ได้บันทึกจากครั้งก่อนให้แล้ว</p><button class="btn sm" type="button" data-act="revert">ทิ้งแบบร่าง</button><button class="btn sm" type="button" data-act="close-banner">ใช้ต่อ</button>`; }
   else if (dirty() && db) { b.hidden = false; b.innerHTML = `<p>มีที่แก้ยังไม่ได้บันทึก</p><button class="btn sm" type="button" data-act="revert">ย้อนกลับไปฉบับที่บันทึก</button>`; }
   else b.hidden = true;
