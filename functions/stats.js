@@ -30,8 +30,9 @@ const ICON = {
 const ico = (k, cls = "") => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
 
 const sum = rows => rows.reduce((a, r) => a + r.n, 0);
-// icon แอป (ไฟล์ static ใน icons/apps/ ของเว็บนี้) ชื่อในสถิติหลายแบบ (tiktok / tt / bio-tt) ชี้ไฟล์เดียวกัน
-const APP_ICON = { tiktok: "tiktok", tt: "tiktok", instagram: "instagram", ig: "instagram", x: "x", threads: "threads", th: "threads", lemon8: "lemon8", l8: "lemon8" };
+// icon (ไฟล์ static ใน icons/apps/ ของเว็บนี้) ชื่อในสถิติหลายแบบชี้ไฟล์เดียวกัน: แอป (tiktok / tt / bio-tt) และปุ่ม/ลิงก์ย่อของหน้ารวมลิงก์ (mock = Drive, widget, openchat = LINE)
+export const APP_ICON = { tiktok: "tiktok", tt: "tiktok", instagram: "instagram", ig: "instagram", x: "x", threads: "threads", th: "threads", lemon8: "lemon8", l8: "lemon8",
+  line: "line", openchat: "line", facebook: "facebook", safari: "safari", mock: "drive", widget: "widget" };
 const appIco = k => { const f = APP_ICON[String(k).replace(/^bio-/, "")]; return f ? `<img class="ai" src="/icons/apps/${f}.webp" width="18" height="18" alt="">` : ""; };
 function group(rows, key) {
   const m = new Map();
@@ -242,7 +243,7 @@ ${ids.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(su
   const row = (name, link, list, verb, key = "") => `<div class="link"><b>${appIco(key)}${esc(name)}<small>${verb} ${fmt(sum(list))} ครั้ง${topApp(list)}</small></b><button type="button" data-url="${esc(link)}" aria-label="Copy ลิงก์ ${esc(name)}">Copy</button><code>${esc(link.replace("https://", ""))}</code></div>`;
   const entryLinks = LINKS.entry.map(e => row(e.title, `${site}/${e.name}`, opens.filter(r => srcOf(r) === e.name), "เปิด", e.name)).join("") + row("ไม่ติดป้าย", `${site}/`, opens.filter(r => !srcOf(r)), "เปิด");
   const shortNames = [...new Set([...LINKS.short.map(x => x.name), ...shorts.map(r => r.k1)])];
-  const shortLinks = shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => row("/" + n, `${site}/${n}`, list, "เปิด")).join("") || `<p class="empty">ยังไม่มีลิงก์ย่อ</p>`;
+  const shortLinks = shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => row("/" + n, `${site}/${n}`, list, "เปิด", n)).join("") || `<p class="empty">ยังไม่มีลิงก์ย่อ</p>`;
 
   const top = ids.find(([, list]) => sum(list) > 0);
   return `${hero([
