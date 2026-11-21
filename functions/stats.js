@@ -1,6 +1,7 @@
 // GET /stats?k=รหัสลับ  แดชบอร์ดสถิติของเจได (รหัสลับตั้งเป็นตัวแปร STATS_KEY ใน Cloudflare Pages)
 // เลือกช่วงวันได้ด้วย &d=7 / 14 / 30 · ตัวเลขเทียบกับช่วงก่อนหน้าที่ยาวเท่ากัน
 import { bkkDay, SCHEMA } from "../lib/stats.js";
+import { LINKS } from "../lib/links.js"; // หน้ารวมลิงก์ + ลิงก์ย่อ (สร้างจาก links/links.json)
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const fmt = n => Number(n || 0).toLocaleString("en-US");
@@ -23,6 +24,7 @@ const ICON = {
   copy: '<rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6A2.5 2.5 0 0 0 13 3.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5"/>',
   install: '<path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5M4 15.5v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2"/>',
   tap: '<path d="M14 4.5h5.5V10M19.5 4.5 11 13M18 14v3.5a3 3 0 0 1-3 3H7.5a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3H11"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.3 1.3M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.3-1.3"/>',
   up: '<path d="M12 19V5M6 11l6-6 6 6"/>', down: '<path d="M12 5v14M6 13l6 6 6-6"/>',
 };
 const ico = (k, cls = "") => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
@@ -112,6 +114,7 @@ h1{font-size:1.7rem;line-height:1.2;margin:0;font-weight:600;letter-spacing:-.01
 details.table{margin-top:10px}details.table summary{cursor:pointer;color:var(--sub);font-size:.84rem}
 table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:tabular-nums}th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}th{color:var(--sub);font-weight:400;font-size:.8rem}tr:last-child td{border-bottom:0}
 .scroll{overflow-x:auto;margin:0 -4px;padding:0 4px}
+.wrap1 td:first-child{white-space:normal;min-width:8.5em;line-height:1.35}
 .fun{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(0,2fr) 64px 48px;gap:10px;align-items:center;padding:7px 0;font-size:.88rem;border-bottom:1px solid var(--line)}.fun:last-of-type{border-bottom:0}
 .fun .track{grid-column:auto;height:10px;border-radius:5px}.fun .fn{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}.fun .fp{text-align:right;color:var(--sub);font-variant-numeric:tabular-nums}
 .fun .dr{grid-column:1/-1;margin-top:-6px;color:var(--mute);font-size:.75rem;padding-left:0}
@@ -176,6 +179,7 @@ export async function onRequestGet({ request, env }) {
   const all = rows.filter(r => r.day >= from), prevRows = rows.filter(r => r.day < from);
   const of = (kind, list = all) => list.filter(r => r.kind === kind);
   const perDay = (list, d) => sum(list.filter(r => r.day === d));
+  const hub = of("hub"), hubOpen = hub.filter(r => r.k1 === "home"), shorts = of("link");
   const visits = of("visit"), steps = of("step"), copies = of("copy"), active = of("active");
   const latest = perDay(active, yesterday) ? yesterday : today, latestName = latest === today ? "วันนี้" : "เมื่อวาน";
   const live = active.filter(r => r.day === latest);
@@ -191,13 +195,14 @@ ${kpi("users", "คนเปิดหน้าติดตั้ง", sum(visits
 ${kpi("copy", "กด Copy โค้ด", sum(copies), sum(of("copy", prevRows)), `เทียบ ${days} วันก่อน`)}
 ${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), sum(of("new", prevRows)), "Widget ทำงานครั้งแรก")}
 ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prevRows)), `เทียบ ${days} วันก่อน`)}
+${kpi("link", "เปิดหน้ารวมลิงก์", sum(hubOpen), sum(of("hub", prevRows).filter(r => r.k1 === "home")), `เทียบ ${days} วันก่อน`)}
 </div>`;
 
   // กราฟรายวัน (แท็บละ 1 ตัวเลข)
-  const CHARTS = [["c-active", "Widget ใช้งาน", active], ["c-visit", "เปิดหน้า", visits], ["c-new", "ติดตั้งใหม่", of("new")], ["c-tap", "แตะไป Drive", of("tap")]];
+  const CHARTS = [["c-active", "Widget ใช้งาน", active], ["c-visit", "เปิดหน้า", visits], ["c-new", "ติดตั้งใหม่", of("new")], ["c-tap", "แตะไป Drive", of("tap")], ["c-hub", "หน้ารวมลิงก์", hubOpen], ["c-link", "ลิงก์ย่อ", shorts]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CHARTS.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
   const charts = CHARTS.map(([id, , list], i) => lineChart(id, dayList.map(d => [d, perDay(list, d)]), i > 0)).join("");
-  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td><td>${fmt(perDay(active, d))}</td><td>${fmt(perDay(visits, d))}</td><td>${fmt(perDay(copies, d))}</td><td>${fmt(perDay(of("new"), d))}</td><td>${fmt(perDay(of("tap"), d))}</td></tr>`).join("")}</table></div></details>`;
+  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th><th>หน้ารวมลิงก์</th><th>ลิงก์ย่อ</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td><td>${fmt(perDay(active, d))}</td><td>${fmt(perDay(visits, d))}</td><td>${fmt(perDay(copies, d))}</td><td>${fmt(perDay(of("new"), d))}</td><td>${fmt(perDay(of("tap"), d))}</td><td>${fmt(perDay(hubOpen, d))}</td><td>${fmt(perDay(shorts, d))}</td></tr>`).join("")}</table></div></details>`;
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
@@ -214,6 +219,24 @@ ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prev
   }).join("");
 
   const links = SHARE.map(([src, name]) => `<div class="link"><b>${name}<small>เข้ามา ${fmt(sum(of("src").filter(r => r.k1 === src)))} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`).join("");
+
+  // หน้ารวมลิงก์: กดปุ่มไหน แยกแอป (คอลัมน์ = แอปที่เปิดหน้ามากสุด 4 อันดับ ที่เหลือรวมเป็น อื่นๆ)
+  const hubApps = group(hub, r => r.k2).slice(0, 4).map(x => x[0]);
+  const appCells = list => [...hubApps.map(a => sum(list.filter(r => r.k2 === a))), sum(list.filter(r => !hubApps.includes(r.k2)))].map(n => `<td>${fmt(n)}</td>`).join("");
+  const titles = new Map(LINKS.buttons.map(b => [b.id, b.title]));
+  const btnIds = [...new Set([...LINKS.buttons.map(b => b.id), ...hub.map(r => r.k1).filter(k => k !== "home")])]
+    .map(id => [id, hub.filter(r => r.k1 === id)]).sort((a, b) => sum(b[1]) - sum(a[1]));
+  const opened = sum(hubOpen);
+  const hubTable = `<div class="scroll"><table class="wrap1"><tr><th>ปุ่ม</th><th>กด</th><th>ต่อคนเปิด</th>${hubApps.map(a => `<th>${esc(APP[a] || a)}</th>`).join("")}<th>อื่นๆ</th></tr>
+<tr><td><b>เปิดหน้ารวมลิงก์</b></td><td><b>${fmt(opened)}</b></td><td>—</td>${appCells(hubOpen)}</tr>
+${btnIds.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(sum(list))}</td><td>${opened ? Math.round(sum(list) / opened * 100) + "%" : "—"}</td>${appCells(list)}</tr>`).join("")}</table></div>`;
+  // ลิงก์ย่อ: ปุ่ม Copy + ยอดเปิด + แอปที่มามากสุด
+  const host = LINKS.site.replace("https://", "");
+  const topApp = list => { const g = group(list, r => r.k2)[0]; return g ? ` · ส่วนใหญ่จาก ${esc(APP[g[0]] || g[0])}` : ""; };
+  const shortNames = [...new Set([...LINKS.short.map(x => x.name), ...shorts.map(r => r.k1)])];
+  const linkRow = (name, url, n, extra = "") => `<div class="link"><b>${esc(name)}<small>เปิด ${fmt(n)} ครั้ง${extra}</small></b><button type="button" data-url="${esc(url)}" aria-label="Copy ลิงก์ ${esc(name)}">Copy</button><code>${esc(url.replace("https://", ""))}</code></div>`;
+  const shortLinks = linkRow("หน้ารวมลิงก์ (แปะ bio)", LINKS.site + "/", opened, topApp(hubOpen)) +
+    shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => linkRow("/" + n, `${LINKS.site}/${n}`, sum(list), topApp(list))).join("");
 
   // โควตา: ตาราง WITHOUT ROWID บวกเลข 1 ครั้ง = เขียน 1 แถว ผลรวมของวันนี้จึงเท่ากับจำนวนแถวที่เขียนไป
   const writes = perDay(all, today);
@@ -233,6 +256,8 @@ ${card("s7", "หลุดขั้นไหน", funnel, { note: "นับค�
 ${card("s5", "ลิงก์สำหรับส่งน้องๆ", links, { note: `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (a-z 0-9 . _ - ไม่เกิน 24 ตัว) จะขึ้นในการ์ด "ป้ายลิงก์"` })}
 ${card("s8", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
 ${card("s4", "ใช้โควตาฟรีวันนี้", `<div class="gwrap">${gauge(writes / WRITE_LIMIT * 100)}</div><p class="gsub">เขียน D1 <b>${fmt(writes)}</b> / 100,000 แถว</p>`, { note: "ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ" })}
+${card("s8", `หน้ารวมลิงก์ ${esc(host)}`, hubTable, { note: "แยกแอปจากเบราว์เซอร์ในแอปที่เปิดหน้า · ต่อคนเปิด = ยอดกดปุ่มนั้นเทียบกับจำนวนครั้งที่เปิดหน้า (คนเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
+${card("s4", "ลิงก์ย่อ", shortLinks, { note: `นับ ${days} วันล่าสุด · เพิ่ม/แก้ลิงก์ที่ links/links.json` })}
 </div>
 <div class="minis">
 ${card("", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)))}

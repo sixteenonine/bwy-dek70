@@ -93,6 +93,11 @@ async function serverSide() {
   await post("Googlebot/2.1", { ev: [["visit", ""]] }, env);
   await post(IG, { ev: [["hack", ""], ["step", "<script>"]] }, env);
   await post(SA, { ev: [["tap", "small"]] }, env);
+  // หน้ารวมลิงก์ (hub) + ลิงก์ย่อ (link) ส่งมาจากอีกโดเมน
+  await post(TT, { ref: "", ev: [["hub", "home"]] }, env);
+  await post(TT, { ref: "", ev: [["hub", "mock"]] }, env);
+  await post(IG, { ref: "", ev: [["link", "mock"]] }, env);
+  await post(SA, { ref: "t.co", ev: [["link", "Mock<x>"]] }, env);
   const before = sum(env.DB.db.prepare("SELECT n FROM daily").all());
   await ping("k=active&f=small&m=small&t=dark&v=7.8.8&l=3&p=tgat&n=1", env);
   await ping("k=active&f=medium&m=mediumBar&t=light&v=7.8.8&l=3&p=", env);
@@ -105,6 +110,7 @@ async function serverSide() {
   ok(!rows.some(r => r.kind === "hack") && get("step", "other", "instagram") === 1, "server: ไม่รับ event แปลก และกรองข้อความแปลกเป็น other");
   ok(sum(rows.filter(r => r.kind === "visit")) === 3, "server: ไม่นับบอท");
   ok(get("active", "small:small:dark", "7.8.8:3:tgat") === 1 && get("active", "medium:mediumbar:light", "7.8.8:3:-") === 1 && get("new", "small") === 1 && get("tap", "small") === 1, "server: Widget ใช้งาน (ขนาด ธีม เวอร์ชัน Parameter ในแถวเดียว) เครื่องใหม่ และการแตะ");
+  ok(get("hub", "home", "tiktok") === 1 && get("hub", "mock", "tiktok") === 1 && get("link", "mock", "instagram") === 1 && get("link", "other", "x") === 1, "server: นับหน้ารวมลิงก์ (เปิดหน้า / กดปุ่ม) และลิงก์ย่อ แยกแอป กรองชื่อแปลกเป็น other");
   const L = await imp("lib/stats.js");
   ok(L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Barcelona 300.0.0.0") === "threads" && L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Lemon8/6.0 BytedanceWebview") === "lemon8" && L.appFrom("Mozilla/5.0 (iPhone) Safari/604.1", "www.threads.net") === "threads", "server: รู้จัก Threads และ Lemon8 (ไม่ปนกับ TikTok)");
   ok(!JSON.stringify(rows).includes("Mozilla") && !JSON.stringify(rows).includes("Instagram 350"), "server: ไม่เก็บ User-Agent ลงฐานข้อมูล");
@@ -113,14 +119,34 @@ async function serverSide() {
   ok((await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=wrong", { env })).status === 404, "stats: รหัสผิดเปิดไม่ได้");
   const html = await (await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456&d=14", { env })).text();
   ok(html.includes("Instagram") && html.includes("หลุดขั้นไหน") && html.includes("Medium นับวินาที") && html.includes("tgat") && html.includes("ใช้โควตาฟรีวันนี้") && ["line", "x", "threads", "lemon8", "tiktok"].every(x => html.includes("https://bwy-widget.pages.dev/?src=" + x)) && !/undefined|NaN/.test(html), "stats: เปิดได้ มีตัวเลขครบ (แอป ขั้น ขนาด Parameter โควตา) มีลิงก์แยก 5 ช่องทาง ไม่มีค่าแปลก");
+  const { LINKS } = await imp("lib/links.js");
+  ok(html.includes("หน้ารวมลิงก์") && html.includes(`data-url="${LINKS.site}/mock"`) && html.includes(`data-url="${LINKS.site}/"`) && LINKS.buttons.every(b => html.includes(b.title.replace(/&/g, "&amp;"))), "stats: มีการ์ดหน้ารวมลิงก์ (ยอดกดทุกปุ่ม) และลิงก์ย่อพร้อมปุ่ม Copy");
   const empty = await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456", { env: { DB: fakeD1(), STATS_KEY: "test-key-123456" } });
   ok(empty.status === 200 && !/undefined|NaN/.test(await empty.text()), "stats: ฐานข้อมูลว่าง (ยังไม่มีตาราง) ก็เปิดได้");
 }
 const sum = rows => rows.reduce((a, r) => a + r.n, 0);
 
+// หน้ารวมลิงก์ (links/): ไฟล์ตรงกับ links.json, ลิงก์ย่อพาไปปลายทางเสมอ, ไม่มี Functions, ไม่ยุ่งกับไฟล์ของ Widget
+function linksSide() {
+  const ML = require("../tools/make-links.js");
+  const { out, cfg } = ML.build();
+  const bad = Object.keys(out).filter(f => !fs.existsSync(path.join(root, f)) || fs.readFileSync(path.join(root, f), "utf8") !== out[f]);
+  ok(!bad.length && !ML.stale(out).length, `links: ไฟล์ตรงกับ links/links.json${bad.length || ML.stale(out).length ? " (ไม่ตรง: " + [...bad, ...ML.stale(out)].join(", ") + " ให้รัน node tools/make-links.js)" : ""}`);
+  const hub = out["links/index.html"];
+  ok([...cfg.buttons, ...(cfg.socials || [])].every(b => hub.includes(`data-id="${b.id}"`) && hub.includes(`href="${b.url.replace(/&/g, "&amp;")}"`)) && hub.includes('send([["hub","home"]])'), "links: หน้ารวมลิงก์มีทุกปุ่ม และนับการเปิดหน้า + การกด");
+  ok((cfg.short || []).every(s => { const h = out[`links/${s.name}.html`]; return h.includes(`location.replace(${JSON.stringify(s.url)})`) && h.includes(`url=${s.url.replace(/&/g, "&amp;")}`) && h.includes(`["link",${JSON.stringify(s.name)}]`); }), "links: ลิงก์ย่อทุกอันพาไปปลายทาง (มีสำรองกรณีไม่มี JS) และส่งสัญญาณนับ");
+  ok(Object.keys(out).filter(f => f.endsWith(".html")).map(f => out[f]).every(h => h.includes('"https://bwy-widget.pages.dev/api/e"') && h.includes('"https://test.bwy-widget.pages.dev/api/e"')), "links: ส่งสถิติไป bwy-widget (เว็บทดสอบส่งไปเว็บทดสอบ)");
+  ok(!fs.existsSync(path.join(root, "links/functions")) && !fs.existsSync(path.join(root, "links/_routes.json")), "links: เป็นไฟล์ static ล้วน ไม่มี Functions");
+  ok(["fonts/prompt-thai-600.woff2", "fonts/OFL.txt", "jedi.webp", "og.png", "icon.png"].every(f => fs.existsSync(path.join(root, "links", f))), "links: มีฟอนต์ รูป og.png icon.png ในโฟลเดอร์ตัวเอง (คนละโดเมน)");
+  let threw = false;
+  try { const tmp = path.join(require("os").tmpdir(), "bwy-links-bad.json"); fs.writeFileSync(tmp, JSON.stringify({ ...cfg, short: [{ name: "Mock!", url: "http://x" }] })); ML.load(tmp); } catch (e) { threw = /ลิงก์ต้องขึ้นต้นด้วย https/.test(e.message) && /a-z 0-9/.test(e.message); }
+  ok(threw, "links: links.json ผิด (ชื่อแปลก / ไม่ใช่ https) สร้างไม่ได้และบอกว่าผิดตรงไหน");
+}
+
 (async () => {
   await widgetSide();
   await serverSide();
+  linksSide();
   if (failed) { console.log(`\n❌ ไม่ผ่าน ${failed} ข้อ`); process.exit(1); }
   console.log("\n✅ สถิติผ่านทั้งหมด");
 })().catch(e => { console.error(e); process.exit(1); });

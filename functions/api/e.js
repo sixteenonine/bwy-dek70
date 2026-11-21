@@ -1,10 +1,11 @@
 // POST /api/e  สัญญาณจากหน้าเว็บ (ส่งเองเงียบๆ ผู้ใช้ไม่ต้องกดอะไร) ส่งเป็นชุดเดียวตอนออกจากหน้า
 // body: { src: ป้ายลิงก์ ?src=, ref: โดเมนที่มา, ev: [[ชื่อ, ค่า], ...] }
 //   visit = เปิดหน้า · step = ไปถึงขั้น (1-7, done, theme, options, faq) · copy · appstore · fold = เปิดกล่อง (why, code) · tap = แตะ Widget (หน้า /go/drive)
+//   hub = หน้ารวมลิงก์ (home = เปิดหน้า, อื่นๆ = id ปุ่มที่กด) · link = เปิดลิงก์ย่อ (ชื่อลิงก์) มาจากโดเมนหน้ารวมลิงก์ (links/ สร้างด้วย tools/make-links.js)
 // 1 event = เขียน 1 แถว
 import { appFrom, deviceFrom, isBot, later, clean, NO_CONTENT } from "../../lib/stats.js";
 
-const KINDS = new Set(["visit", "step", "copy", "appstore", "fold", "tap"]);
+const KINDS = new Set(["visit", "step", "copy", "appstore", "fold", "tap", "hub", "link"]);
 
 export async function onRequestPost(context) {
   const { request } = context;

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<!-- bearwithyou.pages.dev/widget สร้างจาก links/links.json ด้วย node tools/make-links.js (ห้ามแก้ไฟล์นี้เอง) -->
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta http-equiv="refresh" content="1;url=https://bwy-widget.pages.dev/?src=short">
+<title>BearWithYou</title>
+<style>html{background:#FEFEFE}@media (prefers-color-scheme:dark){html{background:#0F0F11}}</style>
+<script>
+var API=/^test\./.test(location.hostname)?"https://test.bwy-widget.pages.dev/api/e":"https://bwy-widget.pages.dev/api/e";
+var REF=(function(){try{var h=document.referrer?new URL(document.referrer).hostname:"";return h===location.hostname?"":h}catch(e){return""}})();
+function send(ev){var b=JSON.stringify({ref:REF,ev:ev});try{if(!(navigator.sendBeacon&&navigator.sendBeacon(API,b)))fetch(API,{method:"POST",body:b,keepalive:true,mode:"no-cors"}).catch(function(){})}catch(e){}}
+send([["link","widget"]]);
+location.replace("https://bwy-widget.pages.dev/?src=short");
+</script>
+</head>
+<body></body>
+</html>
