@@ -100,6 +100,13 @@ async function serverSide() {
   await post(TT, { ref: "", ev: [["hub", "mock"]] }, env);
   await post(IG, { ref: "", ev: [["link", "mock"]] }, env);
   await post(SA, { ref: "t.co", ev: [["link", "Mock<x>"]] }, env);
+  { // ระบบตรวจลิงก์ของแอปเปิดหน้าเว็บจากศูนย์ข้อมูล: ไม่นับ
+    const pre = sum(env.DB.db.prepare("SELECT n FROM daily").all()), pend = [];
+    const req = new NodeRequest("https://bwy-widget.pages.dev/api/e", { method: "POST", body: JSON.stringify({ src: "tt", ev: [["hub", "home"]] }), headers: { "user-agent": TT } });
+    Object.defineProperty(req, "cf", { value: { asn: 396986, asOrganization: "BYTEDANCE" } });
+    await E.onRequestPost({ request: req, env, waitUntil: p => pend.push(p) }); await Promise.all(pend);
+    ok(sum(env.DB.db.prepare("SELECT n FROM daily").all()) === pre, "server: ไม่นับการเปิดจากศูนย์ข้อมูล (ระบบตรวจลิงก์ของ TikTok / IG)");
+  }
   const before = sum(env.DB.db.prepare("SELECT n FROM daily").all());
   await ping("k=active&f=small&m=small&t=dark&v=7.8.8&l=3&p=tgat&n=1", env);
   await ping("k=active&f=medium&m=mediumBar&t=light&v=7.8.8&l=3&p=", env);
@@ -114,6 +121,7 @@ async function serverSide() {
   ok(get("active", "small:small:dark", "7.8.8:3:tgat") === 1 && get("active", "medium:mediumbar:light", "7.8.8:3:-") === 1 && get("new", "small") === 1 && get("tap", "small") === 1, "server: Widget ใช้งาน (ขนาด ธีม เวอร์ชัน Parameter ในแถวเดียว) เครื่องใหม่ และการแตะ");
   ok(get("hub", "home", "tiktok") === 1 && get("hub", "home:ig", "instagram") === 1 && !rows.some(r => r.kind === "src" && r.k1 === "ig") && get("hub", "mock", "tiktok") === 1 && get("link", "mock", "instagram") === 1 && get("link", "other", "x") === 1, "server: นับหน้ารวมลิงก์ (เปิดหน้า + มาจาก /ig ในแถวเดียว / กดปุ่ม) และลิงก์ย่อ แยกแอป กรองชื่อแปลกเป็น other");
   const L = await imp("lib/stats.js");
+  ok(L.isDatacenter({ asn: 32934, asOrganization: "Facebook, Inc." }) && L.isDatacenter({ asn: 1, asOrganization: "BYTEDANCE" }) && L.isDatacenter({ asn: 396982 }) && !L.isDatacenter({ asn: 45430, asOrganization: "Advanced Wireless Network Company Limited" }) && !L.isDatacenter({ asn: 7470, asOrganization: "TRUE INTERNET Co.,Ltd." }) && !L.isDatacenter({ asn: 13335, asOrganization: "Cloudflare, Inc." }) && !L.isDatacenter(undefined), "server: แยกเครื่องในศูนย์ข้อมูล (Meta / ByteDance / Google) ออกจากเน็ตมือถือไทย (AIS / True) ไม่ตัด Private Relay");
   ok(L.appFrom(SA, "bearwithyou.pages.dev") === "links" && L.appFrom(TT, "bearwithyou.pages.dev") === "tiktok", "server: มาจากหน้ารวมลิงก์ผ่าน Safari นับเป็น หน้ารวมลิงก์ (ในแอป TikTok ยังนับเป็น TikTok)");
   ok(L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Barcelona 300.0.0.0") === "threads" && L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Lemon8/6.0 BytedanceWebview") === "lemon8" && L.appFrom("Mozilla/5.0 (iPhone) Safari/604.1", "www.threads.net") === "threads", "server: รู้จัก Threads และ Lemon8 (ไม่ปนกับ TikTok)");
   ok(!JSON.stringify(rows).includes("Mozilla") && !JSON.stringify(rows).includes("Instagram 350"), "server: ไม่เก็บ User-Agent ลงฐานข้อมูล");
@@ -142,12 +150,12 @@ function linksSide() {
   const amp = u => u.replace(/&/g, "&amp;");
   const buttons = cfg.blocks.flatMap(k => (k.type === "button" ? [k] : k.type === "socials" ? k.items : []));
   const hub = out["links/index.html"];
-  ok(buttons.filter(b => !b.hidden).every(b => hub.includes(`data-id="${b.id}"`) && hub.includes(`href="${amp(b.url)}"`)) && hub.includes('send([["hub","home"]],SRC)'), "links: หน้ารวมลิงก์มีทุกปุ่ม และนับการเปิดหน้า + การกด");
+  ok(buttons.filter(b => !b.hidden).every(b => hub.includes(`data-id="${b.id}"`) && hub.includes(`href="${amp(b.url)}"`)) && hub.includes('function openNow(){var ev=opened();if(ev.length)send(ev,SRC)}'), "links: หน้ารวมลิงก์มีทุกปุ่ม และนับการเปิดหน้า + การกด");
   ok((cfg.entry || []).every(e => { const h = out[`links/${e.name}.html`]; return h && h.includes(`var SRC=${JSON.stringify(e.name)};`) && h.includes(`<link rel="canonical" href="${cfg.site}/">`); }), "links: ลิงก์แปะ bio (/tt /ig ...) เป็นหน้าเดียวกัน ติดป้ายที่มาให้สถิติ");
   ok((cfg.short || []).every(s => { const h = out[`links/${s.name}.html`]; return h.includes(`location.replace(${JSON.stringify(s.url)})`) && h.includes(`url=${amp(s.url)}`) && h.includes(`["link",${JSON.stringify(s.name)}]`); }), "links: ลิงก์ย่อทุกอันพาไปปลายทาง (มีสำรองกรณีไม่มี JS) และส่งสัญญาณนับ");
   ok(Object.keys(out).filter(f => f.endsWith(".html")).every(f => out[f].includes('"https://bwy-widget.pages.dev/api/e"') && out[f].includes('"https://test.bwy-widget.pages.dev/api/e"')), "links: ส่งสถิติไป bwy-widget (เว็บทดสอบส่งไปเว็บทดสอบ)");
   // นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เครื่องจำเอง ไม่มีรหัสเครื่อง) ทั้งหน้ารวมลิงก์ ลิงก์ย่อ และหน้าติดตั้ง Widget
-  ok(hub.includes('if(once("home"))send([["hub","home"]],SRC)') && hub.includes('a&&once("b:"+') && (cfg.short || []).every(s => out[`links/${s.name}.html`].includes(`if(once("l:${s.name}"))`)) && !/cookie|deviceId|uuid/i.test(hub.replace(/ไม่มี cookie/g, "")), "links: เปิดหน้า กดปุ่ม และลิงก์ย่อ นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (ไม่มีรหัสเครื่อง)");
+  ok(hub.includes('return once("home")?[["hub","home"]]:[]') && hub.includes('setTimeout(openNow,1500)') && hub.includes("navigator.webdriver") && hub.includes('if(once("b:"+id))') && (cfg.short || []).every(s => out[`links/${s.name}.html`].includes(`&&once("l:${s.name}"))`)) && !/cookie|deviceId|uuid/i.test(hub.replace(/ไม่มี cookie/g, "")), "links: เปิดหน้า กดปุ่ม และลิงก์ย่อ นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (ไม่มีรหัสเครื่อง)");
   const guide = fs.readFileSync(path.join(root, "index.html"), "utf8");
   ok(guide.includes('localStorage.setItem("bwy-seen", JSON.stringify({ d: DAY, k: seen }))') && !guide.includes("sessionStorage"), "index.html: หน้าติดตั้ง Widget นับเครื่องละไม่เกิน 1 ครั้งต่อวัน");
   ok(out["links/tt.html"].includes('u.searchParams.set("src",((u.searchParams.get("src")||"bio")+"-"+SRC)'), "links: ปุ่มไปหน้า Widget บอกต่อว่ามาจาก bio ของแอปไหน (bio-tt)");

@@ -3,14 +3,14 @@
 //   visit = เปิดหน้า · step = ไปถึงขั้น (1-7, done, theme, options, faq) · copy · appstore · fold = เปิดกล่อง (why, code) · tap = แตะ Widget (หน้า /go/drive)
 //   hub = หน้ารวมลิงก์ (home = เปิดหน้า เก็บเป็น home:<src> ถ้ามาจาก /tt /ig, อื่นๆ = id ปุ่มที่กด) · link = เปิดลิงก์ย่อ (ชื่อลิงก์) มาจากโดเมนหน้ารวมลิงก์ (links/ สร้างด้วย tools/make-links.js)
 // 1 event = เขียน 1 แถว
-import { appFrom, deviceFrom, isBot, later, clean, NO_CONTENT } from "../../lib/stats.js";
+import { appFrom, deviceFrom, isBot, isDatacenter, later, clean, NO_CONTENT } from "../../lib/stats.js";
 
 const KINDS = new Set(["visit", "step", "copy", "appstore", "fold", "tap", "hub", "link"]);
 
 export async function onRequestPost(context) {
   const { request } = context;
   const ua = request.headers.get("user-agent") || "";
-  if (isBot(ua)) return NO_CONTENT();
+  if (isBot(ua) || isDatacenter(request.cf)) return NO_CONTENT(); // บอท / ระบบตรวจลิงก์ของแอป ไม่นับ
   let body;
   try {
     const text = await request.text();

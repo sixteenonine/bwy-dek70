@@ -14,7 +14,7 @@ var REF=(function(){try{var h=document.referrer?new URL(document.referrer).hostn
 var DAY=new Date(Date.now()+7*3600e3).toISOString().slice(0,10);
 function once(k){try{var s=JSON.parse(localStorage.getItem("bwy-once")||"null");if(!s||s.d!==DAY||!s.k)s={d:DAY,k:[]};if(s.k.indexOf(k)>=0)return false;s.k.push(k);localStorage.setItem("bwy-once",JSON.stringify(s))}catch(e){}return true}
 function send(ev,src){var b=JSON.stringify(src?{src:src,ref:REF,ev:ev}:{ref:REF,ev:ev});try{if(!(navigator.sendBeacon&&navigator.sendBeacon(API,b)))fetch(API,{method:"POST",body:b,keepalive:true,mode:"no-cors"}).catch(function(){})}catch(e){}}
-if(once("l:widget"))send([["link","widget"]]);
+if(!navigator.webdriver&&document.visibilityState!=="hidden"&&once("l:widget"))send([["link","widget"]]);
 location.replace("https://bwy-widget.pages.dev/?src=short");
 </script>
 </head>

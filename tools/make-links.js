@@ -86,8 +86,14 @@ ${R.renderMain(cfg, p.photo === false ? "" : "/jedi.webp")}
 (${R.applySchedule.toString()})(document);
 ${BEACON}
 var SRC=${src ? JSON.stringify(src) : `(new URLSearchParams(location.search).get("src")||"").slice(0,24)`};
-if(once("home"))send([["hub","home"]],SRC);
-document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-id]");if(a&&once("b:"+a.getAttribute("data-id")))send([["hub",a.getAttribute("data-id")]])});
+// นับว่าเปิดจริงเมื่อเห็นหน้าเกิน 1.5 วินาที หรือแตะ/เลื่อนจอ (หน้าที่แอปโหลดไว้ล่วงหน้าแบบซ่อน และเบราว์เซอร์อัตโนมัติ ไม่นับ)
+var BOT=!!navigator.webdriver,SEEN=false,T=null;
+function opened(){if(SEEN||BOT)return[];SEEN=true;return once("home")?[["hub","home"]]:[]}
+function openNow(){var ev=opened();if(ev.length)send(ev,SRC)}
+function arm(){if(document.visibilityState==="visible"&&!T)T=setTimeout(openNow,1500)}
+arm();document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")arm();else{clearTimeout(T);T=null}});
+["pointerdown","touchstart","scroll","keydown"].forEach(function(n){addEventListener(n,openNow,{once:true,passive:true})});
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-id]");if(!a||BOT)return;var id=a.getAttribute("data-id"),ev=opened();if(once("b:"+id))ev.push(["hub",id]);if(ev.length)send(ev,SRC)});
 // ลิงก์ไปหน้า Widget: บอกต่อว่ามาจาก bio ของแอปไหน (?src=bio → bio-tt) จะขึ้นในการ์ด "ป้ายลิงก์" ของสถิติ Widget
 if(SRC)[].forEach.call(document.querySelectorAll('a[href^="https://bwy-widget.pages.dev/"]'),function(a){try{var u=new URL(a.href);u.searchParams.set("src",((u.searchParams.get("src")||"bio")+"-"+SRC).slice(0,24));a.href=u.href}catch(e){}});
 </script>
@@ -110,7 +116,7 @@ function shortPage(s, cfg) {
 <style>html{background:#FEFEFE}@media (prefers-color-scheme:dark){html{background:#0F0F11}}</style>
 <script>
 ${BEACON}
-if(once(${JSON.stringify("l:" + s.name)}))send([["link",${JSON.stringify(s.name)}]]);
+if(!navigator.webdriver&&document.visibilityState!=="hidden"&&once(${JSON.stringify("l:" + s.name)}))send([["link",${JSON.stringify(s.name)}]]);
 location.replace(${JSON.stringify(s.url)});
 </script>
 </head>

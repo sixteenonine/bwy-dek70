@@ -429,7 +429,7 @@ ${loader}
   function flush() {
     if (!queue.length) return;
     const body = JSON.stringify({ src: SRC, ref: REF, ev: queue.splice(0) });
-    if (!LIVE) return;
+    if (!LIVE || navigator.webdriver) return; // เบราว์เซอร์อัตโนมัติ (ระบบตรวจลิงก์) ไม่นับ
     try { if (!(navigator.sendBeacon && navigator.sendBeacon("/api/e", body))) fetch("/api/e", { method: "POST", body, keepalive: true }).catch(() => {}); } catch (x) {}
   }
   document.addEventListener("visibilitychange", () => { if (document.hidden) flush(); }); // ออกไปแอปอื่น (App Store, Scriptable) หรือปิดแท็บ
