@@ -126,6 +126,10 @@ table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:
 .link code{grid-column:1;min-width:0;overflow-wrap:anywhere;font:12px ui-monospace,Menlo,monospace;color:var(--sub);-webkit-user-select:all;user-select:all}
 .link button{grid-column:2;grid-row:1/span 2;border:1px solid var(--line);border-radius:10px;padding:7px 14px;background:var(--soft);color:var(--ink);font:inherit;font-weight:600;font-size:.82rem;cursor:pointer;white-space:nowrap}
 .link button.done{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.views{display:flex;gap:4px;padding:5px;margin:0 0 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+.views button{flex:1;min-width:0;border:0;background:none;color:var(--sub);font:inherit;font-weight:600;font-size:.98rem;padding:10px 12px;border-radius:12px;cursor:pointer}
+.views button.on{background:var(--ink);color:var(--bg)}
+.s6{grid-column:span 6}
 .foot{color:var(--mute);font-size:.78rem;margin-top:22px;text-align:center}
 `;
 
@@ -147,8 +151,19 @@ document.querySelectorAll(".chart").forEach(function (c) {
 });
 document.querySelectorAll("[data-tab]").forEach(function (b) {
   b.addEventListener("click", function () {
-    document.querySelectorAll("[data-tab]").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
-    document.querySelectorAll(".chart").forEach(function (c) { c.hidden = c.id !== b.dataset.tab; });
+    var box = b.closest(".card");
+    box.querySelectorAll("[data-tab]").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-pressed", x === b); });
+    box.querySelectorAll(".chart").forEach(function (c) { c.hidden = c.id !== b.dataset.tab; });
+  });
+});
+// แท็บใหญ่ Widget / หน้ารวมลิงก์ (จำไว้ในลิงก์ &v=links ให้กดเปลี่ยนช่วงวันแล้วยังอยู่แท็บเดิม)
+document.querySelectorAll("[data-view]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    var v = b.dataset.view, q = function (u) { return u.replace(/&v=links/, "") + (v === "links" ? "&v=links" : ""); };
+    document.querySelectorAll("[data-view]").forEach(function (x) { x.classList.toggle("on", x === b); x.setAttribute("aria-selected", x === b); });
+    document.querySelectorAll(".view").forEach(function (s) { s.hidden = s.id !== "v-" + v; });
+    document.querySelectorAll("a[data-d]").forEach(function (a) { a.setAttribute("href", q(a.getAttribute("href"))); });
+    try { history.replaceState(null, "", location.pathname + q(location.search)); } catch (e) {}
   });
 });
 document.querySelectorAll(".link button").forEach(function (b) {
@@ -160,10 +175,59 @@ document.querySelectorAll(".link button").forEach(function (b) {
 
 function page(body) {
   return new Response(`<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><title>สถิติ BWY Widget</title><style>${CSS}</style></head>
+<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><title>สถิติ BearWithYou</title><style>${CSS}</style></head>
 <body><main>${body}</main><script>${JS}</script></body></html>`, { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 }
-const topbar = right => `<div class="top"><div class="brand"><span class="mark" aria-hidden="true">B</span>BWY Widget <span class="crumb">/ สถิติ</span></div><span class="sp"></span>${right || ""}</div>`;
+const topbar = right => `<div class="top"><div class="brand"><span class="mark" aria-hidden="true">B</span>BearWithYou <span class="crumb">/ สถิติ</span></div><span class="sp"></span>${right || ""}</div>`;
+
+// แท็บ "หน้ารวมลิงก์" (bearwithyou.pages.dev): hub k1 = home / home:<ป้าย> (เปิดหน้า) หรือ id ปุ่ม (กด), k2 = แอป · link k1 = ชื่อลิงก์ย่อ
+function linksView({ prevRows, of, perDay, dayList, today, days, kpi, quota }) {
+  const isOpen = r => r.k1 === "home" || r.k1.startsWith("home:");
+  const hub = of("hub"), opens = hub.filter(isOpen), clicks = hub.filter(r => !isOpen(r)), shorts = of("link");
+  const prevHub = of("hub", prevRows), opened = sum(opens);
+  const site = LINKS.site, host = site.replace("https://", "");
+  const srcOf = r => r.k1.slice(5);
+  const kpis = `<div class="kpis">
+${kpi("users", "เปิดหน้ารวมลิงก์", opened, sum(prevHub.filter(isOpen)), `เทียบ ${days} วันก่อน`)}
+${kpi("tap", "กดปุ่ม", sum(clicks), sum(prevHub.filter(r => !isOpen(r))), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ครั้งต่อการเปิด` : `เทียบ ${days} วันก่อน`)}
+${kpi("link", "เปิดลิงก์ย่อ", sum(shorts), sum(of("link", prevRows)), `เทียบ ${days} วันก่อน`)}
+</div>`;
+  const CH = [["c-hub", "เปิดหน้า", opens], ["c-click", "กดปุ่ม", clicks], ["c-short", "ลิงก์ย่อ", shorts]];
+  const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CH.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
+  const charts = CH.map(([id, , list], i) => lineChart(id, dayList.map(d => [d, perDay(list, d)]), i > 0)).join("");
+  const table = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th>${CH.map(c => `<th>${c[1]}</th>`).join("")}</tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${CH.map(c => `<td>${fmt(perDay(c[2], d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
+
+  // มาจากลิงก์ไหน (/tt /ig ...)
+  const entryTitle = new Map(LINKS.entry.map(e => [e.name, e.title]));
+  const srcName = s => (!s ? `${host}/ (ไม่ติดป้าย)` : entryTitle.has(s) ? `/${s} ${entryTitle.get(s)}` : `?src=${s}`);
+
+  // กดปุ่มไหน แยกแอป (คอลัมน์ = แอปที่เปิดหน้ามากสุด 4 อันดับ ที่เหลือรวมเป็น อื่นๆ)
+  const apps = group(hub, r => r.k2).slice(0, 4).map(x => x[0]);
+  const cells = list => [...apps.map(a => sum(list.filter(r => r.k2 === a))), sum(list.filter(r => !apps.includes(r.k2)))].map(n => `<td>${fmt(n)}</td>`).join("");
+  const titles = new Map(LINKS.buttons.map(b => [b.id, b.title]));
+  const ids = [...new Set([...LINKS.buttons.map(b => b.id), ...clicks.map(r => r.k1)])].map(id => [id, clicks.filter(r => r.k1 === id)]).sort((a, b) => sum(b[1]) - sum(a[1]));
+  const btnTable = `<div class="scroll"><table class="wrap1"><tr><th>ปุ่ม</th><th>กด</th><th>ต่อการเปิด</th>${apps.map(a => `<th>${esc(APP[a] || a)}</th>`).join("")}<th>อื่นๆ</th></tr>
+<tr><td><b>เปิดหน้า</b></td><td><b>${fmt(opened)}</b></td><td>—</td>${cells(opens)}</tr>
+${ids.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(sum(list))}</td><td>${opened ? Math.round(sum(list) / opened * 100) + "%" : "—"}</td>${cells(list)}</tr>`).join("")}</table></div>`;
+
+  // ลิงก์ให้กด Copy
+  const topApp = list => { const g = group(list, r => r.k2)[0]; return g ? ` · ส่วนใหญ่จาก ${esc(APP[g[0]] || g[0])}` : ""; };
+  const row = (name, link, list, verb) => `<div class="link"><b>${esc(name)}<small>${verb} ${fmt(sum(list))} ครั้ง${topApp(list)}</small></b><button type="button" data-url="${esc(link)}" aria-label="Copy ลิงก์ ${esc(name)}">Copy</button><code>${esc(link.replace("https://", ""))}</code></div>`;
+  const entryLinks = LINKS.entry.map(e => row(e.title, `${site}/${e.name}`, opens.filter(r => srcOf(r) === e.name), "เปิด")).join("") + row("ไม่ติดป้าย", `${site}/`, opens.filter(r => !srcOf(r)), "เปิด");
+  const shortNames = [...new Set([...LINKS.short.map(x => x.name), ...shorts.map(r => r.k1)])];
+  const shortLinks = shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => row("/" + n, `${site}/${n}`, list, "เปิด")).join("") || `<p class="empty">ยังไม่มีลิงก์ย่อ</p>`;
+
+  return `${kpis}
+<div class="grid">
+${card("s8", "รายวัน", charts + table, { aside: tabs })}
+${card("s4", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (การ์ด ลิงก์สำหรับแปะ bio)" })}
+${card("s8", "กดปุ่มไหน", btnTable, { note: "แยกแอปจากเบราว์เซอร์ในแอปที่เปิดหน้า · ต่อการเปิด = ยอดกดปุ่มนั้นเทียบกับจำนวนครั้งที่เปิดหน้า (คนเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
+${card("s4", "มาจากแอปไหน", bars(group(opens, r => r.k2), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s4", "ลิงก์สำหรับแปะ bio", entryLinks, { note: `หน้าเดียวกันทุกลิงก์ แค่บอกสถิติว่ามาจากไหน · นับ ${days} วันล่าสุด` })}
+${card("s4", "ลิงก์ย่อ", shortLinks, { note: `เปิดแล้วพาไปปลายทางทันที · นับ ${days} วันล่าสุด` })}
+${quota}
+</div>`;
+}
 
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
@@ -179,7 +243,6 @@ export async function onRequestGet({ request, env }) {
   const all = rows.filter(r => r.day >= from), prevRows = rows.filter(r => r.day < from);
   const of = (kind, list = all) => list.filter(r => r.kind === kind);
   const perDay = (list, d) => sum(list.filter(r => r.day === d));
-  const hub = of("hub"), hubOpen = hub.filter(r => r.k1 === "home"), shorts = of("link");
   const visits = of("visit"), steps = of("step"), copies = of("copy"), active = of("active");
   const latest = perDay(active, yesterday) ? yesterday : today, latestName = latest === today ? "วันนี้" : "เมื่อวาน";
   const live = active.filter(r => r.day === latest);
@@ -195,14 +258,13 @@ ${kpi("users", "คนเปิดหน้าติดตั้ง", sum(visits
 ${kpi("copy", "กด Copy โค้ด", sum(copies), sum(of("copy", prevRows)), `เทียบ ${days} วันก่อน`)}
 ${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), sum(of("new", prevRows)), "Widget ทำงานครั้งแรก")}
 ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prevRows)), `เทียบ ${days} วันก่อน`)}
-${kpi("link", "เปิดหน้ารวมลิงก์", sum(hubOpen), sum(of("hub", prevRows).filter(r => r.k1 === "home")), `เทียบ ${days} วันก่อน`)}
 </div>`;
 
   // กราฟรายวัน (แท็บละ 1 ตัวเลข)
-  const CHARTS = [["c-active", "Widget ใช้งาน", active], ["c-visit", "เปิดหน้า", visits], ["c-new", "ติดตั้งใหม่", of("new")], ["c-tap", "แตะไป Drive", of("tap")], ["c-hub", "หน้ารวมลิงก์", hubOpen], ["c-link", "ลิงก์ย่อ", shorts]];
+  const CHARTS = [["c-active", "Widget ใช้งาน", active], ["c-visit", "เปิดหน้า", visits], ["c-new", "ติดตั้งใหม่", of("new")], ["c-tap", "แตะไป Drive", of("tap")]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CHARTS.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
   const charts = CHARTS.map(([id, , list], i) => lineChart(id, dayList.map(d => [d, perDay(list, d)]), i > 0)).join("");
-  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th><th>หน้ารวมลิงก์</th><th>ลิงก์ย่อ</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td><td>${fmt(perDay(active, d))}</td><td>${fmt(perDay(visits, d))}</td><td>${fmt(perDay(copies, d))}</td><td>${fmt(perDay(of("new"), d))}</td><td>${fmt(perDay(of("tap"), d))}</td><td>${fmt(perDay(hubOpen, d))}</td><td>${fmt(perDay(shorts, d))}</td></tr>`).join("")}</table></div></details>`;
+  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td><td>${fmt(perDay(active, d))}</td><td>${fmt(perDay(visits, d))}</td><td>${fmt(perDay(copies, d))}</td><td>${fmt(perDay(of("new"), d))}</td><td>${fmt(perDay(of("tap"), d))}</td></tr>`).join("")}</table></div></details>`;
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
@@ -220,24 +282,6 @@ ${kpi("link", "เปิดหน้ารวมลิงก์", sum(hubOpen), 
 
   const links = SHARE.map(([src, name]) => `<div class="link"><b>${name}<small>เข้ามา ${fmt(sum(of("src").filter(r => r.k1 === src)))} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`).join("");
 
-  // หน้ารวมลิงก์: กดปุ่มไหน แยกแอป (คอลัมน์ = แอปที่เปิดหน้ามากสุด 4 อันดับ ที่เหลือรวมเป็น อื่นๆ)
-  const hubApps = group(hub, r => r.k2).slice(0, 4).map(x => x[0]);
-  const appCells = list => [...hubApps.map(a => sum(list.filter(r => r.k2 === a))), sum(list.filter(r => !hubApps.includes(r.k2)))].map(n => `<td>${fmt(n)}</td>`).join("");
-  const titles = new Map(LINKS.buttons.map(b => [b.id, b.title]));
-  const btnIds = [...new Set([...LINKS.buttons.map(b => b.id), ...hub.map(r => r.k1).filter(k => k !== "home")])]
-    .map(id => [id, hub.filter(r => r.k1 === id)]).sort((a, b) => sum(b[1]) - sum(a[1]));
-  const opened = sum(hubOpen);
-  const hubTable = `<div class="scroll"><table class="wrap1"><tr><th>ปุ่ม</th><th>กด</th><th>ต่อคนเปิด</th>${hubApps.map(a => `<th>${esc(APP[a] || a)}</th>`).join("")}<th>อื่นๆ</th></tr>
-<tr><td><b>เปิดหน้ารวมลิงก์</b></td><td><b>${fmt(opened)}</b></td><td>—</td>${appCells(hubOpen)}</tr>
-${btnIds.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(sum(list))}</td><td>${opened ? Math.round(sum(list) / opened * 100) + "%" : "—"}</td>${appCells(list)}</tr>`).join("")}</table></div>`;
-  // ลิงก์ย่อ: ปุ่ม Copy + ยอดเปิด + แอปที่มามากสุด
-  const host = LINKS.site.replace("https://", "");
-  const topApp = list => { const g = group(list, r => r.k2)[0]; return g ? ` · ส่วนใหญ่จาก ${esc(APP[g[0]] || g[0])}` : ""; };
-  const shortNames = [...new Set([...LINKS.short.map(x => x.name), ...shorts.map(r => r.k1)])];
-  const linkRow = (name, url, n, extra = "") => `<div class="link"><b>${esc(name)}<small>เปิด ${fmt(n)} ครั้ง${extra}</small></b><button type="button" data-url="${esc(url)}" aria-label="Copy ลิงก์ ${esc(name)}">Copy</button><code>${esc(url.replace("https://", ""))}</code></div>`;
-  const shortLinks = linkRow("หน้ารวมลิงก์ (แปะ bio)", LINKS.site + "/", opened, topApp(hubOpen)) +
-    shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => linkRow("/" + n, `${LINKS.site}/${n}`, sum(list), topApp(list))).join("");
-
   // โควตา: ตาราง WITHOUT ROWID บวกเลข 1 ครั้ง = เขียน 1 แถว ผลรวมของวันนี้จึงเท่ากับจำนวนแถวที่เขียนไป
   const writes = perDay(all, today);
 
@@ -245,9 +289,15 @@ ${btnIds.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt
     ...group(steps.filter(r => ["theme", "options", "faq"].includes(r.k1)), r => r.k1).map(([k, n]) => [{ theme: "หน้า เปลี่ยนธีมสี", options: "หน้า ปรับแต่งด้วย Parameter", faq: "หน้า คำถามที่เจอบ่อย" }[k], n]),
     ["กดปุ่ม App Store", sum(of("appstore"))], ["เปิดสคริปต์ในแอป Scriptable", sum(of("app"))], ["เปลี่ยนธีมในแอป", sum(of("theme"))]].filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
 
-  const range = `<nav class="seg" aria-label="ช่วงเวลา">${[7, 14, 30].map(d => `<a class="${d === days ? "on" : ""}" href="?k=${encodeURIComponent(key)}&d=${d}">${d} วัน</a>`).join("")}</nav>`;
+  const view = url.searchParams.get("v") === "links" ? "links" : "widget";
+  const range = `<nav class="seg" aria-label="ช่วงเวลา">${[7, 14, 30].map(d => `<a class="${d === days ? "on" : ""}" data-d="${d}" href="?k=${encodeURIComponent(key)}&d=${d}${view === "links" ? "&v=links" : ""}">${d} วัน</a>`).join("")}</nav>`;
+  const quota = card("s4", "ใช้โควตาฟรีวันนี้", `<div class="gwrap">${gauge(writes / WRITE_LIMIT * 100)}</div><p class="gsub">เขียน D1 <b>${fmt(writes)}</b> / 100,000 แถว</p>`, { note: "รวม Widget และหน้ารวมลิงก์ · ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ" });
+  const lead = `<p class="lead">${thDate(from)} – ${thDate(today)} ${today.slice(0, 4)} (เวลาไทย) · ตัวเลขรวมแบบไม่ระบุตัวตน</p>`;
+  const views = `<div class="views" role="tablist" aria-label="เลือกสถิติ">${[["widget", "Widget"], ["links", "หน้ารวมลิงก์"]].map(([v, name]) => `<button type="button" role="tab" data-view="${v}" aria-selected="${v === view}" class="${v === view ? "on" : ""}">${name}</button>`).join("")}</div>`;
   return page(`${topbar(range)}
-<h1>ภาพรวม</h1><p class="lead">${thDate(from)} – ${thDate(today)} ${today.slice(0, 4)} (เวลาไทย) · ตัวเลขรวมแบบไม่ระบุตัวตน</p>
+${views}
+<section class="view" id="v-widget"${view === "widget" ? "" : " hidden"}>
+<h1>Widget</h1>${lead}
 ${kpis}
 <div class="grid">
 ${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "Widget ใช้งาน = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
@@ -255,9 +305,7 @@ ${card("s4", "มาจากแอปไหน", bars(group(visits, r => r.k1),
 ${card("s7", "หลุดขั้นไหน", funnel, { note: "นับคนละ 1 ครั้งต่อการเปิดหน้า เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
 ${card("s5", "ลิงก์สำหรับส่งน้องๆ", links, { note: `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (a-z 0-9 . _ - ไม่เกิน 24 ตัว) จะขึ้นในการ์ด "ป้ายลิงก์"` })}
 ${card("s8", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
-${card("s4", "ใช้โควตาฟรีวันนี้", `<div class="gwrap">${gauge(writes / WRITE_LIMIT * 100)}</div><p class="gsub">เขียน D1 <b>${fmt(writes)}</b> / 100,000 แถว</p>`, { note: "ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ" })}
-${card("s8", `หน้ารวมลิงก์ ${esc(host)}`, hubTable, { note: "แยกแอปจากเบราว์เซอร์ในแอปที่เปิดหน้า · ต่อคนเปิด = ยอดกดปุ่มนั้นเทียบกับจำนวนครั้งที่เปิดหน้า (คนเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
-${card("s4", "ลิงก์ย่อ", shortLinks, { note: `นับ ${days} วันล่าสุด · เพิ่ม/แก้ลิงก์ที่ links/links.json` })}
+${quota}
 </div>
 <div class="minis">
 ${card("", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)))}
@@ -268,5 +316,10 @@ ${card("", `เวอร์ชัน widget.js (${latestName})`, bars(group(live
 ${card("", "อุปกรณ์ที่เปิดหน้าติดตั้ง", bars(group(visits, r => r.k2), d => DEV[d] || d))}
 ${card("", "เปิดดูเพิ่ม", bars(extra))}
 </div>
+</section>
+<section class="view" id="v-links"${view === "links" ? "" : " hidden"}>
+<h1>หน้ารวมลิงก์</h1>${lead}
+${linksView({ all, prevRows, of, perDay, dayList, today, days, kpi, quota })}
+</section>
 <p class="foot">ไม่มีรหัสเครื่อง ไม่มี IP ไม่มี cookie · เก็บเป็นตัวเลขรวมรายวันเท่านั้น</p>`);
 }

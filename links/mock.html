@@ -11,7 +11,7 @@
 <script>
 var API=/^test\./.test(location.hostname)?"https://test.bwy-widget.pages.dev/api/e":"https://bwy-widget.pages.dev/api/e";
 var REF=(function(){try{var h=document.referrer?new URL(document.referrer).hostname:"";return h===location.hostname?"":h}catch(e){return""}})();
-function send(ev){var b=JSON.stringify({ref:REF,ev:ev});try{if(!(navigator.sendBeacon&&navigator.sendBeacon(API,b)))fetch(API,{method:"POST",body:b,keepalive:true,mode:"no-cors"}).catch(function(){})}catch(e){}}
+function send(ev,src){var b=JSON.stringify(src?{src:src,ref:REF,ev:ev}:{ref:REF,ev:ev});try{if(!(navigator.sendBeacon&&navigator.sendBeacon(API,b)))fetch(API,{method:"POST",body:b,keepalive:true,mode:"no-cors"}).catch(function(){})}catch(e){}}
 send([["link","mock"]]);
 location.replace("https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD");
 </script>

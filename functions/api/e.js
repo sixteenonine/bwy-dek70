@@ -1,7 +1,7 @@
 // POST /api/e  สัญญาณจากหน้าเว็บ (ส่งเองเงียบๆ ผู้ใช้ไม่ต้องกดอะไร) ส่งเป็นชุดเดียวตอนออกจากหน้า
 // body: { src: ป้ายลิงก์ ?src=, ref: โดเมนที่มา, ev: [[ชื่อ, ค่า], ...] }
 //   visit = เปิดหน้า · step = ไปถึงขั้น (1-7, done, theme, options, faq) · copy · appstore · fold = เปิดกล่อง (why, code) · tap = แตะ Widget (หน้า /go/drive)
-//   hub = หน้ารวมลิงก์ (home = เปิดหน้า, อื่นๆ = id ปุ่มที่กด) · link = เปิดลิงก์ย่อ (ชื่อลิงก์) มาจากโดเมนหน้ารวมลิงก์ (links/ สร้างด้วย tools/make-links.js)
+//   hub = หน้ารวมลิงก์ (home = เปิดหน้า เก็บเป็น home:<src> ถ้ามาจาก /tt /ig, อื่นๆ = id ปุ่มที่กด) · link = เปิดลิงก์ย่อ (ชื่อลิงก์) มาจากโดเมนหน้ารวมลิงก์ (links/ สร้างด้วย tools/make-links.js)
 // 1 event = เขียน 1 แถว
 import { appFrom, deviceFrom, isBot, later, clean, NO_CONTENT } from "../../lib/stats.js";
 
@@ -26,6 +26,7 @@ export async function onRequestPost(context) {
       rows.push(["visit", app, deviceFrom(ua)]);
       if (src) rows.push(["src", src, app]);
     } else if (kind === "tap") rows.push(["tap", clean(val) || "-"]);
+    else if (kind === "hub" && clean(val) === "home") rows.push(["hub", src ? "home:" + src : "home", app]); // เปิดหน้ารวมลิงก์ + มาจากลิงก์ไหน (/tt /ig) ในแถวเดียว
     else rows.push([kind, clean(val) || "-", app]);
   }
   if (rows.length) later(context, rows);

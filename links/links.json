@@ -1,24 +1,33 @@
 {
   "site": "https://bearwithyou.pages.dev",
-  "name": "BearWithYou",
-  "by": "สร้างโดยพี่เจได",
-  "school": "นศ. ปี2 ศึกษาศาสตร์ TESOL KKU",
-  "bio": "ติวอังกฤษ A-Level ให้เข้าใจง่าย มี Mock Exam และแบบฝึกหัดให้ลองทำ",
-  "buttons": [
-    { "id": "mock", "icon": "folder", "title": "Mock Exam & แบบฝึกหัด A-Level", "note": "โฟลเดอร์ Google Drive", "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD" },
-    { "id": "widget", "icon": "widget", "title": "Widget นับถอยหลังวันสอบ Dek70", "note": "ฟรี ติดตั้งบน iPhone / iPad", "url": "https://bwy-widget.pages.dev/?src=bio" },
-    { "id": "openchat", "icon": "chat", "title": "LINE OpenChat", "note": "ถามตอบ แจ้งข่าวสอบ", "url": "https://example.com/openchat" }
+  "profile": {
+    "name": "BearWithYou",
+    "by": "สร้างโดยพี่เจได",
+    "school": "นศ. ปี2 ศึกษาศาสตร์ TESOL KKU",
+    "bio": "ติวอังกฤษ A-Level ให้เข้าใจง่าย มี Mock Exam และแบบฝึกหัดให้ลองทำ"
+  },
+  "blocks": [
+    { "type": "button", "id": "mock", "style": "main", "icon": "folder", "title": "Mock Exam & แบบฝึกหัด A-Level", "note": "โฟลเดอร์ Google Drive", "badge": "", "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD" },
+    { "type": "button", "id": "widget", "style": "card", "icon": "widget", "title": "Widget นับถอยหลังวันสอบ Dek70", "note": "ฟรี ติดตั้งบน iPhone / iPad", "badge": "", "url": "https://bwy-widget.pages.dev/?src=bio" },
+    { "type": "button", "id": "openchat", "style": "card", "icon": "chat", "title": "LINE OpenChat", "note": "ถามตอบ แจ้งข่าวสอบ", "badge": "", "url": "https://example.com/openchat" },
+    { "type": "socials", "title": "ติดตาม BearWithYou", "items": [
+      { "id": "tiktok", "title": "TikTok", "url": "https://example.com/tiktok" },
+      { "id": "instagram", "title": "Instagram", "url": "https://example.com/instagram" },
+      { "id": "x", "title": "X", "url": "https://example.com/x" },
+      { "id": "threads", "title": "Threads", "url": "https://example.com/threads" },
+      { "id": "lemon8", "title": "Lemon8", "url": "https://example.com/lemon8" }
+    ] }
   ],
-  "socials": [
-    { "id": "tiktok", "title": "TikTok", "url": "https://example.com/tiktok" },
-    { "id": "instagram", "title": "Instagram", "url": "https://example.com/instagram" },
-    { "id": "x", "title": "X", "url": "https://example.com/x" },
-    { "id": "threads", "title": "Threads", "url": "https://example.com/threads" },
-    { "id": "lemon8", "title": "Lemon8", "url": "https://example.com/lemon8" }
+  "entry": [
+    { "name": "tt", "title": "TikTok" },
+    { "name": "ig", "title": "Instagram" },
+    { "name": "x", "title": "X" },
+    { "name": "th", "title": "Threads" },
+    { "name": "l8", "title": "Lemon8" },
+    { "name": "line", "title": "LINE" }
   ],
   "short": [
     { "name": "mock", "url": "https://drive.google.com/drive/folders/1tSdpEq-BS-pVeHRoMoDGDK5kG5cLhAdD" },
-    { "name": "widget", "url": "https://bwy-widget.pages.dev/?src=short" },
-    { "name": "openchat", "url": "https://example.com/openchat" }
+    { "name": "widget", "url": "https://bwy-widget.pages.dev/?src=short" }
   ]
 }

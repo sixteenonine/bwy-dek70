@@ -3,7 +3,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs"), path = require("path");
 const DIR = path.join(__dirname, "..", "links");
-const cfg = JSON.parse(fs.readFileSync(path.join(DIR, "links.json"), "utf8"));
+const cfg = JSON.parse(fs.readFileSync(path.join(DIR, "links.json"), "utf8")).profile;
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const b64 = f => fs.readFileSync(path.join(DIR, f)).toString("base64");
 const font = (w, s) => `@font-face{font-family:P;font-weight:${w};src:url(data:font/woff2;base64,${b64(`fonts/prompt-${s}-${w}.woff2`)})}`;

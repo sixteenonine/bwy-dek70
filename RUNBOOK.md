@@ -114,26 +114,30 @@ node test/check-loader.js   # loader
 - ตัวทดสอบ (`Dek70 test`) ส่งสถิติไปเว็บทดสอบ ไม่ปนกับตัวเลขจริง
 - ใครรู้ที่อยู่ `/api/e` ก็ยิงตัวเลขปลอมเข้ามาได้ ตัวเลขผิดปกติกระโดดสูงให้สงสัยไว้ก่อน
 
-## หน้ารวมลิงก์ + ลิงก์ย่อ (โฟลเดอร์ `links/`)
+## หน้ารวมลิงก์ bearwithyou.pages.dev (โฟลเดอร์ `links/`)
 
-**คืออะไร** หน้าแบบ Linktree ของเราเอง ไว้แปะ bio (โปรเจกต์ Cloudflare Pages แยก ไม่ใช่ `bwy-widget`)
-- `<โดเมน>/` = หน้ารวมลิงก์ · `<โดเมน>/<ชื่อ>` = ลิงก์ย่อ พาไปปลายทางทันที (พิมพ์ชื่อผิดจะเห็นหน้ารวมลิงก์แทน)
+**คืออะไร** หน้าแบบ Linktree ของเราเอง ไว้แปะ bio (โปรเจกต์ Cloudflare Pages แยก ชื่อ `bearwithyou` ไม่ใช่ `bwy-widget`)
+- `bearwithyou.pages.dev/` = หน้ารวมลิงก์
+- `/tt` `/ig` `/x` ... = **ลิงก์แปะ bio** หน้าเดียวกันทุกอย่าง แค่บอกสถิติว่าคนมาจากแพลตฟอร์มไหน (แบบเดียวกับ `?src=` ของหน้า Widget แต่สั้นกว่า)
+- `/mock` ... = **ลิงก์ย่อ** พาไปปลายทางทันที (พิมพ์ชื่อผิดจะเห็นหน้ารวมลิงก์แทน)
 - เป็นไฟล์ static ล้วน ไม่มี Functions ใช้ได้ไม่จำกัด ต่อให้โควตาเต็ม ลิงก์ก็ยังพาไปปลายทาง
-- นับยอดด้วยระบบสถิติเดิม: ส่งไป `bwy-widget.pages.dev/api/e` (`hub` = เปิดหน้า/กดปุ่ม, `link` = เปิดลิงก์ย่อ) ดูที่ `/stats` การ์ด "หน้ารวมลิงก์" และ "ลิงก์ย่อ" · เว็บทดสอบ (`test.…`) ส่งไปเว็บทดสอบของ `bwy-widget` ตัวเลขจริงไม่ปน
+- นับยอดด้วยระบบสถิติเดิม: ส่งไป `bwy-widget.pages.dev/api/e` ดูที่ `/stats` แท็บ **หน้ารวมลิงก์** (แท็บ Widget เหมือนเดิม) · เว็บทดสอบ (`test.…`) ส่งไปเว็บทดสอบของ `bwy-widget` ตัวเลขจริงไม่ปน
+  - `hub` k1 = `home` หรือ `home:<ป้าย>` (เปิดหน้า) / id ปุ่ม (กด) · `link` k1 = ชื่อลิงก์ย่อ · k2 = แอป
 - ใช้โควตา D1: เปิดหน้า 1 ครั้ง = 1 แถว, กดปุ่ม 1 ครั้ง = 1 แถว, เปิดลิงก์ย่อ 1 ครั้ง = 1 แถว
 
-**แก้ปุ่ม / ลิงก์ย่อ / คำแนะนำตัว** แก้ที่ `links/links.json` ไฟล์เดียว แล้วรัน `node tools/make-links.js` (สร้าง `links/index.html`, `links/<ชื่อ>.html`, `lib/links.js` ให้เอง ลิงก์ย่อที่ลบออกจะลบไฟล์ให้)
-- `buttons` = ปุ่มใหญ่ (อันแรกเป็นปุ่มดำ) `icon` เลือกได้: folder widget chat book play pen star link
-- `socials` = ชิปด้านล่าง · `short` = ลิงก์ย่อ
-- `id` / ชื่อ ใช้ได้แค่ a-z 0-9 - ไม่เกิน 24 ตัว (ชื่อนี้ขึ้นในสถิติ) ลิงก์ต้องเป็น https:// ผิดตรงไหนสคริปต์จะบอก
-- เปลี่ยนชื่อ / คำแนะนำตัว / รูป: รัน `node tools/make-links-images.js` ด้วย (สร้าง `og.png` ภาพตัวอย่างตอนแปะลิงก์ และ `icon.png`)
+**แก้หน้า** ใช้ **Links Studio** (artifact ของเจได แก้แล้วกด บันทึก) แล้วบอก Claude ว่า "อัปเดตหน้ารวมลิงก์" Claude จะอ่านค่าที่บันทึก → รัน `node tools/make-links.js ไฟล์.json` → ขึ้น `test`
+- หรือแก้ `links/links.json` ตรงๆ แล้วรัน `node tools/make-links.js` (สร้าง `links/*.html` + `lib/links.js` ลิงก์ที่ลบออกจะลบไฟล์ให้)
+- `blocks` = เนื้อหาเรียงจากบนลงล่าง: `button` (style `main` = ปุ่มดำ / `card` = การ์ดขาว, size `slim`, icon, badge, from/until = วันเริ่ม/วันจบแบบ 2026-12-01 เวลาไทย, hidden), `heading`, `socials` (ชิป)
+- `entry` = ลิงก์แปะ bio · `short` = ลิงก์ย่อ
+- `id` / ชื่อ ใช้ได้แค่ a-z 0-9 - ไม่เกิน 24 ตัว (id ขึ้นในสถิติ เปลี่ยนแล้วยอดเก่าจะแยกเป็นอีกแถว) ลิงก์ต้องเป็น https://
+- หน้าตาอยู่ที่ `tools/links-render.js` (ใช้ร่วมกับตัวอย่างใน Links Studio)
+- เปลี่ยนชื่อ / คำแนะนำตัว / รูป: รัน `node tools/make-links-images.js` ด้วย (`og.png` ภาพตอนแปะลิงก์ + `icon.png`)
 - เทสต์ (`test/check-stats.js`) เช็กว่าไฟล์ตรงกับ `links.json` ถ้าลืมรันสคริปต์ เครื่องหมายจะเป็นสีแดง
-- ฟอนต์ Prompt กับรูปพี่เจไดคัดลอกไว้ใน `links/` แล้ว (คนละโดเมนกับ `guide/`)
 
 **ตั้งค่า Cloudflare (ครั้งเดียว)**
 1. Workers & Pages → Create → Pages → Connect to Git → repo `bwy-dek70`
-2. ชื่อโปรเจกต์ = ชื่อโดเมนที่อยากได้ · Production branch `main` · Framework preset None · Build command ว่าง · Build output directory ว่าง · Root directory `links`
+2. Project name `bearwithyou` · Production branch `main` · Framework preset None · Build command ว่าง · Build output directory ว่าง · Root directory `links`
 3. Save and Deploy
 4. Settings → Builds → Build watch paths → Include paths `links/*` (แก้ส่วนอื่นของ repo จะไม่ build โปรเจกต์นี้ ประหยัดโควตา build)
-5. ถ้าชื่อที่ได้ไม่ตรงกับ `site` ใน `links.json` (เช่นโดนต่อท้ายตัวอักษรสุ่ม) แก้ `site` แล้วรัน 2 สคริปต์ข้างบนใหม่
+5. ถ้าได้ชื่อไม่ตรง (โดนต่อท้ายตัวอักษรสุ่ม) แก้ `site` ใน `links.json` แล้วรัน 2 สคริปต์ข้างบนใหม่
 - โปรเจกต์นี้ไม่ต้องผูก D1 และไม่ต้องตั้ง STATS_KEY
