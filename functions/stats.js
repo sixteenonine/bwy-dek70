@@ -222,7 +222,7 @@ function linksView({ of, perDay, prevSum, dayList, today, days, quota, warn }) {
   const opened = sum(opens);
   const site = LINKS.site, host = site.replace("https://", "");
   const srcOf = r => r.k1.slice(5);
-  const CH = [["c-hub", "เปิดหน้า", d => perDay("hub", d, 1)], ["c-click", "กดปุ่ม", d => perDay("hub", d, 0)], ["c-short", "ลิงก์ย่อ", d => perDay("link", d)]];
+  const CH = [["c-hub", "เปิด BearLink", d => perDay("hub", d, 1)], ["c-click", "กดปุ่ม", d => perDay("hub", d, 0)]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CH.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
   const charts = CH.map(([id, , at], i) => lineChart(id, dayList.map(d => [d, at(d)]), i > 0)).join("");
   const table = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th>${CH.map(c => `<th>${c[1]}</th>`).join("")}</tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${CH.map(c => `<td>${fmt(c[2](d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
@@ -253,11 +253,11 @@ ${ids.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(su
     { label: "กดปุ่มทั้งหมด", value: sum(clicks), unit: "ครั้ง", change: perDay("hub", today, 0), when: "วันนี้", sub: opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ปุ่มต่อเครื่อง` : "" },
     { label: "ปุ่มที่คนกดมากที่สุด", value: top ? titles.get(top[0]) || top[0] : "ยังไม่มีคนกด", sub: top ? `${fmt(sum(top[1]))} ครั้ง` : "" },
   ], warn)}
-${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
+${tier("รายละเอียดสำคัญ")}
 <div class="grid">
-${card("s6", "กดปุ่มไหน", bars(ids.map(([id, list]) => [id, sum(list)]), id => titles.get(id) || id, appIco), { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกตามแอปดูในรายละเอียดเพิ่มเติมด้านล่าง" })}
-${card("s6", "เปิด BearLink จาก", bars(group(opens, srcOf), srcName, appIco), { note: "นับจากลิงก์ bio ที่กดเข้ามา (/tt /ig …) · เข้าตรง = เปิด bearwithyou.pages.dev เฉยๆ ไม่มี /tt /ig" })}
-${card("s12", "รายวัน", charts + table, { aside: tabs })}
+${card("s8", "รายวัน", charts + table, { aside: tabs })}
+${card("s4", "เปิด BearLink จาก", bars(group(opens, srcOf), srcName, appIco), { note: "นับจากลิงก์ bio ที่กดเข้ามา (/tt /ig …) · เข้าตรง = เปิด bearwithyou.pages.dev เฉยๆ ไม่มี /tt /ig" })}
+${card("s12", "กด", bars(ids.map(([id, list]) => [id, sum(list)]), id => titles.get(id) || id, appIco), { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกตามแอปดูในรายละเอียดเพิ่มเติมด้านล่าง" })}
 </div>
 ${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
 <div class="grid">
@@ -266,7 +266,7 @@ ${card("s6 tool", "ลิงก์ย่อ", shortLinks, { note: `เปิด�
 </div>
 ${more(4, `<div class="grid">
 ${card("s6", "เปิดเว็บจาก", bars(group(opens, r => r.k2), a => APP[a] || a, appIco), { note: "แอปที่ใช้เปิด BearLink (ปกติตรงกับ เปิด BearLink จาก ต่างกันเมื่อลิงก์ถูกเอาไปเปิดที่อื่น เช่น Copy ไปเปิดใน Safari)" })}
-${card("s6", "กดปุ่มไหน แยกตามแอป", btnTable, { note: "ต่อการเปิด = เครื่องที่กดปุ่มนั้นเทียบกับเครื่องที่เปิดหน้า (เครื่องเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
+${card("s6", "กด แยกตามแอป", btnTable, { note: "ต่อการเปิด = เครื่องที่กดปุ่มนั้นเทียบกับเครื่องที่เปิดหน้า (เครื่องเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
 ${card("s6", "เปิดลิงก์ย่อ", `<div class="kpi" style="padding:0;border:0"><span class="k">รวมทุกลิงก์ย่อ</span><span class="v">${fmt(sum(shorts))}</span><span class="s">${delta(sum(shorts), prevSum("link"))}เทียบ ${days} วันก่อน</span></div>`)}
 ${quota}
 </div><div style="height:14px"></div>`)}`;
@@ -312,10 +312,10 @@ export async function onRequestGet({ request, env }) {
   const doneAll = sum(steps.filter(r => r.k1 === "done"));
 
   // กราฟรายวัน (แท็บละ 1 ตัวเลข)
-  const CHARTS = [["c-visit", "เปิดเว็บ", "visit"], ["c-new", "ติดตั้งจริง", "new"], ["c-active", "มี Widget", "active"], ["c-tap", "ไป Drive", "tap"]];
+  const CHARTS = [["c-new", "ติดตั้งจริง", "new"], ["c-active", "มี Widget", "active"], ["c-tap", "ไป Drive", "tap"], ["c-visit", "เปิดเว็บ", "visit"]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CHARTS.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
   const charts = CHARTS.map(([id, , kind], i) => lineChart(id, dayList.map(d => [d, perDay(kind, d)]), i > 0)).join("");
-  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>เปิดเว็บ</th><th>ติดตั้งจริง</th><th>มี Widget</th><th>Copy</th><th>ไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${["visit", "new", "active", "copy", "tap"].map(k => `<td>${fmt(perDay(k, d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
+  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>ติดตั้งจริง</th><th>มี Widget</th><th>ไป Drive</th><th>เปิดเว็บ</th><th>Copy</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${["new", "active", "tap", "visit", "copy"].map(k => `<td>${fmt(perDay(k, d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
@@ -352,12 +352,12 @@ ${views}
 <section class="view" id="v-widget"${view === "widget" ? "" : " hidden"}>
 <h1>Widget</h1>${lead}
 ${hero([
-    { label: "เปิดเว็บ", value: sum(visits), unit: "เครื่อง", change: perDay("visit", today), when: "วันนี้", sub: `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}%` },
     { label: "ติดตั้งจริง", value: sum(of("new")), unit: "เครื่อง", change: perDay("new", today), when: "วันนี้" },
-    { label: "ไป Drive", value: sum(of("tap")), unit: "ครั้ง", change: perDay("tap", today), when: "วันนี้", sub: "แตะ Widget แล้วไป Drive" },
-    { label: "มี Widget", value: activeNow, unit: "อัน", change: activeNow - activeBefore, when: latest === today ? "จากเมื่อวาน (วันนี้ยังนับไม่ครบ)" : "เมื่อวาน เทียบวันก่อน" },
+    { label: "มี Widget", value: activeNow, unit: "อัน", change: activeNow - activeBefore, when: latest === today ? "วันนี้ยังนับไม่ครบ" : "" },
+    { label: "ไป Drive", value: sum(of("tap")), unit: "ครั้ง", change: perDay("tap", today), when: "วันนี้" },
+    { label: "เปิดเว็บ", value: sum(visits), unit: "เครื่อง", change: perDay("visit", today), when: "วันนี้", sub: `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}%` },
   ], warn)}
-${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
+${tier("รายละเอียดสำคัญ")}
 <div class="grid">
 ${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "มี Widget = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
 ${card("s4", "เปิดเว็บจาก", bars(group(visits, r => r.k1), a => APP[a] || a, appIco), { note: "นับทุกเครื่องที่เปิดเว็บ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
