@@ -145,6 +145,8 @@ function linksSide() {
   ok((cfg.short || []).every(s => { const h = out[`links/${s.name}.html`]; return h.includes(`location.replace(${JSON.stringify(s.url)})`) && h.includes(`url=${amp(s.url)}`) && h.includes(`["link",${JSON.stringify(s.name)}]`); }), "links: ลิงก์ย่อทุกอันพาไปปลายทาง (มีสำรองกรณีไม่มี JS) และส่งสัญญาณนับ");
   ok(Object.keys(out).filter(f => f.endsWith(".html")).every(f => out[f].includes('"https://bwy-widget.pages.dev/api/e"') && out[f].includes('"https://test.bwy-widget.pages.dev/api/e"')), "links: ส่งสถิติไป bwy-widget (เว็บทดสอบส่งไปเว็บทดสอบ)");
   ok(!fs.existsSync(path.join(root, "links/functions")) && !fs.existsSync(path.join(root, "links/_routes.json")), "links: เป็นไฟล์ static ล้วน ไม่มี Functions");
+  const hdr = fs.readFileSync(path.join(root, "links/_headers"), "utf8");
+  ok(/\/img\/\*\n\s+Cache-Control: public, max-age=31536000, immutable/.test(hdr) && ML.stale(out).every(f => !f.endsWith("_headers")), "links: รูปปุ่มและฟอนต์ให้เบราว์เซอร์จำไว้ได้นาน (ชื่อไฟล์เปลี่ยนตามเนื้อรูป)");
   ok(["fonts/prompt-thai-600.woff2", "fonts/OFL.txt", "jedi.webp", "og.png", "icon.png"].every(f => fs.existsSync(path.join(root, "links", f))), "links: มีฟอนต์ รูป og.png icon.png ในโฟลเดอร์ตัวเอง (คนละโดเมน)");
   // ปุ่มตั้งวัน: ซ่อนก่อนวันเริ่ม / หลังวันจบ (เวลาไทย)
   const R = require("../tools/links-render.js")();
