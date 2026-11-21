@@ -151,6 +151,11 @@ function linksSide() {
   const items = [el("2027-01-10", ""), el("", "2027-01-05"), el("2027-01-01", "2027-01-31")];
   R.applySchedule({ querySelectorAll: () => items }, Date.UTC(2027, 0, 5, 18)); // 6 ม.ค. 01:00 เวลาไทย
   ok(items[0].hidden && items[1].hidden && !items[2].hidden, "links: ปุ่มตั้งวัน ซ่อนก่อนวันเริ่มและหลังวันจบ ตามเวลาไทย");
+  // หน้าแก้ไข Links Studio สร้างได้ (ใส่ตัววาดหน้าตัวเดียวกับเว็บจริง)
+  const tmp = path.join(require("os").tmpdir(), "bwy-links-studio.html");
+  require("child_process").execFileSync(process.execPath, [path.join(root, "tools/make-links-studio.js"), tmp]);
+  const studio = fs.readFileSync(tmp, "utf8");
+  ok(studio.includes("const linksRender = function linksRender()") && !studio.includes("@RENDER@") && !studio.includes("@PHOTO@") && !studio.includes("@FALLBACK@"), "links: หน้าแก้ไข Links Studio สร้างได้ ใช้ตัววาดหน้าเดียวกับเว็บจริง");
   const bads = [
     { ...cfg, short: [{ name: "Mock!", url: "http://x" }] },
     { ...cfg, entry: [{ name: "tt" }], short: [{ name: "tt", url: "https://a.b" }] },

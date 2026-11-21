@@ -13,50 +13,8 @@ const linksRender = require("./links-render.js");
 const R = linksRender();
 const ROOT = path.join(__dirname, "..");
 const DIR = path.join(ROOT, "links");
-const NAME_RE = /^[a-z0-9][a-z0-9-]{0,23}$/; // ต้องผ่าน clean() ของ lib/stats.js และเป็นชื่อไฟล์ได้
-const RESERVED = ["home", "index", "fonts", "404", "og", "icon", "jedi", "links", "api", "stats"];
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const API = "https://bwy-widget.pages.dev/api/e", API_TEST = "https://test.bwy-widget.pages.dev/api/e";
-const esc = R.esc;
-
-// ตรวจ links.json ก่อนสร้าง (ผิดตรงไหนบอกเป็นภาษาคน) ใช้กฎเดียวกับหน้าแก้ไข Links Studio
-function check(cfg) {
-  const errs = [], warn = [];
-  const url = (u, where) => {
-    if (!/^https:\/\/[^\s"<>]+$/.test(String(u || ""))) errs.push(`${where}: ลิงก์ต้องขึ้นต้นด้วย https:// (ได้ "${u || ""}")`);
-    else if (/example\.com/.test(u)) warn.push(`${where}: ยังเป็นลิงก์สมมติ ${u}`);
-  };
-  const name = (n, where) => { if (!NAME_RE.test(n || "") || RESERVED.includes(n)) errs.push(`${where}: ชื่อใช้ได้แค่ a-z 0-9 - ไม่เกิน 24 ตัว และห้ามใช้ ${RESERVED.join(" ")}`); };
-  if (!/^https:\/\/[a-z0-9.-]+$/.test(cfg.site || "")) errs.push("site ต้องเป็นแบบ https://ชื่อ.pages.dev (ไม่มี / ท้าย)");
-  if (!cfg.profile || !cfg.profile.name) errs.push("profile ต้องมี name");
-  const ids = new Set();
-  const id = (v, where) => { name(v, where); if (ids.has(v)) errs.push(`${where}: ชื่อในสถิติ "${v}" ซ้ำกับปุ่มอื่น`); ids.add(v); };
-  (cfg.blocks || []).forEach((k, i) => {
-    const where = `blocks[${i}]`;
-    if (k.type === "heading") { if (!k.text) errs.push(`${where}: หัวข้อต้องมีข้อความ`); return; }
-    if (k.type === "socials") {
-      (k.items || []).forEach((s, j) => { const w = `${where}.items[${j}] ${s.title || ""}`; id(s.id, w); if (!s.title) errs.push(`${w}: ต้องมีชื่อ`); url(s.url, w); });
-      return;
-    }
-    if (k.type !== "button") { errs.push(`${where}: ไม่รู้จักบล็อกแบบ "${k.type}"`); return; }
-    const w = `${where} ${k.title || ""}`;
-    id(k.id, w);
-    if (!k.title) errs.push(`${w}: ปุ่มต้องมีชื่อ`);
-    if (k.icon && k.icon !== "none" && !R.ICON[k.icon]) errs.push(`${w}: ไม่มี icon "${k.icon}"`);
-    for (const d of ["from", "until"]) if (k[d] && !DATE_RE.test(k[d])) errs.push(`${w}: วันที่ ${d} ต้องเป็นแบบ 2026-12-01`);
-    if (k.from && k.until && k.from > k.until) errs.push(`${w}: วันเริ่มอยู่หลังวันจบ`);
-    url(k.url, w);
-  });
-  const names = new Set();
-  for (const [list, label] of [[cfg.entry || [], "entry"], [cfg.short || [], "short"]]) list.forEach((s, i) => {
-    const where = `${label}[${i}] /${s.name || ""}`;
-    name(s.name, where);
-    if (names.has(s.name)) errs.push(`${where}: ชื่อซ้ำกับลิงก์อื่น`);
-    names.add(s.name);
-    if (label === "short") url(s.url, where);
-  });
-  return { errs, warn };
-}
+const esc = R.esc, check = R.check; // กฎตรวจอยู่ใน links-render.js (ใช้ร่วมกับ Links Studio)
 
 function load(file = path.join(DIR, "links.json")) {
   const cfg = JSON.parse(fs.readFileSync(file, "utf8"));
@@ -176,7 +134,7 @@ function build(file) {
 // ไฟล์ .html ใน links/ ที่ไม่ได้มาจาก links.json (ลิงก์ที่ลบไปแล้ว)
 const stale = out => fs.readdirSync(DIR).filter(f => f.endsWith(".html") && !out["links/" + f]).map(f => "links/" + f);
 
-module.exports = { build, load, check, stale, NAME_RE, RESERVED };
+module.exports = { build, load, check, stale };
 
 if (require.main === module) {
   const arg = process.argv.slice(2).find(a => !a.startsWith("--"));

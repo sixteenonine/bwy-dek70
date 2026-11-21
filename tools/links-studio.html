@@ -1,0 +1,528 @@
+<title>Links Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap">
+<style>
+/* Layout: แถบบนติดจอ + คอลัมน์แก้ไข (ซ้าย) + มือถือตัวอย่างติดจอ (ขวา) · จอแคบสลับ แก้ไข / ดูตัวอย่าง */
+:root {
+  --bg: #F3F3F4; --panel: #FFFFFF; --soft: #F6F6F7; --line: #E6E6E9; --ink: #0B0B0C; --sub: #66666C; --mute: #9E9EA4;
+  --on-ink: #FFFFFF; --frame: #18181A;
+  --bad: #A8231A; --bad-bg: #FBECEA; --warn: #7A5300; --warn-bg: #FBF2DE;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 10px 28px -16px rgba(0,0,0,.22);
+  --font: "Prompt", -apple-system, BlinkMacSystemFont, "Sukhumvit Set", "Thonburi", "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0E0E10; --panel: #18181B; --soft: #202024; --line: #2C2C31; --ink: #F3F3F5; --sub: #A2A2A9; --mute: #6C6C74;
+  --on-ink: #0B0B0C; --frame: #2A2A2E;
+  --bad: #FF9C92; --bad-bg: #3A1714; --warn: #F2C46B; --warn-bg: #33270C;
+  --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 10px 28px -16px rgba(0,0,0,.7); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0E0E10; --panel: #18181B; --soft: #202024; --line: #2C2C31; --ink: #F3F3F5; --sub: #A2A2A9; --mute: #6C6C74;
+  --on-ink: #0B0B0C; --frame: #2A2A2E;
+  --bad: #FF9C92; --bad-bg: #3A1714; --warn: #F2C46B; --warn-bg: #33270C;
+  --shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 10px 28px -16px rgba(0,0,0,.7); color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+button, input, textarea, select { font: inherit; color: inherit; }
+.ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* แถบบน */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 1240px; margin: 0 auto; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mark { width: 34px; height: 34px; border-radius: 10px; background: var(--ink); color: var(--on-ink); display: grid; place-items: center; font-weight: 700; }
+.brand b { display: block; font-weight: 600; line-height: 1.2; }
+.brand small { display: block; color: var(--sub); font-size: .8rem; line-height: 1.2; }
+.sp { flex: 1; }
+.status { font-size: .84rem; color: var(--sub); display: flex; align-items: center; gap: 6px; }
+.status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mute); }
+.status.dirty .dot { background: var(--ink); box-shadow: 0 0 0 3px var(--soft); }
+.status.bad { color: var(--bad); } .status.bad .dot { background: var(--bad); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border-radius: 11px; border: 1px solid var(--line); background: var(--panel); font-weight: 600; font-size: .9rem; cursor: pointer; white-space: nowrap; text-decoration: none; color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.sm { min-height: 32px; padding: 0 10px; font-size: .82rem; border-radius: 9px; }
+.btn.danger { color: var(--bad); }
+.btn:focus-visible, .ib:focus-visible, .seg button:focus-visible, .icons button:focus-visible, .bt:focus-visible { outline: 3px solid #4C8DFF; outline-offset: 2px; }
+.bar .panes { display: none; }
+@media (max-width: 560px) { .brand small, .bar #copyJson { display: none; } .bar-in { gap: 8px; } .status { font-size: .78rem; } }
+
+/* โครงหลัก */
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 20px 60px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 28px; align-items: start; }
+.edit, .stack { min-width: 0; display: grid; gap: 18px; }
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 74px); display: grid; gap: 12px; justify-items: center; }
+@media (max-width: 960px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); }
+  .bar .panes { display: flex; width: 100%; order: 9; }
+  .side { position: static; }
+  body[data-pane="edit"] .side, body[data-pane="preview"] .edit { display: none; }
+}
+
+/* กล่องหมวด */
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 18px; min-width: 0; }
+.box > h2 { margin: 0 0 4px; font-size: 1.05rem; font-weight: 600; }
+.box > .hint { margin: 0 0 14px; color: var(--sub); font-size: .86rem; }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.fields .full { grid-column: 1 / -1; }
+@media (max-width: 560px) { .fields { grid-template-columns: minmax(0, 1fr); } }
+label.f { display: grid; gap: 4px; min-width: 0; }
+label.f > span { font-size: .8rem; color: var(--sub); }
+input[type=text], input[type=url], input[type=date], textarea { width: 100%; min-width: 0; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); font-size: .95rem; }
+textarea { resize: vertical; min-height: 64px; }
+input:focus, textarea:focus { outline: 2px solid var(--ink); outline-offset: -1px; background: var(--panel); }
+input.mono { font-family: var(--mono); font-size: .88rem; }
+.check { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; cursor: pointer; }
+.check input { width: 18px; height: 18px; accent-color: var(--ink); }
+
+/* บล็อก */
+.blocks { display: grid; gap: 10px; }
+.blk { border: 1px solid var(--line); border-radius: 14px; background: var(--panel); min-width: 0; }
+.blk.drag { opacity: .4; } .blk.over { box-shadow: 0 -3px 0 var(--ink); }
+.bh { display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 8px; }
+.grip { color: var(--mute); cursor: grab; display: grid; place-items: center; width: 22px; }
+.bt { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; border: 0; background: none; padding: 6px 4px; text-align: left; cursor: pointer; border-radius: 8px; }
+.kind { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--soft); border: 1px solid var(--line); display: grid; place-items: center; }
+.kind.main { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.bt .tt { min-width: 0; }
+.bt b { display: block; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bt small { display: block; color: var(--sub); font-size: .78rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bt small i { font-style: normal; padding: 0 6px; border-radius: 6px; background: var(--soft); border: 1px solid var(--line); margin-right: 4px; }
+.tools { display: flex; gap: 2px; flex: none; }
+.ib { width: 32px; height: 32px; border: 0; border-radius: 9px; background: none; color: var(--sub); display: grid; place-items: center; cursor: pointer; }
+.ib:hover { background: var(--soft); color: var(--ink); }
+.ib:disabled { opacity: .3; cursor: default; background: none; }
+.ib.bad { color: var(--bad); }
+.bb { border-top: 1px solid var(--line); padding: 14px; display: grid; gap: 14px; }
+.row-label { font-size: .8rem; color: var(--sub); margin-bottom: 6px; }
+.seg { display: inline-flex; flex-wrap: wrap; padding: 3px; gap: 2px; border-radius: 11px; background: var(--soft); border: 1px solid var(--line); }
+.seg button { border: 0; background: none; padding: 6px 12px; border-radius: 8px; font-size: .86rem; color: var(--sub); cursor: pointer; }
+.seg button.on { background: var(--panel); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.opts { display: flex; flex-wrap: wrap; gap: 14px 20px; align-items: flex-end; }
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+.icons button { display: grid; justify-items: center; gap: 2px; padding: 8px 2px 6px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-size: .7rem; color: var(--sub); }
+.icons button .ico { width: 22px; height: 22px; color: var(--ink); }
+.icons button.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); font-weight: 600; }
+.chipset { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chipset button { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 2px 10px; font-size: .8rem; cursor: pointer; }
+details.adv summary { cursor: pointer; color: var(--sub); font-size: .84rem; }
+details.adv[open] summary { margin-bottom: 10px; }
+.note { color: var(--mute); font-size: .78rem; margin: 4px 0 0; }
+.adders { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+/* แถวลิงก์ */
+.items { display: grid; gap: 8px; }
+.item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) auto; gap: 8px; align-items: center; }
+.item.three { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr) auto; }
+.slug { display: flex; align-items: center; min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+.slug span { padding-left: 10px; color: var(--mute); font-family: var(--mono); font-size: .88rem; }
+.slug input { border: 0; background: none; padding-left: 2px; }
+.slug:focus-within { outline: 2px solid var(--ink); outline-offset: -1px; background: var(--panel); }
+.slug input:focus { outline: 0; }
+@media (max-width: 560px) { .item, .item.three { grid-template-columns: minmax(0, 1fr) auto; } .item > :nth-child(2) { grid-column: 1; } .item > .tools { grid-row: 1 / span 2; grid-column: 2; } }
+
+/* ตรวจ */
+.issues { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.issues li { padding: 8px 12px; border-radius: 10px; font-size: .86rem; }
+.issues li.e { background: var(--bad-bg); color: var(--bad); }
+.issues li.w { background: var(--warn-bg); color: var(--warn); }
+.ok { color: var(--sub); font-size: .9rem; margin: 0; }
+.banner { padding: 12px 14px; border-radius: 14px; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: .9rem; }
+.banner p { margin: 0; flex: 1; min-width: 200px; }
+.banner[hidden] { display: none; }
+
+/* มือถือตัวอย่าง */
+.pv-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+.pv-tools label { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--sub); }
+.pv-tools input[type=date] { width: auto; padding: 5px 8px; font-size: .84rem; }
+.phone { width: min(390px, 100%); height: min(820px, calc(100vh - 170px)); min-height: 560px; border-radius: 48px; padding: 11px; background: var(--frame); box-shadow: 0 30px 60px -30px rgba(0,0,0,.5); }
+.screen { position: relative; height: 100%; border-radius: 38px; overflow: hidden; background: #FEFEFE; }
+.phone.dark .screen { background: #0F0F11; }
+.url { position: absolute; inset: 0 0 auto; z-index: 2; height: 38px; display: grid; place-items: center; font-size: .75rem; color: #6B6B70; background: rgba(254,254,254,.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.phone.dark .url { color: #A3A3AA; background: rgba(15,15,17,.86); }
+.scroll { height: 100%; overflow-y: auto; padding-top: 38px; overscroll-behavior: contain; }
+.toast { position: absolute; left: 12px; right: 12px; bottom: 14px; z-index: 3; padding: 10px 12px; border-radius: 14px; background: #0B0B0C; color: #FFFFFF; font-size: .8rem; box-shadow: 0 10px 24px -8px rgba(0,0,0,.5); overflow-wrap: anywhere; }
+.toast a { color: #FFFFFF; font-weight: 600; }
+.toast[hidden] { display: none; }
+.empty { text-align: center; padding: 40px 18px; color: var(--sub); }
+.empty b { display: block; color: var(--ink); font-size: 1.05rem; margin-bottom: 4px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .ib, .seg button { transition: background .15s, transform .15s; } .btn:active { transform: scale(.97); } }
+</style>
+
+<header class="bar"><div class="bar-in">
+  <div class="brand"><span class="mark" aria-hidden="true">B</span><div><b>Links Studio</b><small id="host">bearwithyou.pages.dev</small></div></div>
+  <span class="sp"></span>
+  <span class="status" id="status" role="status"><span class="dot"></span><span id="statusText">กำลังโหลด…</span></span>
+  <button class="btn" type="button" data-act="copy-json" id="copyJson">Copy JSON</button>
+  <button class="btn primary" type="button" data-act="save" id="saveBtn" disabled>บันทึก</button>
+  <div class="panes seg" role="tablist" aria-label="สลับมุมมอง"><button type="button" data-act="pane" data-v="edit" class="on" style="flex:1">แก้ไข</button><button type="button" data-act="pane" data-v="preview" style="flex:1">ดูตัวอย่าง</button></div>
+</div></header>
+
+<div class="wrap">
+  <section class="edit" id="edit" aria-label="แก้ไขหน้ารวมลิงก์">
+    <div class="banner" id="banner" hidden></div>
+    <div id="editor"><div class="box empty"><b>กำลังโหลดหน้าของพี่เจได</b>รอสักครู่</div></div>
+  </section>
+  <aside class="side" aria-label="ตัวอย่างบนมือถือ">
+    <div class="pv-tools">
+      <div class="seg" role="group" aria-label="โหมดตัวอย่าง"><button type="button" data-act="pv-theme" data-v="light">สว่าง</button><button type="button" data-act="pv-theme" data-v="dark">มืด</button></div>
+      <label>ดูเหมือนวันที่ <input type="date" id="pvDate" aria-label="ดูตัวอย่างเหมือนวันที่"></label>
+    </div>
+    <div class="phone" id="phone"><div class="screen"><div class="url" id="pvUrl">bearwithyou.pages.dev</div><div class="scroll"><div id="pv"></div></div><div class="toast" id="toast" hidden></div></div></div>
+  </aside>
+</div>
+
+<script>
+/*@RENDER@*/
+const R = linksRender();
+const PHOTO = "@PHOTO@";
+const FALLBACK = /*@FALLBACK@*/null; // ค่าตอนสร้างหน้านี้ ใช้เฉพาะตอนที่เก็บข้อมูลใช้ไม่ได้
+const DOC = "site/config";
+const DRAFT_KEY = "bwy-links-studio-draft";
+
+const ICON_NAME = { folder: "โฟลเดอร์", widget: "Widget", chat: "แชท", book: "หนังสือ", exam: "ข้อสอบ", pen: "ปากกา", play: "คลิป", calendar: "ปฏิทิน", clock: "นาฬิกา", star: "ดาว", gift: "ของขวัญ", bag: "ร้านค้า", mail: "อีเมล", link: "ลิงก์" };
+const BADGES = ["ใหม่", "ฟรี", "แนะนำ", "เหลือน้อย"];
+const UI = {
+  grip: '<circle cx="9" cy="6" r="1.2"/><circle cx="15" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/><circle cx="15" cy="18" r="1.2"/>',
+  up: '<path d="M12 19V5M6 11l6-6 6 6"/>', down: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+  dup: '<rect x="8.5" y="8.5" width="12" height="12" rx="2.5"/><path d="M15.5 8.5V6A2.5 2.5 0 0 0 13 3.5H6A2.5 2.5 0 0 0 3.5 6v7A2.5 2.5 0 0 0 6 15.5h2.5"/>',
+  del: '<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13"/>',
+  heading: '<path d="M6 5v14M18 5v14M6 12h12"/>', socials: '<rect x="3" y="8" width="8" height="8" rx="4"/><rect x="13" y="8" width="8" height="8" rx="4"/>',
+  eyeoff: '<path d="M3 3l18 18M10.6 6.2A9.7 9.7 0 0 1 12 6c5 0 8.5 4.5 9.5 6-.5.8-1.6 2.3-3.2 3.6M6.4 7.9C4.5 9.2 3.1 11 2.5 12c1 1.5 4.5 6 9.5 6 1.6 0 3-.4 4.3-1"/>',
+};
+const ui$ = (k, cls) => `<svg class="ico${cls ? " " + cls : ""}" viewBox="0 0 24 24" aria-hidden="true">${UI[k] || R.ICON[k] || ""}</svg>`;
+const E = R.esc;
+const $ = s => document.querySelector(s);
+
+let cfg = null, savedJSON = null, savedAt = null, db = null, canWrite = false;
+let saving = false, pendingAt = null, remote = null, note = "", loadState = "loading";
+const open = new Set();
+const pv = { dark: matchMedia("(prefers-color-scheme: dark)").matches, date: "" };
+let confirmDel = null;
+
+const dirty = () => cfg != null && JSON.stringify(cfg) !== savedJSON;
+const clone = o => JSON.parse(JSON.stringify(o));
+function getAt(p) { return p.split(".").reduce((o, k) => (o == null ? o : o[k]), cfg); }
+function setAt(p, v) { const ks = p.split("."), last = ks.pop(); ks.reduce((o, k) => o[k], cfg)[last] = v; }
+function uniqueId(base) {
+  const used = new Set();
+  (cfg.blocks || []).forEach(k => { if (k.id) used.add(k.id); (k.items || []).forEach(s => used.add(s.id)); });
+  let n = 1; while (used.has(base + "-" + n)) n++;
+  return base + "-" + n;
+}
+const slugOf = t => { const s = String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 24); return R.NAME_RE.test(s) && !R.RESERVED.includes(s) ? s : ""; };
+const thTime = iso => { try { return new Date(iso).toLocaleString("th-TH", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } };
+
+/* ---------- ตัวอย่างบนมือถือ (ตัววาดเดียวกับเว็บจริง) ---------- */
+const pvHost = $("#pv");
+const shadow = pvHost.attachShadow({ mode: "open" });
+shadow.innerHTML = `<style>:host{display:block;${R.LIGHT};color:var(--ink);font-family:"Prompt",-apple-system,BlinkMacSystemFont,"Sukhumvit Set",sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+:host(.dark){${R.DARK}}*,*::before,*::after{box-sizing:border-box}
+.scr{min-height:780px;background:radial-gradient(circle,var(--dot) 1.1px,transparent 1.6px) 0 0/13px 13px,var(--paper);padding:28px 16px 40px}
+${R.PARTS}</style><div class="scr"><main id="m"></main></div>`;
+const pvMain = shadow.getElementById("m");
+function renderPreview() {
+  if (!cfg) return;
+  pvMain.innerHTML = R.renderMain(cfg, cfg.profile && cfg.profile.photo === false ? "" : PHOTO);
+  R.applySchedule(shadow, pv.date ? Date.parse(pv.date + "T05:00:00Z") : Date.now());
+  pvHost.classList.toggle("dark", pv.dark);
+  $("#phone").classList.toggle("dark", pv.dark);
+  document.querySelectorAll('[data-act="pv-theme"]').forEach(b => b.classList.toggle("on", (b.dataset.v === "dark") === pv.dark));
+  $("#pvUrl").textContent = (cfg.site || "").replace("https://", "");
+}
+let toastTimer;
+shadow.addEventListener("click", e => {
+  const a = e.target.closest("a");
+  if (!a) return;
+  e.preventDefault();
+  const t = $("#toast");
+  t.innerHTML = `ปุ่มนี้พาไป <a href="${E(a.getAttribute("href"))}" target="_blank" rel="noopener">${E(a.getAttribute("href"))}</a>`;
+  t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 4000);
+});
+
+/* ---------- ฟอร์มแก้ไข ---------- */
+const field = (label, key, { type = "text", ph = "", full = false, mono = false, area = false, lower = false } = {}) => {
+  const v = getAt(key) == null ? "" : getAt(key);
+  const id = "f-" + key.replace(/\./g, "-");
+  const input = area ? `<textarea id="${id}" data-k="${key}" rows="2" placeholder="${E(ph)}">${E(v)}</textarea>`
+    : `<input id="${id}" type="${type}" data-k="${key}"${lower ? " data-lower" : ""} class="${mono ? "mono" : ""}" value="${E(v)}" placeholder="${E(ph)}" autocomplete="off" spellcheck="false">`;
+  return `<label class="f${full ? " full" : ""}" for="${id}"><span>${label}</span>${input}</label>`;
+};
+const seg = (act, i, cur, opts) => `<div class="seg" role="group">${opts.map(([v, t]) => `<button type="button" data-act="${act}" data-i="${i}" data-v="${v}" class="${cur === v ? "on" : ""}" aria-pressed="${cur === v}">${t}</button>`).join("")}</div>`;
+const tools = (i, n, extra = "") => `<div class="tools">
+  <button class="ib" type="button" data-act="${extra}up" data-i="${i}" ${i === 0 ? "disabled" : ""} aria-label="เลื่อนขึ้น">${ui$("up")}</button>
+  <button class="ib" type="button" data-act="${extra}down" data-i="${i}" ${i === n - 1 ? "disabled" : ""} aria-label="เลื่อนลง">${ui$("down")}</button>
+  ${extra ? "" : `<button class="ib" type="button" data-act="dup" data-i="${i}" aria-label="ทำซ้ำ">${ui$("dup")}</button>`}
+  <button class="ib${confirmDel === extra + i ? " bad" : ""}" type="button" data-act="${extra}del" data-i="${i}" aria-label="${confirmDel === extra + i ? "กดอีกครั้งเพื่อลบ" : "ลบ"}">${confirmDel === extra + i ? "<b style=\"font-size:.72rem\">ลบ?</b>" : ui$("del")}</button></div>`;
+
+function headOf(k) {
+  if (k.type === "heading") return { icon: ui$("heading"), title: k.text || "(หัวข้อว่าง)", sub: "หัวข้อ", main: false };
+  if (k.type === "socials") return { icon: ui$("socials"), title: k.title || "ชิปโซเชียล", sub: (k.items || []).map(s => s.title).join(" · ") || "ยังไม่มีชิป", main: false };
+  const flags = [k.style === "main" ? "ปุ่มเด่น" : "ปุ่มปกติ", k.size === "slim" ? "เตี้ย" : "", k.badge ? "ป้าย " + k.badge : "", k.from || k.until ? `แสดง ${k.from || "…"} ถึง ${k.until || "…"}` : ""].filter(Boolean);
+  return { icon: k.icon === "none" ? ui$("link") : `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${R.ICON[k.icon] || R.ICON.link}</svg>`, title: k.title || "(ปุ่มไม่มีชื่อ)", sub: flags.join(" · "), main: k.style === "main" };
+}
+function headHTML(k, i) {
+  const h = headOf(k);
+  return `<span class="kind${h.main ? " main" : ""}">${h.icon}</span><span class="tt"><b>${E(h.title)}</b><small>${k.hidden ? `<i>ซ่อนอยู่</i>` : ""}${E(h.sub)}</small></span>`;
+}
+
+function blockBody(k, i) {
+  const p = `blocks.${i}.`;
+  if (k.type === "heading") return `<div class="fields">${field("ข้อความหัวข้อ", p + "text", { full: true, ph: "เช่น ของฟรีสำหรับ Dek70" })}</div>`;
+  if (k.type === "socials") {
+    const items = k.items || [];
+    return `<div class="fields">${field("หัวข้อเหนือชิป (เว้นว่างได้)", p + "title", { full: true, ph: "ติดตาม BearWithYou" })}</div>
+<div><div class="row-label">ชิป (ชื่อ · ลิงก์โปรไฟล์จากแอปนั้น)</div><div class="items">${items.map((s, j) => `<div class="item">
+  <input type="text" data-k="${p}items.${j}.title" value="${E(s.title)}" placeholder="TikTok" aria-label="ชื่อชิป">
+  <input type="url" data-k="${p}items.${j}.url" value="${E(s.url)}" placeholder="https://www.tiktok.com/@..." aria-label="ลิงก์" class="mono">
+  ${tools(j, items.length, "it" + i + "-")}</div>`).join("")}</div>
+<div class="adders"><button class="btn sm" type="button" data-act="add-item" data-i="${i}">+ เพิ่มชิป</button></div>
+<details class="adv"><summary>ขั้นสูง: ชื่อในสถิติ</summary><div class="items">${items.map((s, j) => `<label class="f"><span>${E(s.title || "ชิป " + (j + 1))}</span><input type="text" class="mono" data-k="${p}items.${j}.id" data-lower value="${E(s.id)}"></label>`).join("")}</div><p class="note">ใช้ a-z 0-9 - · เปลี่ยนแล้วยอดเก่าจะแยกเป็นอีกแถวในสถิติ</p></details></div>`;
+  }
+  const iconBtns = [...Object.keys(R.ICON), "none"].map(n => `<button type="button" data-act="icon" data-i="${i}" data-v="${n}" class="${(k.icon || "link") === n ? "on" : ""}" aria-pressed="${(k.icon || "link") === n}">${n === "none" ? `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14"/></svg>` : `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${R.ICON[n]}</svg>`}${n === "none" ? "ไม่มี" : ICON_NAME[n] || n}</button>`).join("");
+  return `<div class="fields">
+${field("ชื่อปุ่ม", p + "title", { full: true, ph: "Mock Exam & แบบฝึกหัด A-Level" })}
+${field("คำอธิบายใต้ชื่อ (เว้นว่างได้)", p + "note", { ph: "โฟลเดอร์ Google Drive" })}
+${field("ลิงก์ปลายทาง", p + "url", { type: "url", ph: "https://", mono: true })}
+</div>
+<div class="opts"><div><div class="row-label">สไตล์</div>${seg("style", i, k.style === "main" ? "main" : "card", [["main", "ปุ่มเด่น"], ["card", "ปุ่มปกติ"]])}</div>
+<div><div class="row-label">ความสูง</div>${seg("size", i, k.size === "slim" ? "slim" : "normal", [["normal", "ปกติ"], ["slim", "เตี้ย"]])}</div>
+<label class="check"><input type="checkbox" data-k="${p}hidden" ${k.hidden ? "checked" : ""}> ซ่อนไว้ก่อน</label></div>
+<div><div class="row-label">icon</div><div class="icons">${iconBtns}</div></div>
+<div class="fields"><div>${field("ป้ายเล็กข้างชื่อ (เว้นว่างได้)", p + "badge", { ph: "เช่น ใหม่" })}<div class="chipset">${BADGES.map(b => `<button type="button" data-act="badge" data-i="${i}" data-v="${E(b)}">${E(b)}</button>`).join("")}<button type="button" data-act="badge" data-i="${i}" data-v="">ไม่มีป้าย</button></div></div>
+<div><div class="row-label">แสดงเฉพาะช่วงวันที่ (เวลาไทย)</div><div class="fields">${field("ตั้งแต่", p + "from", { type: "date" })}${field("ถึง", p + "until", { type: "date" })}</div><p class="note">ว่างไว้ = แสดงตลอด · ลองดูได้ที่ "ดูเหมือนวันที่" เหนือมือถือ</p></div></div>
+<details class="adv"><summary>ขั้นสูง: ชื่อในสถิติ</summary><label class="f"><span>ชื่อที่ใช้นับยอด (a-z 0-9 -)</span><input type="text" class="mono" data-k="${p}id" data-lower value="${E(k.id)}"></label><p class="note">เปลี่ยนแล้วยอดเก่าจะแยกเป็นอีกแถวในสถิติ</p></details>`;
+}
+
+function renderEditor() {
+  if (!cfg) return;
+  const pr = "profile.";
+  const blocks = cfg.blocks || [];
+  const entry = cfg.entry || [], short = cfg.short || [];
+  const site = (cfg.site || "").replace("https://", "");
+  $("#host").textContent = site;
+  $("#editor").innerHTML = `<div class="stack">
+<section class="box" aria-labelledby="h-prof"><h2 id="h-prof">ส่วนหัว</h2><p class="hint">รูป ชื่อ และคำแนะนำตัวด้านบนสุดของหน้า</p>
+<div class="fields">${field("ชื่อ", pr + "name", { ph: "BearWithYou" })}${field("บรรทัดใต้ชื่อ", pr + "by", { ph: "สร้างโดยพี่เจได" })}
+${field("ชิปสังกัด", pr + "school", { full: true, ph: "นศ. ปี2 ศึกษาศาสตร์ TESOL KKU" })}
+${field("คำแนะนำตัว", pr + "bio", { full: true, area: true, ph: "ติวอังกฤษ A-Level ให้เข้าใจง่าย" })}</div>
+<p style="margin:12px 0 0"><label class="check"><input type="checkbox" data-act="photo" ${cfg.profile.photo === false ? "" : "checked"}> แสดงรูปพี่เจได</label></p></section>
+
+<section class="box" aria-labelledby="h-blk"><h2 id="h-blk">เนื้อหา</h2><p class="hint">เรียงจากบนลงล่างตามหน้าจริง ลากที่จุดด้านซ้าย หรือกดลูกศร · กดที่ชื่อเพื่อแก้</p>
+<div class="blocks" id="blocks">${blocks.map((k, i) => `<article class="blk" data-i="${i}">
+<div class="bh"><span class="grip" draggable="true" data-drag="${i}" title="ลากเพื่อย้าย">${ui$("grip")}</span>
+<button class="bt" type="button" data-act="open" data-i="${i}" aria-expanded="${open.has(k)}" data-head="${i}">${headHTML(k, i)}</button>${tools(i, blocks.length)}</div>
+${open.has(k) ? `<div class="bb">${blockBody(k, i)}</div>` : ""}</article>`).join("") || `<p class="ok">ยังไม่มีเนื้อหา เพิ่มปุ่มแรกด้านล่าง</p>`}</div>
+<div class="adders"><button class="btn" type="button" data-act="add-button">+ ปุ่ม</button><button class="btn" type="button" data-act="add-heading">+ หัวข้อ</button><button class="btn" type="button" data-act="add-socials">+ ชิปโซเชียล</button></div></section>
+
+<section class="box" aria-labelledby="h-entry"><h2 id="h-entry">ลิงก์แปะ bio</h2><p class="hint">หน้าเดียวกันทุกลิงก์ แค่บอกสถิติว่าคนมาจากแพลตฟอร์มไหน เช่น แปะ <b>${E(site)}/tt</b> ใน bio TikTok</p>
+<div class="items">${entry.map((e, j) => `<div class="item three"><div class="slug"><span>/</span><input type="text" data-k="entry.${j}.name" data-lower value="${E(e.name)}" aria-label="ชื่อลิงก์" class="mono"></div>
+<input type="text" data-k="entry.${j}.title" value="${E(e.title)}" placeholder="ชื่อในสถิติ เช่น TikTok" aria-label="ชื่อที่แสดงในสถิติ">
+<div class="tools"><button class="btn sm" type="button" data-act="copy" data-v="${E(cfg.site + "/" + e.name)}">Copy</button>${tools(j, entry.length, "en-").replace('<div class="tools">', "").replace(/<\/div>$/, "")}</div></div>`).join("")}</div>
+<div class="adders"><button class="btn sm" type="button" data-act="add-entry">+ ลิงก์แปะ bio</button></div></section>
+
+<section class="box" aria-labelledby="h-short"><h2 id="h-short">ลิงก์ย่อ</h2><p class="hint">เปิดแล้วพาไปปลายทางทันที ไว้ใส่แคปชัน คอมเมนต์ หรือท้ายไฟล์ เช่น <b>${E(site)}/mock</b></p>
+<div class="items">${short.map((s, j) => `<div class="item"><div class="slug"><span>/</span><input type="text" data-k="short.${j}.name" data-lower value="${E(s.name)}" aria-label="ชื่อลิงก์ย่อ" class="mono"></div>
+<input type="url" data-k="short.${j}.url" value="${E(s.url)}" placeholder="https:// ปลายทาง" aria-label="ปลายทาง" class="mono">
+<div class="tools"><button class="btn sm" type="button" data-act="copy" data-v="${E(cfg.site + "/" + s.name)}">Copy</button>${tools(j, short.length, "sh-").replace('<div class="tools">', "").replace(/<\/div>$/, "")}</div></div>`).join("")}</div>
+<div class="adders"><button class="btn sm" type="button" data-act="add-short">+ ลิงก์ย่อ</button></div></section>
+
+<section class="box" aria-labelledby="h-chk"><h2 id="h-chk">ตรวจก่อนบันทึก</h2><div id="issues"></div>
+<div class="adders"><button class="btn sm" type="button" data-act="copy-json">Copy JSON</button></div><p class="note">ถ้าบันทึกในหน้านี้ไม่ได้ กด Copy JSON แล้วส่งให้ Claude แทน</p></section>
+</div>`;
+  renderIssues();
+}
+
+function renderIssues() {
+  const el = $("#issues");
+  if (!el || !cfg) return;
+  const { errs, warn } = R.check(cfg);
+  el.innerHTML = errs.length || warn.length
+    ? `<ul class="issues">${errs.map(t => `<li class="e">${E(t)}</li>`).join("")}${warn.map(t => `<li class="w">${E(t)}</li>`).join("")}</ul>${errs.length ? `<p class="note">แก้ข้อสีแดงก่อนถึงจะบันทึกได้</p>` : ""}`
+    : `<p class="ok">เรียบร้อย ไม่มีอะไรต้องแก้</p>`;
+}
+
+function renderStatus() {
+  const st = $("#status"), tx = $("#statusText"), save = $("#saveBtn");
+  const errs = cfg ? R.check(cfg).errs.length : 0;
+  st.className = "status";
+  let t;
+  if (loadState === "loading") t = "กำลังโหลด…";
+  else if (saving) t = "กำลังบันทึก…";
+  else if (note) { t = note; st.classList.add("bad"); }
+  else if (!db) t = "บันทึกที่นี่ไม่ได้ ใช้ Copy JSON แทน";
+  else if (!canWrite) t = "ดูได้อย่างเดียว (เฉพาะเจ้าของบันทึกได้)";
+  else if (dirty()) { t = errs ? `มีที่ต้องแก้ ${errs} ข้อ` : "ยังไม่ได้บันทึก"; st.classList.add(errs ? "bad" : "dirty"); }
+  else t = savedAt ? `บันทึกแล้ว ${thTime(savedAt)}` : "ยังไม่มีข้อมูล";
+  tx.textContent = t;
+  save.disabled = !db || !canWrite || saving || !dirty() || errs > 0;
+  const b = $("#banner");
+  if (remote) { b.hidden = false; b.innerHTML = `<p>มีการบันทึกใหม่จากอีกเครื่อง (${E(thTime(remote.savedAt))}) ขณะที่หน้านี้ยังมีที่แก้ค้างอยู่</p><button class="btn sm" type="button" data-act="take-remote">ใช้ฉบับใหม่</button><button class="btn sm" type="button" data-act="keep-mine">ใช้ของหน้านี้ต่อ</button>`; }
+  else if (justSaved) { b.hidden = false; b.innerHTML = `<p><b>บันทึกแล้ว</b> ขั้นต่อไป: พิมพ์บอก Claude ว่า "อัปเดตหน้ารวมลิงก์" Claude จะเอาขึ้นเว็บทดสอบให้ดูก่อน แล้วรอเจไดสั่ง merge</p><button class="btn sm" type="button" data-act="close-banner">ปิด</button>`; }
+  else if (restored) { b.hidden = false; b.innerHTML = `<p>เปิดแบบร่างที่ยังไม่ได้บันทึกจากครั้งก่อนให้แล้ว</p><button class="btn sm" type="button" data-act="revert">ทิ้งแบบร่าง</button><button class="btn sm" type="button" data-act="close-banner">ใช้ต่อ</button>`; }
+  else if (dirty() && db) { b.hidden = false; b.innerHTML = `<p>มีที่แก้ยังไม่ได้บันทึก</p><button class="btn sm" type="button" data-act="revert">ย้อนกลับไปฉบับที่บันทึก</button>`; }
+  else b.hidden = true;
+}
+let justSaved = false, restored = false;
+
+function changed({ editor = false } = {}) {
+  justSaved = false; note = "";
+  if (editor) renderEditor(); else { renderIssues(); refreshHeads(); }
+  renderPreview(); renderStatus(); saveDraft();
+}
+function refreshHeads() {
+  (cfg.blocks || []).forEach((k, i) => { const h = document.querySelector(`[data-head="${i}"]`); if (h) h.innerHTML = headHTML(k, i); });
+}
+
+/* ---------- แบบร่างในเครื่อง (กันลืมกดบันทึก) ---------- */
+let draftTimer;
+function saveDraft() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(() => { try { if (dirty()) localStorage.setItem(DRAFT_KEY, JSON.stringify({ base: savedAt, cfg })); else localStorage.removeItem(DRAFT_KEY); } catch (e) {} }, 400);
+}
+function readDraft() { try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || "null"); } catch (e) { return null; } }
+function clearDraft() { try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+
+/* ---------- พิมพ์ / คลิก ---------- */
+document.addEventListener("input", e => {
+  const t = e.target, k = t.dataset && t.dataset.k;
+  if (t.id === "pvDate") { pv.date = t.value; renderPreview(); return; }
+  if (!k || !cfg) return;
+  let v = t.type === "checkbox" ? t.checked : t.value;
+  if (t.hasAttribute("data-lower")) { const pos = t.selectionStart; v = v.toLowerCase().replace(/\s+/g, "-"); if (v !== t.value) { t.value = v; try { t.setSelectionRange(pos, pos); } catch (x) {} } }
+  setAt(k, v);
+  // ตั้งชื่อในสถิติของชิปให้เองจากชื่อ ถ้ายังเป็นชื่ออัตโนมัติ
+  const m = k.match(/^blocks\.(\d+)\.items\.(\d+)\.title$/);
+  if (m) { const s = cfg.blocks[+m[1]].items[+m[2]]; if (/^social-\d+$/.test(s.id) && slugOf(v) && !(cfg.blocks.some(b => (b.items || []).some(x => x !== s && x.id === slugOf(v))))) s.id = slugOf(v); }
+  changed();
+  if (/^(entry|short)\./.test(k)) { // ปุ่ม Copy ใช้ชื่อล่าสุด
+    const row = t.closest(".item"), c = row && row.querySelector('[data-act="copy"]');
+    const j = +k.split(".")[1], list = k.startsWith("entry") ? cfg.entry : cfg.short;
+    if (c) c.dataset.v = cfg.site + "/" + list[j].name;
+  }
+});
+
+function move(list, i, d) { const j = i + d; if (j < 0 || j >= list.length) return false; [list[i], list[j]] = [list[j], list[i]]; return true; }
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]");
+  if (!b) return;
+  const act = b.dataset.act, i = +b.dataset.i, v = b.dataset.v;
+  if (act !== "del" && !/del$/.test(act) && confirmDel != null) { confirmDel = null; }
+  const blocks = cfg && cfg.blocks;
+  switch (act) {
+    case "pane": document.body.dataset.pane = v; document.querySelectorAll('[data-act="pane"]').forEach(x => x.classList.toggle("on", x === b)); return;
+    case "pv-theme": pv.dark = v === "dark"; renderPreview(); return;
+    case "copy-json": return copyText(JSON.stringify(cfg, null, 2), b, "Copy JSON");
+    case "copy": return copyText(v, b, "Copy");
+    case "save": return save();
+    case "revert": cfg = savedJSON ? JSON.parse(savedJSON) : cfg; restored = false; clearDraft(); open.clear(); changed({ editor: true }); return;
+    case "take-remote": apply(remote); remote = null; clearDraft(); changed({ editor: true }); return;
+    case "keep-mine": remote = null; renderStatus(); return;
+    case "close-banner": justSaved = false; restored = false; renderStatus(); return;
+  }
+  if (!cfg) return;
+  switch (act) {
+    case "open": { const k = blocks[i]; open.has(k) ? open.delete(k) : open.add(k); renderEditor(); return; }
+    case "photo": cfg.profile.photo = b.checked ? undefined : false; if (b.checked) delete cfg.profile.photo; break;
+    case "up": case "down": move(blocks, i, act === "up" ? -1 : 1); break;
+    case "dup": { const c = clone(blocks[i]); if (c.type === "button") c.id = uniqueId(c.id.replace(/-\d+$/, "") || "btn"); if (c.items) c.items.forEach(s => { s.id = uniqueId("social"); }); blocks.splice(i + 1, 0, c); open.add(c); break; }
+    case "del": if (confirmDel !== String(i)) { confirmDel = String(i); renderEditor(); return; } open.delete(blocks[i]); blocks.splice(i, 1); confirmDel = null; break;
+    case "style": blocks[i].style = v; break;
+    case "size": if (v === "slim") blocks[i].size = "slim"; else delete blocks[i].size; break;
+    case "icon": blocks[i].icon = v; break;
+    case "badge": blocks[i].badge = v; break;
+    case "add-button": { const k = { type: "button", id: uniqueId("btn"), style: "card", icon: "link", title: "", note: "", badge: "", url: "" }; blocks.push(k); open.add(k); break; }
+    case "add-heading": { const k = { type: "heading", text: "" }; blocks.push(k); open.add(k); break; }
+    case "add-socials": { const k = { type: "socials", title: "ติดตาม " + (cfg.profile.name || ""), items: [] }; blocks.push(k); open.add(k); break; }
+    case "add-item": blocks[i].items = blocks[i].items || []; blocks[i].items.push({ id: uniqueId("social"), title: "", url: "" }); break;
+    case "add-entry": cfg.entry = cfg.entry || []; cfg.entry.push({ name: "", title: "" }); break;
+    case "add-short": cfg.short = cfg.short || []; cfg.short.push({ name: "", url: "" }); break;
+    default: {
+      const m = act.match(/^(it(\d+)-|en-|sh-)(up|down|del)$/);
+      if (!m) return;
+      const list = m[2] != null ? blocks[+m[2]].items : m[1] === "en-" ? cfg.entry : cfg.short;
+      if (m[3] === "del") { if (confirmDel !== m[1] + i) { confirmDel = m[1] + i; renderEditor(); return; } list.splice(i, 1); confirmDel = null; }
+      else move(list, i, m[3] === "up" ? -1 : 1);
+    }
+  }
+  changed({ editor: true });
+});
+
+async function copyText(text, btn, label) {
+  const done = t => { btn.textContent = t; setTimeout(() => { btn.textContent = label; }, 1500); };
+  try { await navigator.clipboard.writeText(text); done("Copied!"); }
+  catch (x) { const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (y) {} ta.remove(); done(ok ? "Copied!" : "Copy ไม่ได้"); }
+}
+
+/* ลากเพื่อย้ายบล็อก (คอม) */
+let dragFrom = null;
+document.addEventListener("dragstart", e => { const g = e.target.closest && e.target.closest("[data-drag]"); if (!g) return; dragFrom = +g.dataset.drag; g.closest(".blk").classList.add("drag"); try { e.dataTransfer.setData("text/plain", String(dragFrom)); e.dataTransfer.effectAllowed = "move"; } catch (x) {} });
+document.addEventListener("dragover", e => { const blk = e.target.closest && e.target.closest(".blk"); if (dragFrom == null || !blk) return; e.preventDefault(); document.querySelectorAll(".blk.over").forEach(x => x.classList.remove("over")); blk.classList.add("over"); });
+document.addEventListener("drop", e => { const blk = e.target.closest && e.target.closest(".blk"); if (dragFrom == null || !blk) return; e.preventDefault(); const to = +blk.dataset.i; const [k] = cfg.blocks.splice(dragFrom, 1); cfg.blocks.splice(to, 0, k); dragFrom = null; changed({ editor: true }); });
+document.addEventListener("dragend", () => { dragFrom = null; document.querySelectorAll(".blk.drag,.blk.over").forEach(x => x.classList.remove("drag", "over")); });
+
+/* ---------- บันทึก / โหลด (เก็บไว้ใน artifact ให้ Claude อ่านไปสร้างเว็บ) ---------- */
+function apply(d) {
+  cfg = clone(d.config); savedJSON = JSON.stringify(d.config); savedAt = d.savedAt || null;
+}
+async function save() {
+  if (!db || saving || !dirty()) return;
+  if (R.check(cfg).errs.length) { renderStatus(); return; }
+  saving = true; note = ""; renderStatus();
+  const at = new Date().toISOString(), body = { config: clone(cfg), savedAt: at };
+  pendingAt = at;
+  try {
+    await db.doc(DOC).set(body);
+    savedJSON = JSON.stringify(body.config); savedAt = at; justSaved = true; restored = false; clearDraft();
+  } catch (x) {
+    note = x && x.code === "invalid_argument" ? "บัญชีนี้บันทึกไม่ได้ (ต้องเป็นเจ้าของหน้านี้)" : x && x.code === "unavailable" ? "เชื่อมต่อไม่ได้ ลองกดบันทึกอีกครั้ง" : "บันทึกไม่สำเร็จ ลองอีกครั้ง";
+  }
+  saving = false; pendingAt = null; renderStatus();
+}
+
+function start(withDb) {
+  loadState = "ready";
+  if (!cfg) {
+    loadState = "empty";
+    $("#editor").innerHTML = `<div class="box empty"><b>ยังไม่มีหน้าที่บันทึกไว้</b>${withDb ? "บอก Claude ให้ใส่ค่าปัจจุบันของเว็บให้ หรือเริ่มจากหน้าตอนสร้างเครื่องมือนี้" : "เปิดหน้านี้ใน claude.ai ตอนล็อกอินเพื่อบันทึก"}<p><button class="btn" type="button" id="useFallback">เริ่มจากค่าตอนสร้างเครื่องมือนี้</button></p></div>`;
+    $("#useFallback").onclick = () => { cfg = clone(FALLBACK); savedJSON = withDb ? "" : JSON.stringify(cfg); loadState = "ready"; changed({ editor: true }); };
+    renderStatus(); return;
+  }
+  renderEditor(); renderPreview(); renderStatus();
+}
+
+(async function boot() {
+  document.body.dataset.pane = "edit";
+  let timer = setTimeout(() => { if (loadState === "loading") { note = "ยังเชื่อมต่อที่เก็บข้อมูลไม่ได้"; if (!cfg && FALLBACK) { cfg = clone(FALLBACK); savedJSON = JSON.stringify(cfg); } start(false); } }, 10000);
+  const claude = window.claude;
+  db = claude && claude.use ? await claude.use("db").catch(() => null) : null;
+  const user = claude && claude.use ? await claude.use("user").catch(() => null) : null;
+  canWrite = Boolean(db) && (user ? (await user.isOwner().catch(() => null)) !== false : true);
+  if (!db) { clearTimeout(timer); if (FALLBACK) { cfg = clone(FALLBACK); savedJSON = JSON.stringify(cfg); } start(false); return; }
+  let first = true;
+  db.doc(DOC).onSnapshot(snap => {
+    if (snap.metadata.fromCache && first && !snap.exists) return; // รอคำตอบจริง
+    clearTimeout(timer);
+    const d = snap.exists ? snap.data() : null;
+    if (first) {
+      first = false; if (note === "ยังเชื่อมต่อที่เก็บข้อมูลไม่ได้") note = "";
+      if (d && d.config) {
+        apply(d);
+        const dr = readDraft();
+        if (dr && dr.cfg && dr.base === savedAt && JSON.stringify(dr.cfg) !== savedJSON) { cfg = dr.cfg; restored = true; }
+      }
+      start(true); return;
+    }
+    if (!d || !d.config || d.savedAt === savedAt) return;
+    if (d.savedAt === pendingAt) return; // การบันทึกของหน้านี้เอง
+    if (dirty()) { remote = d; renderStatus(); return; }
+    apply(d); open.clear(); changed({ editor: true });
+  }, err => { clearTimeout(timer); note = "อ่านข้อมูลไม่ได้ ลองเปิดหน้าใหม่"; if (!cfg && FALLBACK) { cfg = clone(FALLBACK); savedJSON = JSON.stringify(cfg); } start(false); });
+})();
+window.addEventListener("beforeunload", e => { if (dirty() && db) { e.preventDefault(); e.returnValue = ""; } });
+</script>

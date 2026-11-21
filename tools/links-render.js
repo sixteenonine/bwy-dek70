@@ -99,6 +99,48 @@ ${(cfg.blocks || []).map(block).filter(Boolean).join("\n")}
     });
   }
 
-  return { esc, txt, ICON, LIGHT, DARK, PARTS, renderMain, applySchedule };
+  // ตรวจค่าก่อนสร้างหน้า (ผิดตรงไหนบอกเป็นภาษาคน) errs = สร้างไม่ได้, warn = สร้างได้แต่ควรแก้
+  const NAME_RE = /^[a-z0-9][a-z0-9-]{0,23}$/; // ต้องผ่าน clean() ของ lib/stats.js และเป็นชื่อไฟล์ได้
+  const RESERVED = ["home", "index", "fonts", "404", "og", "icon", "jedi", "links", "api", "stats"];
+  const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  function check(cfg) {
+    const errs = [], warn = [];
+    const url = (u, where) => {
+      if (!/^https:\/\/[^\s"<>]+$/.test(String(u || ""))) errs.push(`${where}: ลิงก์ต้องขึ้นต้นด้วย https:// (ได้ "${u || ""}")`);
+      else if (/example\.com/.test(u)) warn.push(`${where}: ยังเป็นลิงก์สมมติ ${u}`);
+    };
+    const name = (n, where) => { if (!NAME_RE.test(n || "") || RESERVED.includes(n)) errs.push(`${where}: ชื่อใช้ได้แค่ a-z 0-9 - ไม่เกิน 24 ตัว และห้ามใช้ ${RESERVED.join(" ")}`); };
+    if (!/^https:\/\/[a-z0-9.-]+$/.test(cfg.site || "")) errs.push("site ต้องเป็นแบบ https://ชื่อ.pages.dev (ไม่มี / ท้าย)");
+    if (!cfg.profile || !cfg.profile.name) errs.push("โปรไฟล์: ต้องมีชื่อ");
+    const ids = new Set();
+    const id = (v, where) => { name(v, where + " (ชื่อในสถิติ)"); if (ids.has(v)) errs.push(`${where}: ชื่อในสถิติ "${v}" ซ้ำกับปุ่มอื่น`); ids.add(v); };
+    (cfg.blocks || []).forEach((k, i) => {
+      const where = `บล็อกที่ ${i + 1}`;
+      if (k.type === "heading") { if (!k.text) errs.push(`${where}: หัวข้อต้องมีข้อความ`); return; }
+      if (k.type === "socials") {
+        (k.items || []).forEach((s, j) => { const w = `${where} ชิป ${s.title || j + 1}`; id(s.id, w); if (!s.title) errs.push(`${w}: ต้องมีชื่อ`); url(s.url, w); });
+        return;
+      }
+      if (k.type !== "button") { errs.push(`${where}: ไม่รู้จักบล็อกแบบ "${k.type}"`); return; }
+      const w = `${where} ${k.title || "(ปุ่มไม่มีชื่อ)"}`;
+      id(k.id, w);
+      if (!k.title) errs.push(`${w}: ปุ่มต้องมีชื่อ`);
+      if (k.icon && k.icon !== "none" && !ICON[k.icon]) errs.push(`${w}: ไม่มี icon "${k.icon}"`);
+      for (const d of ["from", "until"]) if (k[d] && !DATE_RE.test(k[d])) errs.push(`${w}: วันที่ต้องเป็นแบบ 2026-12-01`);
+      if (k.from && k.until && k.from > k.until) errs.push(`${w}: วันเริ่มอยู่หลังวันจบ`);
+      url(k.url, w);
+    });
+    const names = new Set();
+    for (const [list, label] of [[cfg.entry || [], "ลิงก์แปะ bio"], [cfg.short || [], "ลิงก์ย่อ"]]) list.forEach(s => {
+      const where = `${label} /${s.name || ""}`;
+      name(s.name, where);
+      if (names.has(s.name)) errs.push(`${where}: ชื่อซ้ำกับลิงก์อื่น`);
+      names.add(s.name);
+      if (label === "ลิงก์ย่อ") url(s.url, where);
+    });
+    return { errs, warn };
+  }
+
+  return { esc, txt, ICON, LIGHT, DARK, PARTS, renderMain, applySchedule, check, NAME_RE, RESERVED };
 }
 module.exports = linksRender;

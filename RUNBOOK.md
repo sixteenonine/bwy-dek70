@@ -126,6 +126,8 @@ node test/check-loader.js   # loader
 - ใช้โควตา D1: เปิดหน้า 1 ครั้ง = 1 แถว, กดปุ่ม 1 ครั้ง = 1 แถว, เปิดลิงก์ย่อ 1 ครั้ง = 1 แถว
 
 **แก้หน้า** ใช้ **Links Studio** (artifact ของเจได แก้แล้วกด บันทึก) แล้วบอก Claude ว่า "อัปเดตหน้ารวมลิงก์" Claude จะอ่านค่าที่บันทึก → รัน `node tools/make-links.js ไฟล์.json` → ขึ้น `test`
+  - Links Studio เก็บค่าไว้ใน artifact (ที่เก็บข้อมูล `site/config` อ่านได้เฉพาะเจ้าของ) Claude อ่านด้วย ArtifactData แล้วเขียนเป็นไฟล์ json
+  - แก้หน้าตา Links Studio: `tools/links-studio.html` แล้วสร้างด้วย `node tools/make-links-studio.js <ไฟล์>` แล้ว publish ทับ artifact เดิม (ลิงก์ artifact อยู่ที่เจได)
 - หรือแก้ `links/links.json` ตรงๆ แล้วรัน `node tools/make-links.js` (สร้าง `links/*.html` + `lib/links.js` ลิงก์ที่ลบออกจะลบไฟล์ให้)
 - `blocks` = เนื้อหาเรียงจากบนลงล่าง: `button` (style `main` = ปุ่มดำ / `card` = การ์ดขาว, size `slim`, icon, badge, from/until = วันเริ่ม/วันจบแบบ 2026-12-01 เวลาไทย, hidden), `heading`, `socials` (ชิป)
 - `entry` = ลิงก์แปะ bio · `short` = ลิงก์ย่อ
