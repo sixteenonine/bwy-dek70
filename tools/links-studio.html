@@ -110,6 +110,14 @@ input.mono { font-family: var(--mono); font-size: .88rem; }
 .icons button.on { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); font-weight: 600; }
 .chipset { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .chipset button { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 2px 10px; font-size: .8rem; cursor: pointer; }
+.pic-row { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+.pic-prev { width: 72px; height: 72px; border-radius: 14px; object-fit: cover; border: 1px solid var(--line); background: var(--soft); flex: none; }
+.pic-prev.wide { width: 180px; height: auto; max-width: 100%; }
+.pic-empty { width: 72px; height: 72px; border-radius: 14px; border: 1px dashed var(--line); display: grid; place-items: center; color: var(--mute); font-size: .74rem; flex: none; text-align: center; }
+.pic-tools { display: grid; gap: 8px; justify-items: start; min-width: 0; flex: 1; }
+.pic-tools .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.meter { height: 6px; border-radius: 3px; background: var(--soft); border: 1px solid var(--line); overflow: hidden; margin-top: 6px; }
+.meter i { display: block; height: 100%; background: var(--ink); }
 details.adv summary { cursor: pointer; color: var(--sub); font-size: .84rem; }
 details.adv[open] summary { margin-bottom: 10px; }
 .note { color: var(--mute); font-size: .78rem; margin: 4px 0 0; }
@@ -264,7 +272,9 @@ function headOf(k) {
   if (k.type === "heading") return { icon: ui$("heading"), title: k.text || "(หัวข้อว่าง)", sub: "หัวข้อ", main: false };
   if (k.type === "socials") return { icon: ui$("socials"), title: k.title || "ชิปโซเชียล", sub: (k.items || []).map(s => s.title).join(" · ") || "ยังไม่มีชิป", main: false };
   const flags = [k.style === "main" ? "ปุ่มเด่น" : "ปุ่มปกติ", k.size === "slim" ? "เตี้ย" : "", k.badge ? "ป้าย " + k.badge : "", k.from || k.until ? `แสดง ${k.from || "…"} ถึง ${k.until || "…"}` : ""].filter(Boolean);
-  return { icon: k.icon === "none" ? ui$("link") : `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${R.ICON[k.icon] || R.ICON.link}</svg>`, title: k.title || "(ปุ่มไม่มีชื่อ)", sub: flags.join(" · "), main: k.style === "main" };
+  if (k.image) flags.unshift(k.imageStyle === "cover" ? "รูปใหญ่" : "รูปเล็ก");
+  const icon = k.image ? `<img src="${E(k.image)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:9px">` : k.icon === "none" ? ui$("link") : `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${R.ICON[k.icon] || R.ICON.link}</svg>`;
+  return { icon, title: k.title || "(ปุ่มไม่มีชื่อ)", sub: flags.join(" · "), main: k.style === "main" && !k.image };
 }
 function headHTML(k, i) {
   const h = headOf(k);
@@ -293,7 +303,13 @@ ${field("ลิงก์ปลายทาง", p + "url", { type: "url", ph: "h
 <div class="opts"><div><div class="row-label">สไตล์</div>${seg("style", i, k.style === "main" ? "main" : "card", [["main", "ปุ่มเด่น"], ["card", "ปุ่มปกติ"]])}</div>
 <div><div class="row-label">ความสูง</div>${seg("size", i, k.size === "slim" ? "slim" : "normal", [["normal", "ปกติ"], ["slim", "เตี้ย"]])}</div>
 <label class="check"><input type="checkbox" data-k="${p}hidden" ${k.hidden ? "checked" : ""}> ซ่อนไว้ก่อน</label></div>
-<div><div class="row-label">icon</div><div class="icons">${iconBtns}</div></div>
+<div><div class="row-label">รูป (เว้นว่างได้)</div><div class="pic-row">
+${k.image ? `<img class="pic-prev${k.imageStyle === "cover" ? " wide" : ""}" src="${E(k.image)}" alt="รูปของปุ่มนี้">` : `<div class="pic-empty">ไม่มีรูป</div>`}
+<div class="pic-tools"><div class="acts"><label class="btn sm" for="img-${i}">${k.image ? "เปลี่ยนรูป" : "เลือกรูป"}</label><input id="img-${i}" type="file" accept="image/*" data-img="${i}" hidden>
+${k.image ? `<button class="btn sm danger" type="button" data-act="img-del" data-i="${i}">ลบรูป</button>` : ""}</div>
+${k.image ? seg("img-style", i, k.imageStyle === "cover" ? "cover" : "thumb", [["thumb", "รูปเล็กแทน icon"], ["cover", "รูปใหญ่ด้านบน"]]) : ""}
+<p class="note" id="img-note-${i}">${k.image ? `${Math.round(k.image.length * 0.75 / 1024)} KB · ` : ""}รูปเล็กตัดเป็นสี่เหลี่ยมจัตุรัส · รูปใหญ่กว้างเต็มปุ่ม (ตัดให้อยู่ระหว่างแนวนอน 2:1 ถึงแนวตั้ง 4:5)</p></div></div></div>
+${k.image ? "" : `<div><div class="row-label">icon (ถ้ามีรูป จะใช้รูปแทน)</div><div class="icons">${iconBtns}</div></div>`}
 <div class="fields"><div>${field("ป้ายเล็กข้างชื่อ (เว้นว่างได้)", p + "badge", { ph: "เช่น ใหม่" })}<div class="chipset">${BADGES.map(b => `<button type="button" data-act="badge" data-i="${i}" data-v="${E(b)}">${E(b)}</button>`).join("")}<button type="button" data-act="badge" data-i="${i}" data-v="">ไม่มีป้าย</button></div></div>
 <div><div class="row-label">แสดงเฉพาะช่วงวันที่ (เวลาไทย)</div><div class="fields">${field("ตั้งแต่", p + "from", { type: "date" })}${field("ถึง", p + "until", { type: "date" })}</div><p class="note">ว่างไว้ = แสดงตลอด · ลองดูได้ที่ "ดูเหมือนวันที่" เหนือมือถือ</p></div></div>
 <details class="adv"><summary>ขั้นสูง: ชื่อในสถิติ</summary><label class="f"><span>ชื่อที่ใช้นับยอด (a-z 0-9 -)</span><input type="text" class="mono" data-k="${p}id" data-lower value="${E(k.id)}"></label><p class="note">เปลี่ยนแล้วยอดเก่าจะแยกเป็นอีกแถวในสถิติ</p></details>`;
@@ -338,18 +354,26 @@ ${open.has(k) ? `<div class="bb">${blockBody(k, i)}</div>` : ""}</article>`).joi
   renderIssues();
 }
 
+// ตรวจของหน้านี้เพิ่ม: ที่เก็บ 1 ฉบับใส่ได้ไม่เกิน ~240 KB (รูปฝังรวมอยู่ในนั้น)
+const DOC_LIMIT = 240000;
+function checkAll() {
+  const r = R.check(cfg), size = JSON.stringify(cfg).length;
+  if (size > DOC_LIMIT) r.errs.push(`รูปรวมกันใหญ่เกินที่เก็บ (${Math.round(size / 1024)} / ${Math.round(DOC_LIMIT / 1024)} KB) ลองเปลี่ยนบางรูปเป็นรูปเล็ก หรือลบบางรูป`);
+  return Object.assign(r, { size });
+}
 function renderIssues() {
   const el = $("#issues");
   if (!el || !cfg) return;
-  const { errs, warn } = R.check(cfg);
+  const { errs, warn, size } = checkAll();
   el.innerHTML = errs.length || warn.length
     ? `<ul class="issues">${errs.map(t => `<li class="e">${E(t)}</li>`).join("")}${warn.map(t => `<li class="w">${E(t)}</li>`).join("")}</ul>${errs.length ? `<p class="note">แก้ข้อสีแดงก่อนถึงจะบันทึกได้</p>` : ""}`
     : `<p class="ok">เรียบร้อย ไม่มีอะไรต้องแก้</p>`;
+  el.innerHTML += `<p class="note">ใช้ที่เก็บไป ${Math.round(size / 1024)} / ${Math.round(DOC_LIMIT / 1024)} KB (ส่วนใหญ่คือรูป)</p><div class="meter"><i style="width:${Math.min(100, size / DOC_LIMIT * 100).toFixed(1)}%"></i></div>`;
 }
 
 function renderStatus() {
   const st = $("#status"), tx = $("#statusText"), save = $("#saveBtn");
-  const errs = cfg ? R.check(cfg).errs.length : 0;
+  const errs = cfg ? checkAll().errs.length : 0;
   st.className = "status";
   let t;
   if (loadState === "loading") t = "กำลังโหลด…";
@@ -436,6 +460,13 @@ document.addEventListener("click", async e => {
     case "size": if (v === "slim") blocks[i].size = "slim"; else delete blocks[i].size; break;
     case "icon": blocks[i].icon = v; break;
     case "badge": blocks[i].badge = v; break;
+    case "img-del": delete blocks[i].image; delete blocks[i].imageStyle; delete blocks[i].imageW; delete blocks[i].imageH; break;
+    case "img-style": {
+      const k = blocks[i];
+      if ((k.imageStyle === "cover" ? "cover" : "thumb") === v) return;
+      try { await setImage(k, originals.get(k) || await loadImg(k.image), v); } catch (x) { return; }
+      break;
+    }
     case "add-button": { const k = { type: "button", id: uniqueId("btn"), style: "card", icon: "link", title: "", note: "", badge: "", url: "" }; blocks.push(k); open.add(k); break; }
     case "add-heading": { const k = { type: "heading", text: "" }; blocks.push(k); open.add(k); break; }
     case "add-socials": { const k = { type: "socials", title: "ติดตาม " + (cfg.profile.name || ""), items: [] }; blocks.push(k); open.add(k); break; }
@@ -451,6 +482,59 @@ document.addEventListener("click", async e => {
     }
   }
   changed({ editor: true });
+});
+
+/* ---------- รูปของปุ่ม: ตัดและย่อในเครื่อง แล้วเก็บเป็น data: (Claude แยกเป็นไฟล์ตอนเอาขึ้นเว็บ) ---------- */
+const originals = new WeakMap(); // รูปต้นฉบับของรอบนี้ (สลับรูปเล็ก/ใหญ่ได้คมชัด ไม่ต้องเลือกใหม่)
+const loadImg = src => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+function encode(c, maxLen) {
+  for (const q of [0.82, 0.72, 0.62, 0.5]) {
+    let u = c.toDataURL("image/webp", q);
+    if (!u.startsWith("data:image/webp")) { // Safari บางรุ่นทำ webp ไม่ได้ ใช้ jpg บนพื้นขาว
+      const c2 = document.createElement("canvas"); c2.width = c.width; c2.height = c.height;
+      const x = c2.getContext("2d"); x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, c.width, c.height); x.drawImage(c, 0, 0);
+      u = c2.toDataURL("image/jpeg", q);
+    }
+    if (u.length <= maxLen) return u;
+  }
+  return null;
+}
+async function setImage(k, im, style) {
+  const w = im.naturalWidth, h = im.naturalHeight;
+  if (!w || !h) throw new Error("bad image");
+  const c = document.createElement("canvas"), x = c.getContext("2d");
+  let sx, sy, sw, sh;
+  if (style === "cover") {
+    const r = Math.min(2, Math.max(0.8, w / h)); // แนวนอนไม่เกิน 2:1 แนวตั้งไม่เกิน 4:5
+    sw = w / h > r ? h * r : w; sh = w / h > r ? h : w / r;
+    c.width = Math.min(720, Math.round(sw)); c.height = Math.round(c.width / r);
+  } else {
+    sw = sh = Math.min(w, h); c.width = c.height = Math.min(144, sw);
+  }
+  sx = (w - sw) / 2; sy = (h - sh) / 2;
+  x.imageSmoothingQuality = "high";
+  x.drawImage(im, sx, sy, sw, sh, 0, 0, c.width, c.height);
+  const url = encode(c, style === "cover" ? 120000 : 40000);
+  if (!url) throw new Error("too big");
+  k.image = url; k.imageStyle = style;
+  if (style === "cover") { k.imageW = c.width; k.imageH = c.height; } else { delete k.imageW; delete k.imageH; }
+}
+document.addEventListener("change", async e => {
+  const t = e.target;
+  if (!t.dataset || t.dataset.img == null || !cfg) return;
+  const k = cfg.blocks[+t.dataset.img], f = t.files && t.files[0];
+  if (!k || !f) return;
+  const note = $("#img-note-" + t.dataset.img);
+  if (note) note.textContent = "กำลังย่อรูป…";
+  const src = URL.createObjectURL(f);
+  try {
+    const im = await loadImg(src);
+    originals.set(k, im);
+    await setImage(k, im, k.imageStyle === "cover" ? "cover" : "thumb");
+    changed({ editor: true });
+  } catch (x) {
+    if (note) note.textContent = "เปิดรูปนี้ไม่ได้ ลองไฟล์ jpg หรือ png";
+  }
 });
 
 async function copyText(text, btn, label) {
@@ -472,7 +556,7 @@ function apply(d) {
 }
 async function save() {
   if (!db || saving || !dirty()) return;
-  if (R.check(cfg).errs.length) { renderStatus(); return; }
+  if (checkAll().errs.length) { renderStatus(); return; }
   saving = true; note = ""; renderStatus();
   const at = new Date().toISOString(), body = { config: clone(cfg), savedAt: at };
   pendingAt = at;

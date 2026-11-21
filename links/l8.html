@@ -68,7 +68,11 @@ main{max-width:480px;margin:0 auto;padding:calc(36px + env(safe-area-inset-top,0
 .chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .chips a{display:block;min-height:40px;padding:8px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--chip-shadow);color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem;line-height:1.5;-webkit-tap-highlight-color:transparent}
 .nw{white-space:nowrap}
-.b[hidden]{display:none}</style>
+.b[hidden]{display:none}
+.b .tile.pic{background:none;overflow:hidden}.b .tile.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.b.cover{flex-direction:column;align-items:stretch;gap:0;padding:8px}
+.b.cover .cv{display:block;width:100%;height:auto;border-radius:15px;background:var(--chip)}
+.b.cover .row{display:flex;align-items:center;gap:12px;padding:10px 6px 4px 8px}</style>
 </head>
 <body>
 <main>

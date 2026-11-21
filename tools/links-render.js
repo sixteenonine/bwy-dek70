@@ -63,18 +63,33 @@ function linksRender() {
 .chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .chips a{display:block;min-height:40px;padding:8px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--chip-shadow);color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem;line-height:1.5;-webkit-tap-highlight-color:transparent}
 .nw{white-space:nowrap}
-.b[hidden]{display:none}`;
+.b[hidden]{display:none}
+.b .tile.pic{background:none;overflow:hidden}.b .tile.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.b.cover{flex-direction:column;align-items:stretch;gap:0;padding:8px}
+.b.cover .cv{display:block;width:100%;height:auto;border-radius:15px;background:var(--chip)}
+.b.cover .row{display:flex;align-items:center;gap:12px;padding:10px 6px 4px 8px}`;
 
   // เนื้อหาหน้า: ส่วนหัว + บล็อก (ปุ่ม / หัวข้อ / ชิปโซเชียล) ตามลำดับใน links.json
   // ปุ่มที่ตั้งวันไว้ใส่ data-from / data-until ให้สคริปต์ในหน้าซ่อนตามวันที่ (เวลาไทย)
+  // รูปของปุ่ม: ในเว็บจริงเป็นไฟล์ img/... ในหน้าแก้ไขเป็น data: (ยังไม่ได้แยกเป็นไฟล์)
+  const imgSrc = p => (/^(data:|https:)/.test(p) ? p : "/" + p);
   function renderMain(cfg, photo) {
     const p = cfg.profile || {};
     const button = b => {
-      const cls = ["b", b.style === "main" ? "main" : "", b.size === "slim" ? "slim" : "", b.icon === "none" ? "center" : ""].filter(Boolean).join(" ");
+      const cover = b.image && b.imageStyle === "cover", thumb = b.image && !cover;
+      const plain = b.icon === "none" && !thumb; // ไม่มีทั้ง icon และรูปเล็ก: ชื่ออยู่กลางปุ่ม
+      const cls = ["b", b.style === "main" ? "main" : "", b.size === "slim" && !cover ? "slim" : "", plain && !cover ? "center" : "", cover ? "cover" : ""].filter(Boolean).join(" ");
       const when = (b.from ? ` data-from="${esc(b.from)}"` : "") + (b.until ? ` data-until="${esc(b.until)}"` : "");
-      const tile = b.icon === "none" ? "" : `<span class="tile">${svg(ICON[b.icon] || ICON.link)}</span>`;
+      const tile = thumb ? `<span class="tile pic"><img src="${esc(imgSrc(b.image))}" width="46" height="46" alt="" loading="lazy" decoding="async"></span>`
+        : plain || cover ? "" : `<span class="tile">${svg(ICON[b.icon] || ICON.link)}</span>`;
       const tag = b.badge ? `<span class="tag">${esc(b.badge)}</span>` : "";
-      return `<a class="${cls}" href="${esc(b.url)}" data-id="${esc(b.id)}"${when}>${tile}<span class="t"><b>${txt(b.title)}${tag}</b>${b.note ? `<small>${txt(b.note)}</small>` : ""}</span>${b.icon === "none" ? "" : svg(ARROW, "ico go")}</a>`;
+      const text = `<span class="t"><b>${txt(b.title)}${tag}</b>${b.note ? `<small>${txt(b.note)}</small>` : ""}</span>${plain && !cover ? "" : svg(ARROW, "ico go")}`;
+      const open = `<a class="${cls}" href="${esc(b.url)}" data-id="${esc(b.id)}"${when}>`;
+      if (cover) {
+        const wh = b.imageW && b.imageH ? ` width="${+b.imageW}" height="${+b.imageH}"` : "";
+        return `${open}<img class="cv" src="${esc(imgSrc(b.image))}"${wh} alt="" loading="lazy" decoding="async"><span class="row">${text}</span></a>`;
+      }
+      return `${open}${tile}${text}</a>`;
     };
     const block = k => {
       if (k.hidden) return "";
@@ -128,6 +143,10 @@ ${(cfg.blocks || []).map(block).filter(Boolean).join("\n")}
       if (k.icon && k.icon !== "none" && !ICON[k.icon]) errs.push(`${w}: ไม่มี icon "${k.icon}"`);
       for (const d of ["from", "until"]) if (k[d] && !DATE_RE.test(k[d])) errs.push(`${w}: วันที่ต้องเป็นแบบ 2026-12-01`);
       if (k.from && k.until && k.from > k.until) errs.push(`${w}: วันเริ่มอยู่หลังวันจบ`);
+      if (k.image) {
+        if (!/^(data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+|img\/[a-z0-9-]+\.(webp|jpg|png))$/.test(k.image)) errs.push(`${w}: รูปต้องเป็นไฟล์ webp / jpg / png`);
+        else if (k.image.length > 160000) errs.push(`${w}: รูปใหญ่เกินไป ลองรูปที่เล็กลง`);
+      }
       url(k.url, w);
     });
     const names = new Set();

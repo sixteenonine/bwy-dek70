@@ -52,11 +52,12 @@ function fakeD1() {
   const { DatabaseSync } = require("node:sqlite");
   const db = new DatabaseSync(":memory:");
   const stmt = (sql, args = []) => ({
+    sql,
     bind: (...a) => stmt(sql, a),
     run: async () => { db.prepare(sql).run(...args); return { success: true }; },
     all: async () => ({ results: db.prepare(sql).all(...args) }),
   });
-  return { db, prepare: sql => stmt(sql), batch: async list => { for (const s of list) await s.run(); return []; } };
+  return { db, prepare: sql => stmt(sql), batch: async list => { const out = []; for (const s of list) out.push(/^\s*SELECT/i.test(s.sql) ? await s.all() : await s.run()); return out; } };
 }
 
 async function serverSide() {
@@ -151,6 +152,15 @@ function linksSide() {
   const items = [el("2027-01-10", ""), el("", "2027-01-05"), el("2027-01-01", "2027-01-31")];
   R.applySchedule({ querySelectorAll: () => items }, Date.UTC(2027, 0, 5, 18)); // 6 ม.ค. 01:00 เวลาไทย
   ok(items[0].hidden && items[1].hidden && !items[2].hidden, "links: ปุ่มตั้งวัน ซ่อนก่อนวันเริ่มและหลังวันจบ ตามเวลาไทย");
+  // รูปของปุ่ม: รูปเล็กแทน icon / รูปใหญ่ด้านบน (ใส่ขนาดกันหน้ากระตุก) · ไฟล์รูปต้องมีจริง
+  const px = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+  const pic = R.renderMain({ profile: { name: "x" }, blocks: [{ type: "button", id: "a", title: "A", url: "https://a.b", image: "img/a-1.webp" }, { type: "button", id: "b", title: "B", url: "https://a.b", image: px, imageStyle: "cover", imageW: 720, imageH: 378 }] });
+  ok(pic.includes('<span class="tile pic"><img src="/img/a-1.webp"') && pic.includes(`class="cv" src="${px}" width="720" height="378"`), "links: ปุ่มใส่รูปได้ (รูปเล็กแทน icon / รูปใหญ่ด้านบน)");
+  const badImg = R.check({ ...cfg, blocks: [{ type: "button", id: "a", title: "A", url: "https://a.b", image: "javascript:alert(1)" }] }).errs.join(" ");
+  const tmpJson = path.join(require("os").tmpdir(), "bwy-links-img.json");
+  fs.writeFileSync(tmpJson, JSON.stringify({ ...cfg, blocks: [{ type: "button", id: "a", title: "A", url: "https://a.b", image: "img/nope-1.webp" }] }));
+  let missing = ""; try { ML.load(tmpJson); } catch (e) { missing = e.message; }
+  ok(/รูปต้องเป็นไฟล์/.test(badImg) && /ไม่มีไฟล์รูป/.test(missing), "links: รูปแปลก (ไม่ใช่ webp/jpg/png) หรือไฟล์รูปหายไป สร้างไม่ได้");
   // หน้าแก้ไข Links Studio สร้างได้ (ใส่ตัววาดหน้าตัวเดียวกับเว็บจริง)
   const tmp = path.join(require("os").tmpdir(), "bwy-links-studio.html");
   require("child_process").execFileSync(process.execPath, [path.join(root, "tools/make-links-studio.js"), tmp]);

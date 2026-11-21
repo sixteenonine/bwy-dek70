@@ -105,6 +105,8 @@ node test/check-loader.js   # loader
 
 **ป้ายลิงก์:** แปะลิงก์คนละแบบในแต่ละที่ เช่น `bwy-widget.pages.dev/?src=tiktok-bio`, `?src=ig-story-1201` (a-z 0-9 . _ - ยาวไม่เกิน 24 ตัว) จะเห็นในหัวข้อ "ป้ายลิงก์" ว่าโพสต์ไหนพาคนมา
 
+**ประหยัด CPU ของหน้า /stats** ให้ D1 รวมตัวเลข (GROUP BY) ส่งทีเดียว 4 คำสั่ง Function ได้แค่ผลรวมไม่กี่ร้อยแถว (เดิมดึงทุกแถวมารวมใน JS ช่วง 30 วันใช้ CPU ~80 ms เกินเพดาน 10 ms ของแผนฟรี ตอนนี้ ~2 ms) ห้ามกลับไปดึงทุกแถวมาไล่ใน JS
+
 **ข้อจำกัด**
 - Cloudflare แบบฟรี: Functions 100,000 ครั้ง/วัน, D1 เขียน 100,000 แถว/วัน (รีเซ็ต 07:00 เวลาไทย) **ไม่มีการตัดเงิน** เกินแล้วแค่หยุดนับจนรอบถัดไป Widget และหน้าเว็บใช้ได้ปกติ
 - ใช้ต่อวัน: คนเข้าเว็บ 1 คน ≈ 3–13 แถว (ยิ่งไปถึงขั้นท้ายยิ่งมาก) · Widget 1 ตัว = 1 แถว · แตะ 1 ครั้ง = 1 แถว
@@ -130,6 +132,8 @@ node test/check-loader.js   # loader
   - แก้หน้าตา Links Studio: `tools/links-studio.html` แล้วสร้างด้วย `node tools/make-links-studio.js <ไฟล์>` แล้ว publish ทับ artifact เดิม (ลิงก์ artifact อยู่ที่เจได)
 - หรือแก้ `links/links.json` ตรงๆ แล้วรัน `node tools/make-links.js` (สร้าง `links/*.html` + `lib/links.js` ลิงก์ที่ลบออกจะลบไฟล์ให้)
 - `blocks` = เนื้อหาเรียงจากบนลงล่าง: `button` (style `main` = ปุ่มดำ / `card` = การ์ดขาว, size `slim`, icon, badge, from/until = วันเริ่ม/วันจบแบบ 2026-12-01 เวลาไทย, hidden), `heading`, `socials` (ชิป)
+- ปุ่มใส่รูปได้: `image` (ไฟล์ `links/img/...`) + `imageStyle` `thumb` (รูปเล็กแทน icon) / `cover` (รูปใหญ่ด้านบน มี `imageW` `imageH`) · Links Studio ย่อรูปในเครื่องแล้วเก็บเป็น data: ตอนนำเข้า (`node tools/make-links.js ไฟล์.json`) จะแยกเป็นไฟล์ `img/<id>-<hash>.webp` ให้เอง รูปที่ไม่ใช้แล้วลบให้เอง
+- ส่งค่าปัจจุบันกลับเข้า Links Studio (เช่นหลังแก้ links.json ตรงๆ): `node tools/make-links.js --studio ไฟล์.json` แล้วเขียนลงที่เก็บ `site/config` ของ artifact
 - `entry` = ลิงก์แปะ bio · `short` = ลิงก์ย่อ
 - `id` / ชื่อ ใช้ได้แค่ a-z 0-9 - ไม่เกิน 24 ตัว (id ขึ้นในสถิติ เปลี่ยนแล้วยอดเก่าจะแยกเป็นอีกแถว) ลิงก์ต้องเป็น https://
 - หน้าตาอยู่ที่ `tools/links-render.js` (ใช้ร่วมกับตัวอย่างใน Links Studio)

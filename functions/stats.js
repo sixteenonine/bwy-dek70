@@ -181,21 +181,21 @@ function page(body) {
 const topbar = right => `<div class="top"><div class="brand"><span class="mark" aria-hidden="true">B</span>BearWithYou <span class="crumb">/ สถิติ</span></div><span class="sp"></span>${right || ""}</div>`;
 
 // แท็บ "หน้ารวมลิงก์" (bearwithyou.pages.dev): hub k1 = home / home:<ป้าย> (เปิดหน้า) หรือ id ปุ่ม (กด), k2 = แอป · link k1 = ชื่อลิงก์ย่อ
-function linksView({ prevRows, of, perDay, dayList, today, days, kpi, quota }) {
+function linksView({ of, perDay, prevSum, dayList, today, days, kpi, quota }) {
   const isOpen = r => r.k1 === "home" || r.k1.startsWith("home:");
   const hub = of("hub"), opens = hub.filter(isOpen), clicks = hub.filter(r => !isOpen(r)), shorts = of("link");
-  const prevHub = of("hub", prevRows), opened = sum(opens);
+  const opened = sum(opens);
   const site = LINKS.site, host = site.replace("https://", "");
   const srcOf = r => r.k1.slice(5);
   const kpis = `<div class="kpis">
-${kpi("users", "เปิดหน้ารวมลิงก์", opened, sum(prevHub.filter(isOpen)), `เทียบ ${days} วันก่อน`)}
-${kpi("tap", "กดปุ่ม", sum(clicks), sum(prevHub.filter(r => !isOpen(r))), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ครั้งต่อการเปิด` : `เทียบ ${days} วันก่อน`)}
-${kpi("link", "เปิดลิงก์ย่อ", sum(shorts), sum(of("link", prevRows)), `เทียบ ${days} วันก่อน`)}
+${kpi("users", "เปิดหน้ารวมลิงก์", opened, prevSum("hub", true), `เทียบ ${days} วันก่อน`)}
+${kpi("tap", "กดปุ่ม", sum(clicks), prevSum("hub", false), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ครั้งต่อการเปิด` : `เทียบ ${days} วันก่อน`)}
+${kpi("link", "เปิดลิงก์ย่อ", sum(shorts), prevSum("link"), `เทียบ ${days} วันก่อน`)}
 </div>`;
-  const CH = [["c-hub", "เปิดหน้า", opens], ["c-click", "กดปุ่ม", clicks], ["c-short", "ลิงก์ย่อ", shorts]];
+  const CH = [["c-hub", "เปิดหน้า", d => perDay("hub", d, 1)], ["c-click", "กดปุ่ม", d => perDay("hub", d, 0)], ["c-short", "ลิงก์ย่อ", d => perDay("link", d)]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CH.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
-  const charts = CH.map(([id, , list], i) => lineChart(id, dayList.map(d => [d, perDay(list, d)]), i > 0)).join("");
-  const table = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th>${CH.map(c => `<th>${c[1]}</th>`).join("")}</tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${CH.map(c => `<td>${fmt(perDay(c[2], d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
+  const charts = CH.map(([id, , at], i) => lineChart(id, dayList.map(d => [d, at(d)]), i > 0)).join("");
+  const table = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th>${CH.map(c => `<th>${c[1]}</th>`).join("")}</tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${CH.map(c => `<td>${fmt(c[2](d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
 
   // มาจากลิงก์ไหน (/tt /ig ...)
   const entryTitle = new Map(LINKS.entry.map(e => [e.name, e.title]));
@@ -237,34 +237,48 @@ export async function onRequestGet({ request, env }) {
   const days = [7, 14, 30].includes(+url.searchParams.get("d")) ? +url.searchParams.get("d") : 7;
   const ago = i => bkkDay(Date.now() - i * 864e5);
   const today = ago(0), yesterday = ago(1), from = ago(days - 1), prevFrom = ago(days * 2 - 1);
-  let rows = [];
-  try { rows = (await env.DB.prepare("SELECT day, kind, k1, k2, n FROM daily WHERE day >= ?1").bind(prevFrom).all()).results || []; }
-  catch (e) { if (/no such table/i.test(String(e && e.message || e))) await env.DB.prepare(SCHEMA).run(); else throw e; }
-  const all = rows.filter(r => r.day >= from), prevRows = rows.filter(r => r.day < from);
-  const of = (kind, list = all) => list.filter(r => r.kind === kind);
-  const perDay = (list, d) => sum(list.filter(r => r.day === d));
-  const visits = of("visit"), steps = of("step"), copies = of("copy"), active = of("active");
-  const latest = perDay(active, yesterday) ? yesterday : today, latestName = latest === today ? "วันนี้" : "เมื่อวาน";
-  const live = active.filter(r => r.day === latest);
+  // ให้ D1 รวมตัวเลขให้ (GROUP BY) Function ได้แค่ผลรวมไม่กี่ร้อยแถว ไม่ต้องไล่ทุกแถวเอง
+  // (ถ้าดึงทุกแถวมารวมใน JS ช่วง 30 วันใช้ CPU เกินเพดาน 10 ms ของแผนฟรี) · ส่งทีเดียว 4 คำสั่ง (batch)
+  const OPEN = "(kind = 'hub' AND (k1 = 'home' OR k1 LIKE 'home:%'))"; // เปิดหน้ารวมลิงก์ (ไม่ใช่กดปุ่ม)
+  const q = (sql, ...a) => env.DB.prepare(sql).bind(...a);
+  let all = [], prevRows = [], dayRows = [], activeRows = [];
+  try {
+    [all, prevRows, dayRows, activeRows] = (await env.DB.batch([
+      q("SELECT kind, k1, k2, SUM(n) AS n FROM daily WHERE day >= ?1 GROUP BY kind, k1, k2", from),
+      q(`SELECT kind, ${OPEN} AS o, SUM(n) AS n FROM daily WHERE day >= ?1 AND day < ?2 GROUP BY kind, o`, prevFrom, from),
+      q(`SELECT day, kind, ${OPEN} AS o, SUM(n) AS n FROM daily WHERE day >= ?1 GROUP BY day, kind, o`, from),
+      q("SELECT day, k1, k2, SUM(n) AS n FROM daily WHERE kind = 'active' AND day >= ?1 GROUP BY day, k1, k2", yesterday),
+    ])).map(r => (r && r.results) || []);
+  } catch (e) { if (/no such table/i.test(String(e && e.message || e))) await env.DB.prepare(SCHEMA).run(); else throw e; }
+  const byKind = new Map();
+  for (const r of all) { const l = byKind.get(r.kind); if (l) l.push(r); else byKind.set(r.kind, [r]); }
+  const of = kind => byKind.get(kind) || [];
+  const daily = new Map();
+  for (const r of dayRows) { const k = `${r.kind}|${r.o ? 1 : 0}|${r.day}`; daily.set(k, (daily.get(k) || 0) + r.n); }
+  const perDay = (kind, d, o = 0) => daily.get(`${kind}|${o}|${d}`) || 0; // ยอดของชนิดนั้นในวันนั้น
+  const prevSum = (kind, o) => sum(prevRows.filter(r => r.kind === kind && (o === undefined || Boolean(r.o) === o)));
+  const visits = of("visit"), steps = of("step"), copies = of("copy");
+  const latest = perDay("active", yesterday) ? yesterday : today, latestName = latest === today ? "วันนี้" : "เมื่อวาน";
+  const live = activeRows.filter(r => r.day === latest);
   const part = (s, i) => String(s).split(":")[i] || "-";
   const dayList = Array.from({ length: days }, (_, i) => ago(days - 1 - i)); // เก่า → ใหม่
 
   // การ์ดตัวเลขหลัก (เทียบกับช่วงก่อนหน้า, Widget ใช้งานเทียบวันก่อนหน้า)
-  const activeNow = perDay(of("active", rows), latest), activeBefore = perDay(of("active", rows), latest === today ? yesterday : ago(2));
+  const activeNow = perDay("active", latest), activeBefore = perDay("active", latest === today ? yesterday : ago(2));
   const kpi = (icon, label, value, prev, sub) => `<div class="kpi"><span class="k">${label}</span><span class="v">${fmt(value)}</span><span class="tile">${ico(icon)}</span><span class="s">${delta(value, prev)}${sub}</span></div>`;
   const kpis = `<div class="kpis">
 ${kpi("widget", "Widget ใช้งานจริง", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน")}
-${kpi("users", "คนเปิดหน้าติดตั้ง", sum(visits), sum(of("visit", prevRows)), `เทียบ ${days} วันก่อน`)}
-${kpi("copy", "กด Copy โค้ด", sum(copies), sum(of("copy", prevRows)), `เทียบ ${days} วันก่อน`)}
-${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), sum(of("new", prevRows)), "Widget ทำงานครั้งแรก")}
-${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prevRows)), `เทียบ ${days} วันก่อน`)}
+${kpi("users", "คนเปิดหน้าติดตั้ง", sum(visits), prevSum("visit"), `เทียบ ${days} วันก่อน`)}
+${kpi("copy", "กด Copy โค้ด", sum(copies), prevSum("copy"), `เทียบ ${days} วันก่อน`)}
+${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), prevSum("new"), "Widget ทำงานครั้งแรก")}
+${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), prevSum("tap"), `เทียบ ${days} วันก่อน`)}
 </div>`;
 
   // กราฟรายวัน (แท็บละ 1 ตัวเลข)
-  const CHARTS = [["c-active", "Widget ใช้งาน", active], ["c-visit", "เปิดหน้า", visits], ["c-new", "ติดตั้งใหม่", of("new")], ["c-tap", "แตะไป Drive", of("tap")]];
+  const CHARTS = [["c-active", "Widget ใช้งาน", "active"], ["c-visit", "เปิดหน้า", "visit"], ["c-new", "ติดตั้งใหม่", "new"], ["c-tap", "แตะไป Drive", "tap"]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CHARTS.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
-  const charts = CHARTS.map(([id, , list], i) => lineChart(id, dayList.map(d => [d, perDay(list, d)]), i > 0)).join("");
-  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td><td>${fmt(perDay(active, d))}</td><td>${fmt(perDay(visits, d))}</td><td>${fmt(perDay(copies, d))}</td><td>${fmt(perDay(of("new"), d))}</td><td>${fmt(perDay(of("tap"), d))}</td></tr>`).join("")}</table></div></details>`;
+  const charts = CHARTS.map(([id, , kind], i) => lineChart(id, dayList.map(d => [d, perDay(kind, d)]), i > 0)).join("");
+  const dailyTable = `<details class="table"><summary>ดูเป็นตาราง</summary><div class="scroll"><table><tr><th>วัน</th><th>Widget ใช้งาน</th><th>เปิดหน้า</th><th>Copy</th><th>ติดตั้งใหม่</th><th>แตะไป Drive</th></tr>${dayList.slice().reverse().map(d => `<tr><td>${thDate(d)}${d === today ? " (วันนี้)" : ""}</td>${["active", "visit", "copy", "new", "tap"].map(k => `<td>${fmt(perDay(k, d))}</td>`).join("")}</tr>`).join("")}</table></div></details>`;
 
   // หลุดขั้นไหน (หน้าแรก = จำนวนคนเปิดหน้า)
   const reach = k => (k === "visit" ? sum(visits) : sum(steps.filter(r => r.k1 === k)));
@@ -283,7 +297,7 @@ ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), sum(of("tap", prev
   const links = SHARE.map(([src, name]) => `<div class="link"><b>${name}<small>เข้ามา ${fmt(sum(of("src").filter(r => r.k1 === src)))} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`).join("");
 
   // โควตา: ตาราง WITHOUT ROWID บวกเลข 1 ครั้ง = เขียน 1 แถว ผลรวมของวันนี้จึงเท่ากับจำนวนแถวที่เขียนไป
-  const writes = perDay(all, today);
+  const writes = sum(dayRows.filter(r => r.day === today));
 
   const extra = [...group(of("fold"), r => r.k1).map(([k, n]) => [k === "why" ? "กล่อง ทำไมต้องโหลด Scriptable?" : k === "code" ? "กล่อง โค้ดนี้ปลอดภัยไหม?" : k, n]),
     ...group(steps.filter(r => ["theme", "options", "faq"].includes(r.k1)), r => r.k1).map(([k, n]) => [{ theme: "หน้า เปลี่ยนธีมสี", options: "หน้า ปรับแต่งด้วย Parameter", faq: "หน้า คำถามที่เจอบ่อย" }[k], n]),
@@ -319,7 +333,7 @@ ${card("", "เปิดดูเพิ่ม", bars(extra))}
 </section>
 <section class="view" id="v-links"${view === "links" ? "" : " hidden"}>
 <h1>หน้ารวมลิงก์</h1>${lead}
-${linksView({ all, prevRows, of, perDay, dayList, today, days, kpi, quota })}
+${linksView({ of, perDay, prevSum, dayList, today, days, kpi, quota })}
 </section>
 <p class="foot">ไม่มีรหัสเครื่อง ไม่มี IP ไม่มี cookie · เก็บเป็นตัวเลขรวมรายวันเท่านั้น</p>`);
 }
