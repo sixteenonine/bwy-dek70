@@ -126,6 +126,7 @@ async function serverSide() {
   ok(html.includes('data-view="links"') && html.includes('id="v-widget"') && html.includes('id="v-links" hidden') && LINKS.buttons.every(b => html.includes(b.title.replace(/&/g, "&amp;"))) && html.includes(`data-url="${LINKS.site}/mock"`) && LINKS.entry.every(e => html.includes(`data-url="${LINKS.site}/${e.name}"`)) && html.includes("/ig Instagram"), "stats: แท็บหน้ารวมลิงก์แยกจาก Widget มียอดกดทุกปุ่ม ที่มา (/ig) ลิงก์แปะ bio และลิงก์ย่อพร้อมปุ่ม Copy");
   const linksTab = await (await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456&v=links", { env })).text();
   ok(linksTab.includes('id="v-widget" hidden') && /href="\?k=[^"]*&d=14&v=links"/.test(linksTab), "stats: เปิด &v=links ได้แท็บหน้ารวมลิงก์ และเปลี่ยนช่วงวันแล้วยังอยู่แท็บเดิม");
+  ok(/class="chg up">\+\d/.test(html) && html.includes('src="/icons/apps/instagram.webp"') && ["tiktok", "instagram", "x", "threads", "lemon8"].every(k => fs.existsSync(path.join(root, "icons/apps", k + ".webp"))), "stats: แถบสรุปบอกเพิ่มวันนี้ (+ สีเขียว) และมี icon แอป (ไฟล์อยู่ครบ)");
   const empty = await call(ST.onRequestGet, "https://bwy-widget.pages.dev/stats?k=test-key-123456", { env: { DB: fakeD1(), STATS_KEY: "test-key-123456" } });
   ok(empty.status === 200 && !/undefined|NaN/.test(await empty.text()), "stats: ฐานข้อมูลว่าง (ยังไม่มีตาราง) ก็เปิดได้");
 }

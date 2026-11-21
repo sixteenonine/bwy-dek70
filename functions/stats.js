@@ -30,16 +30,19 @@ const ICON = {
 const ico = (k, cls = "") => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>`;
 
 const sum = rows => rows.reduce((a, r) => a + r.n, 0);
+// icon แอป (ไฟล์ static ใน icons/apps/ ของเว็บนี้) ชื่อในสถิติหลายแบบ (tiktok / tt / bio-tt) ชี้ไฟล์เดียวกัน
+const APP_ICON = { tiktok: "tiktok", tt: "tiktok", instagram: "instagram", ig: "instagram", x: "x", threads: "threads", th: "threads", lemon8: "lemon8", l8: "lemon8" };
+const appIco = k => { const f = APP_ICON[String(k).replace(/^bio-/, "")]; return f ? `<img class="ai" src="/icons/apps/${f}.webp" width="18" height="18" alt="">` : ""; };
 function group(rows, key) {
   const m = new Map();
   rows.forEach(r => { const k = key(r); m.set(k, (m.get(k) || 0) + r.n); });
   return [...m.entries()].sort((a, b) => b[1] - a[1]);
 }
 // รายการแบบชื่อ + ตัวเลข แล้วมีแถบด้านล่าง
-function bars(list, name = x => x) {
+function bars(list, name = x => x, icon = () => "") {
   if (!list.length) return `<p class="empty">ยังไม่มีข้อมูล</p>`;
   const max = Math.max(...list.map(x => x[1]), 1), all = list.reduce((a, x) => a + x[1], 0) || 1;
-  return `<ul class="bars">${list.map(([k, n]) => `<li><span class="bl">${esc(name(k))}</span><span class="bn">${fmt(n)} <small>${Math.round(n / all * 100)}%</small></span><span class="track"><i style="width:${Math.max(1.5, n / max * 100).toFixed(1)}%"></i></span></li>`).join("")}</ul>`;
+  return `<ul class="bars">${list.map(([k, n]) => `<li><span class="bl">${icon(k)}${esc(name(k))}</span><span class="bn">${fmt(n)} <small>${Math.round(n / all * 100)}%</small></span><span class="track"><i style="width:${Math.max(1.5, n / max * 100).toFixed(1)}%"></i></span></li>`).join("")}</ul>`;
 }
 const card = (cls, title, html, { note = "", aside = "" } = {}) =>
   `<section class="card ${cls}"><header><h2>${title}</h2>${aside}</header>${html}${note ? `<p class="note">${note}</p>` : ""}</section>`;
@@ -65,9 +68,10 @@ function gauge(pct) {
   return `<svg class="gauge" viewBox="0 0 200 116" role="img" aria-label="ใช้โควตาไป ${v.toFixed(1)}%"><path class="gt" d="M20 100a80 80 0 0 1 160 0"/><path class="gv" d="M20 100a80 80 0 0 1 160 0" stroke-dasharray="${(len * v / 100).toFixed(1)} ${len.toFixed(1)}"/>
 <text x="100" y="92" text-anchor="middle" class="gp">${v < 10 ? v.toFixed(1) : Math.round(v)}%</text></svg>`;
 }
-// แถบสรุปด้านบน (ตัวเลขสำคัญ 3 ตัว) item = [ชื่อ, ค่า, ค่าก่อนหน้า (null = ไม่เทียบ), บรรทัดเล็ก, หน่วย]
+// แถบสรุปด้านบน (ตัวเลขสำคัญ 3 ตัว) item = { label, value (ตัวเลขหรือข้อความ), unit, change (เพิ่ม/ลด), when, sub }
+const chg = (n, when) => `<span class="chg ${n > 0 ? "up" : n < 0 ? "down" : "flat"}">${n > 0 ? "+" : n < 0 ? "−" : "±"}${fmt(Math.abs(n))}</span><span>${when}</span>`;
 function hero(items, warn = "") {
-  return `<section class="hero" aria-label="สรุป">${items.map(([label, value, prev, sub, unit = ""]) => `<div class="hk"><span class="k">${label}</span><span class="v${typeof value === "string" ? " txt" : ""}">${typeof value === "string" ? esc(value) : fmt(value)}${unit ? `<small class="u">${unit}</small>` : ""}</span><span class="s">${prev === null ? "" : delta(value, prev)}${sub}</span></div>`).join("")}${warn ? `<p class="warn">${warn}</p>` : ""}</section>`;
+  return `<section class="hero" aria-label="สรุป">${items.map(it => `<div class="hk"><span class="k">${it.label}</span><span class="v${typeof it.value === "string" ? " txt" : ""}">${typeof it.value === "string" ? esc(it.value) : fmt(it.value)}${it.unit ? `<small class="u">${it.unit}</small>` : ""}</span><span class="s">${it.change === undefined ? "" : chg(it.change, it.when)}${it.sub ? `<span>${it.sub}</span>` : ""}</span></div>`).join("")}${warn ? `<p class="warn">${warn}</p>` : ""}</section>`;
 }
 const tier = (title, desc = "") => `<div class="tier"><h2>${title}</h2>${desc ? `<p>${desc}</p>` : ""}</div>`;
 const more = (n, html) => `<details class="more"><summary>รายละเอียดเพิ่มเติม <small>${n} การ์ด · ไม่ต้องดูทุกวัน</small></summary>${html}</details>`;
@@ -83,8 +87,8 @@ const CSS = `
 @font-face{font-family:"Prompt";font-weight:600;src:url(/guide/fonts/prompt-thai-600.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
 @font-face{font-family:"Prompt";font-weight:400;src:url(/guide/fonts/prompt-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193;font-display:swap}
 @font-face{font-family:"Prompt";font-weight:600;src:url(/guide/fonts/prompt-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193;font-display:swap}
-:root{color-scheme:light;--bg:#F4F4F5;--card:#FFFFFF;--soft:#F7F7F8;--line:#EAEAEC;--ink:#0B0B0C;--sub:#6B6B70;--mute:#A3A3A8;--track:#EFEFF1;--shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.18);--tool:#ECECEE;--hl:rgba(255,255,255,.14);--hc:rgba(255,255,255,.12);--dash:#C8C8CD}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0F0F11;--card:#1A1A1D;--soft:#222226;--line:#2B2B30;--ink:#F4F4F6;--sub:#A3A3AA;--mute:#6E6E76;--track:#2A2A2F;--shadow:0 1px 0 rgba(255,255,255,.03) inset;--tool:#16161A;--hl:rgba(0,0,0,.12);--hc:rgba(0,0,0,.08);--dash:#3C3C43}}
+:root{color-scheme:light;--bg:#F4F4F5;--card:#FFFFFF;--soft:#F7F7F8;--line:#EAEAEC;--ink:#0B0B0C;--sub:#6B6B70;--mute:#A3A3A8;--track:#EFEFF1;--shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.18);--tool:#ECECEE;--hl:rgba(255,255,255,.14);--hc:rgba(255,255,255,.12);--dash:#C8C8CD;--up:#5BE08A;--up-bg:rgba(91,224,138,.16);--down:#FF8A80;--down-bg:rgba(255,138,128,.16)}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0F0F11;--card:#1A1A1D;--soft:#222226;--line:#2B2B30;--ink:#F4F4F6;--sub:#A3A3AA;--mute:#6E6E76;--track:#2A2A2F;--shadow:0 1px 0 rgba(255,255,255,.03) inset;--tool:#16161A;--hl:rgba(0,0,0,.12);--hc:rgba(0,0,0,.08);--dash:#3C3C43;--up:#15803D;--up-bg:rgba(21,128,61,.12);--down:#B42318;--down-bg:rgba(180,35,24,.1)}}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--ink);font:15px/1.5 "Prompt",-apple-system,BlinkMacSystemFont,"Sukhumvit Set","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 main{max-width:1180px;margin:0 auto;padding:22px 16px 56px}
 .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:600}
@@ -142,8 +146,10 @@ table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:
 .hero .hk{display:grid;gap:4px;align-content:start;min-width:0}.hero .hk+.hk{border-left:1px solid var(--hl);padding-left:20px}
 .hero .k{font-size:.86rem;opacity:.75}.hero .v{font-size:2.5rem;line-height:1.08;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .hero .v.txt{font-size:1.3rem;line-height:1.3;padding:6px 0 4px}.hero .v .u{font-size:.95rem;font-weight:400;opacity:.75;margin-left:8px}
-.hero .s{font-size:.8rem;opacity:.8;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.hero .s{font-size:.8rem;opacity:.85;display:flex;gap:4px 8px;align-items:center;flex-wrap:wrap}
 .hero .delta{background:var(--hc);border-color:transparent;color:inherit}.hero .delta.flat{color:inherit;opacity:.8}
+.chg{font-weight:700;padding:1px 9px;border-radius:999px;font-variant-numeric:tabular-nums;font-size:.86rem}.chg.up{color:var(--up);background:var(--up-bg)}.chg.down{color:var(--down);background:var(--down-bg)}.chg.flat{background:var(--hc)}
+.ai{width:18px;height:18px;border-radius:5px;vertical-align:-4px;margin-right:8px;box-shadow:0 0 0 1px var(--line)}
 .hero .warn{grid-column:1/-1;border-top:1px solid var(--hl);padding-top:12px;font-size:.86rem;font-weight:600}
 @media (max-width:700px){.hero{grid-template-columns:minmax(0,1fr);gap:10px;padding:16px 18px}.hero .hk{grid-template-columns:minmax(0,1fr) auto;align-items:baseline;column-gap:12px}.hero .k{grid-column:1}.hero .v{grid-column:2;grid-row:1/span 2;font-size:2rem;text-align:right}.hero .v.txt{font-size:1.05rem;padding:0;max-width:11em}.hero .s{grid-column:1}.hero .hk+.hk{border-left:0;padding-left:0;border-top:1px solid var(--hl);padding-top:10px}}
 .tier{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:26px 4px 10px}.tier h2{font-size:.95rem;font-weight:600;margin:0}.tier p{margin:0;color:var(--mute);font-size:.8rem}
@@ -233,23 +239,23 @@ ${ids.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(su
 
   // ลิงก์ให้กด Copy
   const topApp = list => { const g = group(list, r => r.k2)[0]; return g ? ` · ส่วนใหญ่จาก ${esc(APP[g[0]] || g[0])}` : ""; };
-  const row = (name, link, list, verb) => `<div class="link"><b>${esc(name)}<small>${verb} ${fmt(sum(list))} ครั้ง${topApp(list)}</small></b><button type="button" data-url="${esc(link)}" aria-label="Copy ลิงก์ ${esc(name)}">Copy</button><code>${esc(link.replace("https://", ""))}</code></div>`;
-  const entryLinks = LINKS.entry.map(e => row(e.title, `${site}/${e.name}`, opens.filter(r => srcOf(r) === e.name), "เปิด")).join("") + row("ไม่ติดป้าย", `${site}/`, opens.filter(r => !srcOf(r)), "เปิด");
+  const row = (name, link, list, verb, key = "") => `<div class="link"><b>${appIco(key)}${esc(name)}<small>${verb} ${fmt(sum(list))} ครั้ง${topApp(list)}</small></b><button type="button" data-url="${esc(link)}" aria-label="Copy ลิงก์ ${esc(name)}">Copy</button><code>${esc(link.replace("https://", ""))}</code></div>`;
+  const entryLinks = LINKS.entry.map(e => row(e.title, `${site}/${e.name}`, opens.filter(r => srcOf(r) === e.name), "เปิด", e.name)).join("") + row("ไม่ติดป้าย", `${site}/`, opens.filter(r => !srcOf(r)), "เปิด");
   const shortNames = [...new Set([...LINKS.short.map(x => x.name), ...shorts.map(r => r.k1)])];
   const shortLinks = shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => row("/" + n, `${site}/${n}`, list, "เปิด")).join("") || `<p class="empty">ยังไม่มีลิงก์ย่อ</p>`;
 
   const top = ids.find(([, list]) => sum(list) > 0);
   return `${hero([
-    ["เครื่องที่เปิดหน้ารวมลิงก์", opened, prevSum("hub", true), `เทียบ ${days} วันก่อน`],
-    ["กดปุ่ม", sum(clicks), prevSum("hub", false), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ปุ่มต่อเครื่อง` : `เทียบ ${days} วันก่อน`],
-    ["ปุ่มที่คนกดมากที่สุด", top ? titles.get(top[0]) || top[0] : "ยังไม่มีคนกด", null, top ? `${fmt(sum(top[1]))} เครื่อง` : ""],
+    { label: "เปิดหน้ารวมลิงก์", value: opened, unit: "เครื่อง", change: perDay("hub", today, 1), when: "วันนี้" },
+    { label: "กดปุ่ม", value: sum(clicks), unit: "ครั้ง", change: perDay("hub", today, 0), when: "วันนี้", sub: opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ปุ่มต่อเครื่อง` : "" },
+    { label: "ปุ่มที่คนกดมากที่สุด", value: top ? titles.get(top[0]) || top[0] : "ยังไม่มีคนกด", sub: top ? `${fmt(sum(top[1]))} ครั้ง` : "" },
   ], warn)}
 ${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
 <div class="grid">
-${card("s6", "กดปุ่มไหน", bars(ids.map(([id, list]) => [id, sum(list)]), id => titles.get(id) || id), { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกตามแอปดูในรายละเอียดเพิ่มเติมด้านล่าง" })}
-${card("s6", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (/tt /ig ...)" })}
+${card("s6", "กดปุ่มไหน", bars(ids.map(([id, list]) => [id, sum(list)]), id => titles.get(id) || id, appIco), { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกตามแอปดูในรายละเอียดเพิ่มเติมด้านล่าง" })}
+${card("s6", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName, appIco), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (/tt /ig ...)" })}
 ${card("s8", "รายวัน", charts + table, { aside: tabs })}
-${card("s4", "เปิดเว็บจาก", bars(group(opens, r => r.k2), a => APP[a] || a), { note: "นับทุกเครื่องที่เปิดหน้ารวมลิงก์ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s4", "เปิดเว็บจาก", bars(group(opens, r => r.k2), a => APP[a] || a, appIco), { note: "นับทุกเครื่องที่เปิดหน้ารวมลิงก์ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
 </div>
 ${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
 <div class="grid">
@@ -319,10 +325,10 @@ export async function onRequestGet({ request, env }) {
   // แต่ละแอป: เข้าเว็บ → กด Copy → ถึงหน้าเสร็จ
   const appRows = group(visits, r => r.k1).map(([a, n]) => {
     const c = sum(copies.filter(r => r.k2 === a)), d = sum(steps.filter(r => r.k1 === "done" && r.k2 === a));
-    return `<tr><td>${esc(APP[a] || a)}</td><td>${fmt(n)}</td><td>${fmt(c)}</td><td>${fmt(d)}</td><td>${Math.round(d / (n || 1) * 100)}%</td></tr>`;
+    return `<tr><td>${appIco(a)}${esc(APP[a] || a)}</td><td>${fmt(n)}</td><td>${fmt(c)}</td><td>${fmt(d)}</td><td>${Math.round(d / (n || 1) * 100)}%</td></tr>`;
   }).join("");
 
-  const links = SHARE.map(([src, name]) => `<div class="link"><b>${name}<small>เข้ามา ${fmt(sum(of("src").filter(r => r.k1 === src)))} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`).join("");
+  const links = SHARE.map(([src, name]) => `<div class="link"><b>${appIco(src)}${name}<small>เข้ามา ${fmt(sum(of("src").filter(r => r.k1 === src)))} คน</small></b><button type="button" data-url="${SITE}?src=${src}" aria-label="Copy ลิงก์ ${name}">Copy</button><code>${SITE.replace("https://", "")}?src=${src}</code></div>`).join("");
 
   // โควตา: ตาราง WITHOUT ROWID บวกเลข 1 ครั้ง = เขียน 1 แถว ผลรวมของวันนี้จึงเท่ากับจำนวนแถวที่เขียนไป
   const writes = sum(dayRows.filter(r => r.day === today));
@@ -343,17 +349,17 @@ ${views}
 <section class="view" id="v-widget"${view === "widget" ? "" : " hidden"}>
 <h1>Widget</h1>${lead}
 ${hero([
-    ["เปิดเว็บ", sum(visits), prevSum("visit"), `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}% · เทียบ ${days} วันก่อน`, "เครื่อง"],
-    ["ติดตั้งจริง", sum(of("new")), prevSum("new"), `นับจากตัว Widget · เทียบ ${days} วันก่อน`, "เครื่อง"],
-    ["มี Widget", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน", "อัน"],
+    { label: "เปิดเว็บ", value: sum(visits), unit: "เครื่อง", change: perDay("visit", today), when: "วันนี้", sub: `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}%` },
+    { label: "ติดตั้งจริง", value: sum(of("new")), unit: "เครื่อง", change: perDay("new", today), when: "วันนี้" },
+    { label: "มี Widget", value: activeNow, unit: "อัน", change: activeNow - activeBefore, when: latest === today ? "จากเมื่อวาน (วันนี้ยังนับไม่ครบ)" : "เมื่อวาน เทียบวันก่อน" },
   ], warn)}
 ${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
 <div class="grid">
 ${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "มี Widget = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
-${card("s4", "เปิดเว็บจาก", bars(group(visits, r => r.k1), a => APP[a] || a), { note: "นับทุกเครื่องที่เปิดเว็บ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
+${card("s4", "เปิดเว็บจาก", bars(group(visits, r => r.k1), a => APP[a] || a, appIco), { note: "นับทุกเครื่องที่เปิดเว็บ แยกตามแอปที่ใช้เปิด ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
 ${card("s12", "ติดตั้งสำเร็จ", `<div class="scroll"><table><tr><th>เปิดเว็บจาก</th><th>เปิดเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`, { note: "แยกตามแอปที่ใช้เปิดเว็บ · สำเร็จ = ถึงหน้าเสร็จเทียบกับเปิดเว็บ" })}
 ${card("s7", "หลุดขั้นไหน", funnel, { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เข้าๆ ออกๆ ไม่นับซ้ำ) เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
-${card("s5", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)), { note: "มาจากลิงก์ไหน (นับเฉพาะลิงก์ที่มีป้าย) · bio-tt = มาจาก bio TikTok ผ่านหน้ารวมลิงก์" })}
+${card("s5", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1), x => x, appIco), { note: "มาจากลิงก์ไหน (นับเฉพาะลิงก์ที่มีป้าย) · bio-tt = มาจาก bio TikTok ผ่านหน้ารวมลิงก์" })}
 </div>
 ${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
 <div class="grid">
