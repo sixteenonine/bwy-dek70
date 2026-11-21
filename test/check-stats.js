@@ -114,6 +114,7 @@ async function serverSide() {
   ok(get("active", "small:small:dark", "7.8.8:3:tgat") === 1 && get("active", "medium:mediumbar:light", "7.8.8:3:-") === 1 && get("new", "small") === 1 && get("tap", "small") === 1, "server: Widget ใช้งาน (ขนาด ธีม เวอร์ชัน Parameter ในแถวเดียว) เครื่องใหม่ และการแตะ");
   ok(get("hub", "home", "tiktok") === 1 && get("hub", "home:ig", "instagram") === 1 && !rows.some(r => r.kind === "src" && r.k1 === "ig") && get("hub", "mock", "tiktok") === 1 && get("link", "mock", "instagram") === 1 && get("link", "other", "x") === 1, "server: นับหน้ารวมลิงก์ (เปิดหน้า + มาจาก /ig ในแถวเดียว / กดปุ่ม) และลิงก์ย่อ แยกแอป กรองชื่อแปลกเป็น other");
   const L = await imp("lib/stats.js");
+  ok(L.appFrom(SA, "bearwithyou.pages.dev") === "links" && L.appFrom(TT, "bearwithyou.pages.dev") === "tiktok", "server: มาจากหน้ารวมลิงก์ผ่าน Safari นับเป็น หน้ารวมลิงก์ (ในแอป TikTok ยังนับเป็น TikTok)");
   ok(L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Barcelona 300.0.0.0") === "threads" && L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Lemon8/6.0 BytedanceWebview") === "lemon8" && L.appFrom("Mozilla/5.0 (iPhone) Safari/604.1", "www.threads.net") === "threads", "server: รู้จัก Threads และ Lemon8 (ไม่ปนกับ TikTok)");
   ok(!JSON.stringify(rows).includes("Mozilla") && !JSON.stringify(rows).includes("Instagram 350"), "server: ไม่เก็บ User-Agent ลงฐานข้อมูล");
 
@@ -144,6 +145,11 @@ function linksSide() {
   ok((cfg.entry || []).every(e => { const h = out[`links/${e.name}.html`]; return h && h.includes(`var SRC=${JSON.stringify(e.name)};`) && h.includes(`<link rel="canonical" href="${cfg.site}/">`); }), "links: ลิงก์แปะ bio (/tt /ig ...) เป็นหน้าเดียวกัน ติดป้ายที่มาให้สถิติ");
   ok((cfg.short || []).every(s => { const h = out[`links/${s.name}.html`]; return h.includes(`location.replace(${JSON.stringify(s.url)})`) && h.includes(`url=${amp(s.url)}`) && h.includes(`["link",${JSON.stringify(s.name)}]`); }), "links: ลิงก์ย่อทุกอันพาไปปลายทาง (มีสำรองกรณีไม่มี JS) และส่งสัญญาณนับ");
   ok(Object.keys(out).filter(f => f.endsWith(".html")).every(f => out[f].includes('"https://bwy-widget.pages.dev/api/e"') && out[f].includes('"https://test.bwy-widget.pages.dev/api/e"')), "links: ส่งสถิติไป bwy-widget (เว็บทดสอบส่งไปเว็บทดสอบ)");
+  // นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เครื่องจำเอง ไม่มีรหัสเครื่อง) ทั้งหน้ารวมลิงก์ ลิงก์ย่อ และหน้าติดตั้ง Widget
+  ok(hub.includes('if(once("home"))send([["hub","home"]],SRC)') && hub.includes('a&&once("b:"+') && (cfg.short || []).every(s => out[`links/${s.name}.html`].includes(`if(once("l:${s.name}"))`)) && !/cookie|deviceId|uuid/i.test(hub.replace(/ไม่มี cookie/g, "")), "links: เปิดหน้า กดปุ่ม และลิงก์ย่อ นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (ไม่มีรหัสเครื่อง)");
+  const guide = fs.readFileSync(path.join(root, "index.html"), "utf8");
+  ok(guide.includes('localStorage.setItem("bwy-seen", JSON.stringify({ d: DAY, k: seen }))') && !guide.includes("sessionStorage"), "index.html: หน้าติดตั้ง Widget นับเครื่องละไม่เกิน 1 ครั้งต่อวัน");
+  ok(out["links/tt.html"].includes('u.searchParams.set("src",((u.searchParams.get("src")||"bio")+"-"+SRC)'), "links: ปุ่มไปหน้า Widget บอกต่อว่ามาจาก bio ของแอปไหน (bio-tt)");
   ok(!fs.existsSync(path.join(root, "links/functions")) && !fs.existsSync(path.join(root, "links/_routes.json")), "links: เป็นไฟล์ static ล้วน ไม่มี Functions");
   const hdr = fs.readFileSync(path.join(root, "links/_headers"), "utf8");
   ok(/\/img\/\*\n\s+Cache-Control: public, max-age=31536000, immutable/.test(hdr) && ML.stale(out).every(f => !f.endsWith("_headers")), "links: รูปปุ่มและฟอนต์ให้เบราว์เซอร์จำไว้ได้นาน (ชื่อไฟล์เปลี่ยนตามเนื้อรูป)");

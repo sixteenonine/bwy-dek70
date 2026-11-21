@@ -29,8 +29,11 @@ function load(file = path.join(DIR, "links.json")) {
 
 // ส่งสัญญาณนับ (string = text/plain ส่งข้ามโดเมนได้โดยไม่ต้อง preflight ไม่ต้องอ่านคำตอบ)
 // เว็บทดสอบ (test.xxx.pages.dev) ส่งไปเว็บทดสอบของ bwy-widget ตัวเลขจริงไม่ปน
+// once(): นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เวลาไทย) ต่อเรื่อง เครื่องจำเองว่าวันนี้นับอะไรไปแล้ว (ไม่ส่งออกไปไหน ไม่มีรหัสเครื่อง ไม่มี cookie) จำไม่ได้ = นับ
 const BEACON = `var API=/^test\\./.test(location.hostname)?"${API_TEST}":"${API}";
 var REF=(function(){try{var h=document.referrer?new URL(document.referrer).hostname:"";return h===location.hostname?"":h}catch(e){return""}})();
+var DAY=new Date(Date.now()+7*3600e3).toISOString().slice(0,10);
+function once(k){try{var s=JSON.parse(localStorage.getItem("bwy-once")||"null");if(!s||s.d!==DAY||!s.k)s={d:DAY,k:[]};if(s.k.indexOf(k)>=0)return false;s.k.push(k);localStorage.setItem("bwy-once",JSON.stringify(s))}catch(e){}return true}
 function send(ev,src){var b=JSON.stringify(src?{src:src,ref:REF,ev:ev}:{ref:REF,ev:ev});try{if(!(navigator.sendBeacon&&navigator.sendBeacon(API,b)))fetch(API,{method:"POST",body:b,keepalive:true,mode:"no-cors"}).catch(function(){})}catch(e){}}`;
 
 const FONTS = [400, 600, 700].map(w => `@font-face{font-family:"Prompt";font-weight:${w};font-display:swap;src:url(/fonts/prompt-thai-${w}.woff2) format("woff2");unicode-range:U+02D7,U+0303,U+0331,U+0E01-0E5B,U+200C-200D,U+25CC}
@@ -83,8 +86,10 @@ ${R.renderMain(cfg, p.photo === false ? "" : "/jedi.webp")}
 (${R.applySchedule.toString()})(document);
 ${BEACON}
 var SRC=${src ? JSON.stringify(src) : `(new URLSearchParams(location.search).get("src")||"").slice(0,24)`};
-send([["hub","home"]],SRC);
-document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-id]");if(a)send([["hub",a.getAttribute("data-id")]])});
+if(once("home"))send([["hub","home"]],SRC);
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-id]");if(a&&once("b:"+a.getAttribute("data-id")))send([["hub",a.getAttribute("data-id")]])});
+// ลิงก์ไปหน้า Widget: บอกต่อว่ามาจาก bio ของแอปไหน (?src=bio → bio-tt) จะขึ้นในการ์ด "ป้ายลิงก์" ของสถิติ Widget
+if(SRC)[].forEach.call(document.querySelectorAll('a[href^="https://bwy-widget.pages.dev/"]'),function(a){try{var u=new URL(a.href);u.searchParams.set("src",((u.searchParams.get("src")||"bio")+"-"+SRC).slice(0,24));a.href=u.href}catch(e){}});
 </script>
 </body>
 </html>
@@ -105,7 +110,7 @@ function shortPage(s, cfg) {
 <style>html{background:#FEFEFE}@media (prefers-color-scheme:dark){html{background:#0F0F11}}</style>
 <script>
 ${BEACON}
-send([["link",${JSON.stringify(s.name)}]]);
+if(once(${JSON.stringify("l:" + s.name)}))send([["link",${JSON.stringify(s.name)}]]);
 location.replace(${JSON.stringify(s.url)});
 </script>
 </head>

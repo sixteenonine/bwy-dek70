@@ -436,19 +436,21 @@ Script.complete();
 <script>
 (() => {
   // สถิติแบบไม่ระบุตัวตน: จดไว้ในเครื่องก่อน (เปิดหน้า / ถึงขั้นไหน / กด Copy) แล้วส่งเป็นชุดเดียวตอนออกจากหน้า
-  // นับครั้งเดียวต่อการเปิดหน้า (รีเฟรชไม่นับซ้ำ) ไม่มีรหัสเครื่อง ไม่มี cookie
+  // นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เวลาไทย) ต่อเรื่อง: เครื่องจำเองว่าวันนี้นับอะไรไปแล้ว (ไม่ส่งออกไปไหน ไม่มีรหัสเครื่อง ไม่มี cookie)
+  // เข้าๆ ออกๆ หรือรีเฟรชในวันเดียวกันไม่นับซ้ำ · เบราว์เซอร์ที่ไม่ให้จำ (private / บางแอป) นับครั้งเดียวต่อการเปิดหน้า
   const SRC = (new URLSearchParams(location.search).get("src") || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 24);
   const REF = (() => { try { return document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) { return ""; } })();
   const LIVE = /^https?:$/.test(location.protocol) && !/^(localhost|127\.)/.test(location.hostname);
+  const DAY = new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
   let seen = [];
-  try { seen = JSON.parse(sessionStorage.getItem("bwy-seen")) || []; } catch (x) {}
+  try { const s = JSON.parse(localStorage.getItem("bwy-seen") || "null"); if (s && s.d === DAY && Array.isArray(s.k)) seen = s.k; } catch (x) {}
   const queue = [];
   let flushTimer;
   function track(e, s = "") {
     const key = e + ":" + s;
     if (seen.includes(key)) return;
     seen.push(key);
-    try { sessionStorage.setItem("bwy-seen", JSON.stringify(seen)); } catch (x) {}
+    try { localStorage.setItem("bwy-seen", JSON.stringify({ d: DAY, k: seen })); } catch (x) {}
     queue.push([e, s]);
     clearTimeout(flushTimer); flushTimer = setTimeout(flush, 15000); // เปิดค้างไว้นานๆ (เช่นบนคอม) ก็ยังส่ง
   }

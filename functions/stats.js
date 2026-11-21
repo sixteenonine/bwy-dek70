@@ -5,7 +5,7 @@ import { LINKS } from "../lib/links.js"; // หน้ารวมลิงก์
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const fmt = n => Number(n || 0).toLocaleString("en-US");
-const APP = { tiktok: "TikTok", lemon8: "Lemon8", threads: "Threads", instagram: "Instagram", line: "LINE", facebook: "Facebook / Messenger", x: "X", google: "Google", web: "เว็บอื่น", safari: "Safari (พิมพ์เอง / ไม่รู้ที่มา)", chrome: "Chrome", other: "อื่นๆ" };
+const APP = { tiktok: "TikTok", lemon8: "Lemon8", threads: "Threads", instagram: "Instagram", line: "LINE", facebook: "Facebook / Messenger", x: "X", google: "Google", links: "หน้ารวมลิงก์ (เปิดใน Safari / Chrome)", web: "เว็บอื่น", safari: "Safari (พิมพ์เอง / ไม่รู้ที่มา)", chrome: "Chrome", other: "อื่นๆ" };
 const DEV = { iphone: "iPhone", ipad: "iPad", android: "Android (ติดตั้งไม่ได้)", computer: "คอม", other: "อื่นๆ" };
 const STEP = { visit: "หน้าแรก", 1: "1 โหลด Scriptable", 2: "2 Copy โค้ด", 3: "3 เปิด Scriptable กด + และวางโค้ด", 4: "4 ตั้งชื่อ Dek70", 5: "5 เพิ่ม Widget", 6: "6 เลือก Dek70", done: "หน้าเสร็จ" };
 const FAM = { "small:small": "Small", "medium:mediumbar": "Medium นับวินาที", "medium:medium": "Medium", "large:large": "Large", "extralarge:xl": "Extra Large", "extralarge:large": "Extra Large (แบบ Large)" };
@@ -188,8 +188,8 @@ function linksView({ of, perDay, prevSum, dayList, today, days, kpi, quota }) {
   const site = LINKS.site, host = site.replace("https://", "");
   const srcOf = r => r.k1.slice(5);
   const kpis = `<div class="kpis">
-${kpi("users", "เปิดหน้ารวมลิงก์", opened, prevSum("hub", true), `เทียบ ${days} วันก่อน`)}
-${kpi("tap", "กดปุ่ม", sum(clicks), prevSum("hub", false), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ครั้งต่อการเปิด` : `เทียบ ${days} วันก่อน`)}
+${kpi("users", "เครื่องที่เปิดหน้ารวมลิงก์", opened, prevSum("hub", true), `เทียบ ${days} วันก่อน`)}
+${kpi("tap", "กดปุ่ม", sum(clicks), prevSum("hub", false), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ปุ่มต่อเครื่อง` : `เทียบ ${days} วันก่อน`)}
 ${kpi("link", "เปิดลิงก์ย่อ", sum(shorts), prevSum("link"), `เทียบ ${days} วันก่อน`)}
 </div>`;
   const CH = [["c-hub", "เปิดหน้า", d => perDay("hub", d, 1)], ["c-click", "กดปุ่ม", d => perDay("hub", d, 0)], ["c-short", "ลิงก์ย่อ", d => perDay("link", d)]];
@@ -221,10 +221,10 @@ ${ids.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(su
 <div class="grid">
 ${card("s8", "รายวัน", charts + table, { aside: tabs })}
 ${card("s4", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (การ์ด ลิงก์สำหรับแปะ bio)" })}
-${card("s8", "กดปุ่มไหน", btnTable, { note: "แยกแอปจากเบราว์เซอร์ในแอปที่เปิดหน้า · ต่อการเปิด = ยอดกดปุ่มนั้นเทียบกับจำนวนครั้งที่เปิดหน้า (คนเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
+${card("s8", "กดปุ่มไหน", btnTable, { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกแอปจากเบราว์เซอร์ในแอปที่เปิดหน้า · ต่อการเปิด = เครื่องที่กดปุ่มนั้นเทียบกับเครื่องที่เปิดหน้า (เครื่องเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
 ${card("s4", "มาจากแอปไหน", bars(group(opens, r => r.k2), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
 ${card("s4", "ลิงก์สำหรับแปะ bio", entryLinks, { note: `หน้าเดียวกันทุกลิงก์ แค่บอกสถิติว่ามาจากไหน · นับ ${days} วันล่าสุด` })}
-${card("s4", "ลิงก์ย่อ", shortLinks, { note: `เปิดแล้วพาไปปลายทางทันที · นับ ${days} วันล่าสุด` })}
+${card("s4", "ลิงก์ย่อ", shortLinks, { note: `เปิดแล้วพาไปปลายทางทันที · นับเครื่องละไม่เกิน 1 ครั้งต่อลิงก์ต่อวัน · ${days} วันล่าสุด` })}
 ${quota}
 </div>`;
 }
@@ -268,7 +268,7 @@ export async function onRequestGet({ request, env }) {
   const kpi = (icon, label, value, prev, sub) => `<div class="kpi"><span class="k">${label}</span><span class="v">${fmt(value)}</span><span class="tile">${ico(icon)}</span><span class="s">${delta(value, prev)}${sub}</span></div>`;
   const kpis = `<div class="kpis">
 ${kpi("widget", "Widget ใช้งานจริง", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน")}
-${kpi("users", "คนเปิดหน้าติดตั้ง", sum(visits), prevSum("visit"), `เทียบ ${days} วันก่อน`)}
+${kpi("users", "เครื่องที่เปิดหน้าติดตั้ง", sum(visits), prevSum("visit"), `เทียบ ${days} วันก่อน`)}
 ${kpi("copy", "กด Copy โค้ด", sum(copies), prevSum("copy"), `เทียบ ${days} วันก่อน`)}
 ${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), prevSum("new"), "Widget ทำงานครั้งแรก")}
 ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), prevSum("tap"), `เทียบ ${days} วันก่อน`)}
@@ -316,7 +316,7 @@ ${kpis}
 <div class="grid">
 ${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "Widget ใช้งาน = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
 ${card("s4", "มาจากแอปไหน", bars(group(visits, r => r.k1), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
-${card("s7", "หลุดขั้นไหน", funnel, { note: "นับคนละ 1 ครั้งต่อการเปิดหน้า เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
+${card("s7", "หลุดขั้นไหน", funnel, { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เข้าๆ ออกๆ ไม่นับซ้ำ) เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
 ${card("s5", "ลิงก์สำหรับส่งน้องๆ", links, { note: `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (a-z 0-9 . _ - ไม่เกิน 24 ตัว) จะขึ้นในการ์ด "ป้ายลิงก์"` })}
 ${card("s8", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
 ${quota}
