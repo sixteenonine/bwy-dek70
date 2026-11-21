@@ -3,7 +3,7 @@
 //   visit = เปิดหน้า · step = ไปถึงขั้น (1-7, done, theme, options, faq) · copy · appstore · fold = เปิดกล่อง (why, code) · tap = แตะ Widget (หน้า /go/drive)
 //   hub = หน้ารวมลิงก์ (home = เปิดหน้า เก็บเป็น home:<src> ถ้ามาจาก /tt /ig, อื่นๆ = id ปุ่มที่กด) · link = เปิดลิงก์ย่อ (ชื่อลิงก์) มาจากโดเมนหน้ารวมลิงก์ (links/ สร้างด้วย tools/make-links.js)
 // 1 event = เขียน 1 แถว
-import { appFrom, deviceFrom, isBot, isDatacenter, later, clean, NO_CONTENT } from "../../lib/stats.js";
+import { appFrom, appFromSrc, deviceFrom, isBot, isDatacenter, later, clean, NO_CONTENT } from "../../lib/stats.js";
 
 const KINDS = new Set(["visit", "step", "copy", "appstore", "fold", "tap", "hub", "link"]);
 
@@ -18,7 +18,8 @@ export async function onRequestPost(context) {
     body = JSON.parse(text);
   } catch (e) { return NO_CONTENT(); }
   if (!body || !Array.isArray(body.ev)) return NO_CONTENT();
-  const app = appFrom(ua, body.ref), src = clean(body.src);
+  const src = clean(body.src);
+  const app = appFromSrc(src) || appFrom(ua, body.ref); // มาจากลิงก์ที่ติดป้ายแพลตฟอร์ม (bio-l8, ?src=lemon8) ใช้ป้ายก่อน แม่นกว่าเดาจากเบราว์เซอร์
   const rows = [];
   for (const [kind, val] of body.ev.slice(0, 20)) {
     if (!KINDS.has(kind)) continue;

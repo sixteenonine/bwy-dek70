@@ -107,6 +107,12 @@ async function serverSide() {
     await E.onRequestPost({ request: req, env, waitUntil: p => pend.push(p) }); await Promise.all(pend);
     ok(sum(env.DB.db.prepare("SELECT n FROM daily").all()) === pre, "server: ไม่นับการเปิดจากศูนย์ข้อมูล (ระบบตรวจลิงก์ของ TikTok / IG)");
   }
+  { // เปิดจาก bio Lemon8: เบราว์เซอร์ไม่บอกชื่อแอป (ขึ้นเป็น Safari) แต่ป้ายลิงก์บอก → นับเป็น Lemon8 ทั้งใน BearLink และหน้าติดตั้ง
+    await post(SA, { src: "l8", ref: "", ev: [["hub", "home"], ["hub", "widget"]] }, env);
+    await post(SA, { src: "bio-l8", ref: "bearwithyou.pages.dev", ev: [["visit", ""], ["step", "done"]] }, env);
+    const r2 = env.DB.db.prepare("SELECT kind, k1, k2, n FROM daily").all(), g2 = (kind, k1, k2) => sum(r2.filter(r => r.kind === kind && r.k1 === k1 && (k2 === undefined || r.k2 === k2)));
+    ok(g2("hub", "home:l8", "lemon8") === 1 && g2("hub", "widget", "lemon8") === 1 && g2("visit", "lemon8", "iphone") === 1 && g2("src", "bio-l8", "lemon8") === 1 && g2("step", "done", "lemon8") === 1, "server: มาจาก bio Lemon8 (/l8 → bio-l8) นับเป็น Lemon8 ทั้งสองแท็บ แม้เบราว์เซอร์ไม่บอกชื่อแอป");
+  }
   const before = sum(env.DB.db.prepare("SELECT n FROM daily").all());
   await ping("k=active&f=small&m=small&t=dark&v=7.8.8&l=3&p=tgat&n=1", env);
   await ping("k=active&f=medium&m=mediumBar&t=light&v=7.8.8&l=3&p=", env);
@@ -117,11 +123,12 @@ async function serverSide() {
   ok(get("visit", "instagram", "iphone") === 1 && get("visit", "tiktok") === 1 && get("visit", "x") === 1 && get("src", "ig-bio", "instagram") === 1, "server: แยกแอปที่มา (Instagram / TikTok / X จาก t.co) อุปกรณ์ และป้าย ?src=");
   ok(get("step", "2", "instagram") === 1 && get("copy", "-", "instagram") === 1 && get("fold", "why") === 1, "server: นับขั้น การกด Copy และกล่องที่เปิด แยกตามแอป");
   ok(!rows.some(r => r.kind === "hack") && get("step", "other", "instagram") === 1, "server: ไม่รับ event แปลก และกรองข้อความแปลกเป็น other");
-  ok(sum(rows.filter(r => r.kind === "visit")) === 3, "server: ไม่นับบอท");
+  ok(sum(rows.filter(r => r.kind === "visit" && r.k1 !== "lemon8")) === 3, "server: ไม่นับบอท");
   ok(get("active", "small:small:dark", "7.8.8:3:tgat") === 1 && get("active", "medium:mediumbar:light", "7.8.8:3:-") === 1 && get("new", "small") === 1 && get("tap", "small") === 1, "server: Widget ใช้งาน (ขนาด ธีม เวอร์ชัน Parameter ในแถวเดียว) เครื่องใหม่ และการแตะ");
   ok(get("hub", "home", "tiktok") === 1 && get("hub", "home:ig", "instagram") === 1 && !rows.some(r => r.kind === "src" && r.k1 === "ig") && get("hub", "mock", "tiktok") === 1 && get("link", "mock", "instagram") === 1 && get("link", "other", "x") === 1, "server: นับหน้ารวมลิงก์ (เปิดหน้า + มาจาก /ig ในแถวเดียว / กดปุ่ม) และลิงก์ย่อ แยกแอป กรองชื่อแปลกเป็น other");
   const L = await imp("lib/stats.js");
   ok(L.isDatacenter({ asn: 32934, asOrganization: "Facebook, Inc." }) && L.isDatacenter({ asn: 1, asOrganization: "BYTEDANCE" }) && L.isDatacenter({ asn: 396982 }) && !L.isDatacenter({ asn: 45430, asOrganization: "Advanced Wireless Network Company Limited" }) && !L.isDatacenter({ asn: 7470, asOrganization: "TRUE INTERNET Co.,Ltd." }) && !L.isDatacenter({ asn: 13335, asOrganization: "Cloudflare, Inc." }) && !L.isDatacenter(undefined), "server: แยกเครื่องในศูนย์ข้อมูล (Meta / ByteDance / Google) ออกจากเน็ตมือถือไทย (AIS / True) ไม่ตัด Private Relay");
+  ok(L.appFromSrc("bio-l8") === "lemon8" && L.appFromSrc("l8") === "lemon8" && L.appFromSrc("tiktok-0120") === "tiktok" && L.appFromSrc("ig") === "instagram" && L.appFromSrc("bio") === "" && L.appFromSrc("") === "", "server: รู้แพลตฟอร์มจากป้ายลิงก์ (bio-l8, l8, tiktok-0120)");
   ok(L.appFrom(SA, "bearwithyou.pages.dev") === "links" && L.appFrom(TT, "bearwithyou.pages.dev") === "tiktok", "server: มาจากหน้ารวมลิงก์ผ่าน Safari นับเป็น หน้ารวมลิงก์ (ในแอป TikTok ยังนับเป็น TikTok)");
   ok(L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Barcelona 300.0.0.0") === "threads" && L.appFrom("Mozilla/5.0 (iPhone) Mobile/15E148 Lemon8/6.0 BytedanceWebview") === "lemon8" && L.appFrom("Mozilla/5.0 (iPhone) Safari/604.1", "www.threads.net") === "threads", "server: รู้จัก Threads และ Lemon8 (ไม่ปนกับ TikTok)");
   ok(!JSON.stringify(rows).includes("Mozilla") && !JSON.stringify(rows).includes("Instagram 350"), "server: ไม่เก็บ User-Agent ลงฐานข้อมูล");
