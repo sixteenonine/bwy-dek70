@@ -65,6 +65,13 @@ function gauge(pct) {
   return `<svg class="gauge" viewBox="0 0 200 116" role="img" aria-label="ใช้โควตาไป ${v.toFixed(1)}%"><path class="gt" d="M20 100a80 80 0 0 1 160 0"/><path class="gv" d="M20 100a80 80 0 0 1 160 0" stroke-dasharray="${(len * v / 100).toFixed(1)} ${len.toFixed(1)}"/>
 <text x="100" y="92" text-anchor="middle" class="gp">${v < 10 ? v.toFixed(1) : Math.round(v)}%</text></svg>`;
 }
+// แถบสรุปด้านบน (ตัวเลขสำคัญ 3 ตัว) item = [ชื่อ, ค่า, ค่าก่อนหน้า (null = ไม่เทียบ), บรรทัดเล็ก]
+function hero(items, warn = "") {
+  return `<section class="hero" aria-label="สรุป">${items.map(([label, value, prev, sub]) => `<div class="hk"><span class="k">${label}</span><span class="v${typeof value === "string" ? " txt" : ""}">${typeof value === "string" ? esc(value) : fmt(value)}</span><span class="s">${prev === null ? "" : delta(value, prev)}${sub}</span></div>`).join("")}${warn ? `<p class="warn">${warn}</p>` : ""}</section>`;
+}
+const tier = (title, desc = "") => `<div class="tier"><h2>${title}</h2>${desc ? `<p>${desc}</p>` : ""}</div>`;
+const more = (n, html) => `<details class="more"><summary>รายละเอียดเพิ่มเติม <small>${n} การ์ด · ไม่ต้องดูทุกวัน</small></summary>${html}</details>`;
+
 function delta(cur, prev) {
   if (!prev) return `<span class="delta flat">${cur ? "ใหม่" : "—"}</span>`;
   const p = Math.round((cur - prev) / prev * 100);
@@ -76,8 +83,8 @@ const CSS = `
 @font-face{font-family:"Prompt";font-weight:600;src:url(/guide/fonts/prompt-thai-600.woff2) format("woff2");unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC;font-display:swap}
 @font-face{font-family:"Prompt";font-weight:400;src:url(/guide/fonts/prompt-latin-400.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193;font-display:swap}
 @font-face{font-family:"Prompt";font-weight:600;src:url(/guide/fonts/prompt-latin-600.woff2) format("woff2");unicode-range:U+0000-00FF,U+2000-206F,U+2190-2193;font-display:swap}
-:root{color-scheme:light;--bg:#F4F4F5;--card:#FFFFFF;--soft:#F7F7F8;--line:#EAEAEC;--ink:#0B0B0C;--sub:#6B6B70;--mute:#A3A3A8;--track:#EFEFF1;--shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.18)}
-@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0F0F11;--card:#1A1A1D;--soft:#222226;--line:#2B2B30;--ink:#F4F4F6;--sub:#A3A3AA;--mute:#6E6E76;--track:#2A2A2F;--shadow:0 1px 0 rgba(255,255,255,.03) inset}}
+:root{color-scheme:light;--bg:#F4F4F5;--card:#FFFFFF;--soft:#F7F7F8;--line:#EAEAEC;--ink:#0B0B0C;--sub:#6B6B70;--mute:#A3A3A8;--track:#EFEFF1;--shadow:0 1px 2px rgba(0,0,0,.04),0 12px 32px -18px rgba(0,0,0,.18);--tool:#ECECEE;--hl:rgba(255,255,255,.14);--hc:rgba(255,255,255,.12);--dash:#C8C8CD}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#0F0F11;--card:#1A1A1D;--soft:#222226;--line:#2B2B30;--ink:#F4F4F6;--sub:#A3A3AA;--mute:#6E6E76;--track:#2A2A2F;--shadow:0 1px 0 rgba(255,255,255,.03) inset;--tool:#16161A;--hl:rgba(0,0,0,.12);--hc:rgba(0,0,0,.08);--dash:#3C3C43}}
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;color:var(--ink);font:15px/1.5 "Prompt",-apple-system,BlinkMacSystemFont,"Sukhumvit Set","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 main{max-width:1180px;margin:0 auto;padding:22px 16px 56px}
 .top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:600}
@@ -97,7 +104,7 @@ h1{font-size:1.7rem;line-height:1.2;margin:0;font-weight:600;letter-spacing:-.01
 .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);min-width:0}
 .card header{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap}.card h2{font-size:1rem;margin:0;font-weight:600}
-.s4{grid-column:span 4}.s5{grid-column:span 5}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+.s4{grid-column:span 4}.s6{grid-column:span 6}.s5{grid-column:span 5}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
 .minis{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:12px;align-items:start}
 @media (max-width:900px){.grid>*{grid-column:1/-1}}
 .note{color:var(--mute);font-size:.78rem;margin:12px 0 0}.empty{color:var(--sub);font-size:.88rem;margin:4px 0}
@@ -129,8 +136,27 @@ table{width:100%;border-collapse:collapse;font-size:.86rem;font-variant-numeric:
 .views{display:flex;gap:4px;padding:5px;margin:0 0 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
 .views button{flex:1;min-width:0;border:0;background:none;color:var(--sub);font:inherit;font-weight:600;font-size:.98rem;padding:10px 12px;border-radius:12px;cursor:pointer}
 .views button.on{background:var(--ink);color:var(--bg)}
-.s6{grid-column:span 6}
 .foot{color:var(--mute);font-size:.78rem;margin-top:22px;text-align:center}
+/* ชั้นความสำคัญ: สรุป (แถบดำ) → รายละเอียดสำคัญ (การ์ดขาว) → เครื่องมือ (การ์ดเทา) → พับเก็บ (เส้นประ ไม่มีเงา) */
+.hero{background:var(--ink);color:var(--bg);border-radius:22px;padding:20px 22px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:16px 0 4px;box-shadow:var(--shadow)}
+.hero .hk{display:grid;gap:4px;align-content:start;min-width:0}.hero .hk+.hk{border-left:1px solid var(--hl);padding-left:20px}
+.hero .k{font-size:.86rem;opacity:.75}.hero .v{font-size:2.5rem;line-height:1.08;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.hero .v.txt{font-size:1.3rem;line-height:1.3;padding:6px 0 4px}
+.hero .s{font-size:.8rem;opacity:.8;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.hero .delta{background:var(--hc);border-color:transparent;color:inherit}.hero .delta.flat{color:inherit;opacity:.8}
+.hero .warn{grid-column:1/-1;border-top:1px solid var(--hl);padding-top:12px;font-size:.86rem;font-weight:600}
+@media (max-width:700px){.hero{grid-template-columns:minmax(0,1fr);gap:10px;padding:16px 18px}.hero .hk{grid-template-columns:minmax(0,1fr) auto;align-items:baseline;column-gap:12px}.hero .k{grid-column:1}.hero .v{grid-column:2;grid-row:1/span 2;font-size:2rem;text-align:right}.hero .v.txt{font-size:1.05rem;padding:0;max-width:11em}.hero .s{grid-column:1}.hero .hk+.hk{border-left:0;padding-left:0;border-top:1px solid var(--hl);padding-top:10px}}
+.tier{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:26px 4px 10px}.tier h2{font-size:.95rem;font-weight:600;margin:0}.tier p{margin:0;color:var(--mute);font-size:.8rem}
+.card.tool{background:var(--tool);box-shadow:none}.card.tool .link button{background:var(--card)}
+.cols2{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));column-gap:28px}.cols2 .link:last-of-type{border-bottom:1px solid var(--line)}
+details.more{margin-top:26px;border:1.5px dashed var(--dash);border-radius:20px;padding:0 12px}
+details.more>summary{cursor:pointer;list-style:none;padding:14px 4px;display:flex;align-items:center;gap:10px;font-weight:600}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary small{color:var(--mute);font-weight:400;font-size:.8rem}
+details.more>summary::after{content:"+";margin-left:auto;width:26px;height:26px;border-radius:9px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;color:var(--sub)}
+details.more[open]>summary::after{content:"−"}
+details.more .minis{margin:0 0 14px}details.more .card{box-shadow:none;background:transparent}
+details.more .kpi{box-shadow:none;background:transparent}
 `;
 
 // ชี้/แตะกราฟ = ขึ้นค่าของวันนั้น, แท็บสลับกราฟ, ปุ่ม Copy ลิงก์ (ไม่ใช้ template literal ในนี้ เพราะทั้งก้อนอยู่ใน template ของหน้า)
@@ -181,17 +207,12 @@ function page(body) {
 const topbar = right => `<div class="top"><div class="brand"><span class="mark" aria-hidden="true">B</span>BearWithYou <span class="crumb">/ สถิติ</span></div><span class="sp"></span>${right || ""}</div>`;
 
 // แท็บ "หน้ารวมลิงก์" (bearwithyou.pages.dev): hub k1 = home / home:<ป้าย> (เปิดหน้า) หรือ id ปุ่ม (กด), k2 = แอป · link k1 = ชื่อลิงก์ย่อ
-function linksView({ of, perDay, prevSum, dayList, today, days, kpi, quota }) {
+function linksView({ of, perDay, prevSum, dayList, today, days, quota, warn }) {
   const isOpen = r => r.k1 === "home" || r.k1.startsWith("home:");
   const hub = of("hub"), opens = hub.filter(isOpen), clicks = hub.filter(r => !isOpen(r)), shorts = of("link");
   const opened = sum(opens);
   const site = LINKS.site, host = site.replace("https://", "");
   const srcOf = r => r.k1.slice(5);
-  const kpis = `<div class="kpis">
-${kpi("users", "เครื่องที่เปิดหน้ารวมลิงก์", opened, prevSum("hub", true), `เทียบ ${days} วันก่อน`)}
-${kpi("tap", "กดปุ่ม", sum(clicks), prevSum("hub", false), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ปุ่มต่อเครื่อง` : `เทียบ ${days} วันก่อน`)}
-${kpi("link", "เปิดลิงก์ย่อ", sum(shorts), prevSum("link"), `เทียบ ${days} วันก่อน`)}
-</div>`;
   const CH = [["c-hub", "เปิดหน้า", d => perDay("hub", d, 1)], ["c-click", "กดปุ่ม", d => perDay("hub", d, 0)], ["c-short", "ลิงก์ย่อ", d => perDay("link", d)]];
   const tabs = `<div class="seg" role="group" aria-label="เลือกกราฟ">${CH.map(([id, name], i) => `<button type="button" data-tab="${id}" aria-pressed="${!i}" class="${i ? "" : "on"}">${name}</button>`).join("")}</div>`;
   const charts = CH.map(([id, , at], i) => lineChart(id, dayList.map(d => [d, at(d)]), i > 0)).join("");
@@ -217,16 +238,29 @@ ${ids.map(([id, list]) => `<tr><td>${esc(titles.get(id) || id)}</td><td>${fmt(su
   const shortNames = [...new Set([...LINKS.short.map(x => x.name), ...shorts.map(r => r.k1)])];
   const shortLinks = shortNames.map(n => [n, shorts.filter(r => r.k1 === n)]).sort((a, b) => sum(b[1]) - sum(a[1])).map(([n, list]) => row("/" + n, `${site}/${n}`, list, "เปิด")).join("") || `<p class="empty">ยังไม่มีลิงก์ย่อ</p>`;
 
-  return `${kpis}
+  const top = ids.find(([, list]) => sum(list) > 0);
+  return `${hero([
+    ["เครื่องที่เปิดหน้ารวมลิงก์", opened, prevSum("hub", true), `เทียบ ${days} วันก่อน`],
+    ["กดปุ่ม", sum(clicks), prevSum("hub", false), opened ? `เฉลี่ย ${(sum(clicks) / opened).toFixed(2)} ปุ่มต่อเครื่อง` : `เทียบ ${days} วันก่อน`],
+    ["ปุ่มที่คนกดมากที่สุด", top ? titles.get(top[0]) || top[0] : "ยังไม่มีคนกด", null, top ? `${fmt(sum(top[1]))} เครื่อง` : ""],
+  ], warn)}
+${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
 <div class="grid">
+${card("s6", "กดปุ่มไหน", bars(ids.map(([id, list]) => [id, sum(list)]), id => titles.get(id) || id), { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกตามแอปดูในรายละเอียดเพิ่มเติมด้านล่าง" })}
+${card("s6", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (/tt /ig ...)" })}
 ${card("s8", "รายวัน", charts + table, { aside: tabs })}
-${card("s4", "มาจากลิงก์ไหน", bars(group(opens, srcOf), srcName), { note: "นับจากลิงก์ที่แปะไว้แต่ละที่ (การ์ด ลิงก์สำหรับแปะ bio)" })}
-${card("s8", "กดปุ่มไหน", btnTable, { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อปุ่มต่อวัน · แยกแอปจากเบราว์เซอร์ในแอปที่เปิดหน้า · ต่อการเปิด = เครื่องที่กดปุ่มนั้นเทียบกับเครื่องที่เปิดหน้า (เครื่องเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
 ${card("s4", "มาจากแอปไหน", bars(group(opens, r => r.k2), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
-${card("s4", "ลิงก์สำหรับแปะ bio", entryLinks, { note: `หน้าเดียวกันทุกลิงก์ แค่บอกสถิติว่ามาจากไหน · นับ ${days} วันล่าสุด` })}
-${card("s4", "ลิงก์ย่อ", shortLinks, { note: `เปิดแล้วพาไปปลายทางทันที · นับเครื่องละไม่เกิน 1 ครั้งต่อลิงก์ต่อวัน · ${days} วันล่าสุด` })}
+</div>
+${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
+<div class="grid">
+${card("s6 tool", "ลิงก์สำหรับแปะ bio", entryLinks, { note: `หน้าเดียวกันทุกลิงก์ แค่บอกสถิติว่ามาจากไหน · นับ ${days} วันล่าสุด` })}
+${card("s6 tool", "ลิงก์ย่อ", shortLinks, { note: `เปิดแล้วพาไปปลายทางทันที · นับเครื่องละไม่เกิน 1 ครั้งต่อลิงก์ต่อวัน · ${days} วันล่าสุด` })}
+</div>
+${more(3, `<div class="grid">
+${card("s12", "กดปุ่มไหน แยกตามแอป", btnTable, { note: "ต่อการเปิด = เครื่องที่กดปุ่มนั้นเทียบกับเครื่องที่เปิดหน้า (เครื่องเดียวกดหลายปุ่มนับทุกปุ่ม)" })}
+${card("s6", "เปิดลิงก์ย่อ", `<div class="kpi" style="padding:0;border:0"><span class="k">รวมทุกลิงก์ย่อ</span><span class="v">${fmt(sum(shorts))}</span><span class="s">${delta(sum(shorts), prevSum("link"))}เทียบ ${days} วันก่อน</span></div>`)}
 ${quota}
-</div>`;
+</div><div style="height:14px"></div>`)}`;
 }
 
 export async function onRequestGet({ request, env }) {
@@ -263,16 +297,10 @@ export async function onRequestGet({ request, env }) {
   const part = (s, i) => String(s).split(":")[i] || "-";
   const dayList = Array.from({ length: days }, (_, i) => ago(days - 1 - i)); // เก่า → ใหม่
 
-  // การ์ดตัวเลขหลัก (เทียบกับช่วงก่อนหน้า, Widget ใช้งานเทียบวันก่อนหน้า)
+  // ตัวเลขหลัก (เทียบกับช่วงก่อนหน้า, Widget ใช้งานเทียบวันก่อนหน้า)
   const activeNow = perDay("active", latest), activeBefore = perDay("active", latest === today ? yesterday : ago(2));
   const kpi = (icon, label, value, prev, sub) => `<div class="kpi"><span class="k">${label}</span><span class="v">${fmt(value)}</span><span class="tile">${ico(icon)}</span><span class="s">${delta(value, prev)}${sub}</span></div>`;
-  const kpis = `<div class="kpis">
-${kpi("widget", "Widget ใช้งานจริง", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน")}
-${kpi("users", "เครื่องที่เปิดหน้าติดตั้ง", sum(visits), prevSum("visit"), `เทียบ ${days} วันก่อน`)}
-${kpi("copy", "กด Copy โค้ด", sum(copies), prevSum("copy"), `เทียบ ${days} วันก่อน`)}
-${kpi("install", "เครื่องที่ติดตั้งใหม่", sum(of("new")), prevSum("new"), "Widget ทำงานครั้งแรก")}
-${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), prevSum("tap"), `เทียบ ${days} วันก่อน`)}
-</div>`;
+  const doneAll = sum(steps.filter(r => r.k1 === "done"));
 
   // กราฟรายวัน (แท็บละ 1 ตัวเลข)
   const CHARTS = [["c-active", "Widget ใช้งาน", "active"], ["c-visit", "เปิดหน้า", "visit"], ["c-new", "ติดตั้งใหม่", "new"], ["c-tap", "แตะไป Drive", "tap"]];
@@ -305,35 +333,46 @@ ${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), prevSum("tap"), `�
 
   const view = url.searchParams.get("v") === "links" ? "links" : "widget";
   const range = `<nav class="seg" aria-label="ช่วงเวลา">${[7, 14, 30].map(d => `<a class="${d === days ? "on" : ""}" data-d="${d}" href="?k=${encodeURIComponent(key)}&d=${d}${view === "links" ? "&v=links" : ""}">${d} วัน</a>`).join("")}</nav>`;
-  const quota = card("s4", "ใช้โควตาฟรีวันนี้", `<div class="gwrap">${gauge(writes / WRITE_LIMIT * 100)}</div><p class="gsub">เขียน D1 <b>${fmt(writes)}</b> / 100,000 แถว</p>`, { note: "รวม Widget และหน้ารวมลิงก์ · ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ" });
+  const quota = card("s6", "ใช้โควตาฟรีวันนี้", `<div class="gwrap">${gauge(writes / WRITE_LIMIT * 100)}</div><p class="gsub">เขียน D1 <b>${fmt(writes)}</b> / 100,000 แถว</p>`, { note: "รวม Widget และหน้ารวมลิงก์ · ประมาณการ (Cloudflare รีเซ็ต 07:00 เวลาไทย) เกิน 100% = หยุดนับถึงรอบถัดไป Widget และหน้าเว็บยังใช้ได้ปกติ" });
+  const usedPct = writes / WRITE_LIMIT * 100;
+  const warn = usedPct >= 70 ? `ใช้โควตาฟรีวันนี้ไปแล้ว ${Math.round(usedPct)}% ถ้าเกิน 100% จะหยุดนับถึง 07:00 (Widget และหน้าเว็บยังใช้ได้ปกติ)` : "";
   const lead = `<p class="lead">${thDate(from)} – ${thDate(today)} ${today.slice(0, 4)} (เวลาไทย) · ตัวเลขรวมแบบไม่ระบุตัวตน</p>`;
   const views = `<div class="views" role="tablist" aria-label="เลือกสถิติ">${[["widget", "Widget"], ["links", "หน้ารวมลิงก์"]].map(([v, name]) => `<button type="button" role="tab" data-view="${v}" aria-selected="${v === view}" class="${v === view ? "on" : ""}">${name}</button>`).join("")}</div>`;
   return page(`${topbar(range)}
 ${views}
 <section class="view" id="v-widget"${view === "widget" ? "" : " hidden"}>
 <h1>Widget</h1>${lead}
-${kpis}
+${hero([
+    ["เครื่องที่ติดตั้งใหม่", sum(of("new")), prevSum("new"), `Widget ทำงานครั้งแรก · เทียบ ${days} วันก่อน`],
+    ["Widget ใช้งานจริง", activeNow, activeBefore, latest === today ? "วันนี้ (ยังนับไม่ครบวัน)" : "เมื่อวาน เทียบวันก่อน"],
+    ["เครื่องที่เปิดหน้าติดตั้ง", sum(visits), prevSum("visit"), `ทำจนถึงหน้าเสร็จ ${sum(visits) ? Math.round(doneAll / sum(visits) * 100) : 0}% · เทียบ ${days} วันก่อน`],
+  ], warn)}
+${tier("รายละเอียดสำคัญ", "เรียงจากสำคัญมากไปน้อย")}
 <div class="grid">
 ${card("s8", "รายวัน", charts + dailyTable, { aside: tabs, note: "Widget ใช้งาน = Widget แต่ละแบบในแต่ละเครื่องส่งสัญญาณวันละครั้ง (เครื่องเดียววาง Small สองตัวที่ตั้งค่าเหมือนกัน นับเป็น 1)" })}
 ${card("s4", "มาจากแอปไหน", bars(group(visits, r => r.k1), a => APP[a] || a), { note: "ดูจากเบราว์เซอร์ในแอปที่เปิดลิงก์ ถ้าเปิดผ่าน Safari ตรงๆ จะนับเป็น Safari" })}
 ${card("s7", "หลุดขั้นไหน", funnel, { note: "นับเครื่องละไม่เกิน 1 ครั้งต่อวัน (เข้าๆ ออกๆ ไม่นับซ้ำ) เปอร์เซ็นต์เทียบกับหน้าแรก ถ้ากระโดดข้ามขั้นด้วยแถบเลขด้านบน ขั้นที่ข้ามจะไม่ถูกนับ" })}
-${card("s5", "ลิงก์สำหรับส่งน้องๆ", links, { note: `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (a-z 0-9 . _ - ไม่เกิน 24 ตัว) จะขึ้นในการ์ด "ป้ายลิงก์"` })}
-${card("s8", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
-${quota}
+${card("s5", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)), { note: "มาจากลิงก์ไหน · bio-tt = มาจาก bio TikTok ผ่านหน้ารวมลิงก์" })}
+${card("s12", "แต่ละแอปติดตั้งสำเร็จแค่ไหน", `<div class="scroll"><table><tr><th>แอป</th><th>เข้าเว็บ</th><th>กด Copy</th><th>ถึงหน้าเสร็จ</th><th>สำเร็จ</th></tr>${appRows || `<tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr>`}</table></div>`)}
 </div>
-<div class="minis">
-${card("", "ป้ายลิงก์ (?src=)", bars(group(of("src"), r => r.k1)))}
+${tier("เครื่องมือ", "กด Copy ไปใช้ได้เลย")}
+<div class="grid">
+${card("s12 tool", "ลิงก์สำหรับส่งน้องๆ (พาไปหน้าติดตั้ง Widget ตรงๆ)", `<div class="cols2">${links}</div>`, { note: `ตัวเลข "เข้ามา" นับ ${days} วันล่าสุด · อยากแยกรายโพสต์ให้ต่อท้ายเอง เช่น ?src=tiktok-0120 (a-z 0-9 . _ - ไม่เกิน 24 ตัว) จะขึ้นในการ์ด "ป้ายลิงก์"` })}
+</div>
+${more(9, `<div class="minis">
+${kpi("copy", "กด Copy โค้ด", sum(copies), prevSum("copy"), `เทียบ ${days} วันก่อน`)}
+${kpi("tap", "แตะ Widget ไป Drive", sum(of("tap")), prevSum("tap"), `เทียบ ${days} วันก่อน`)}
 ${card("", `ขนาดที่ใช้ (${latestName})`, bars(group(live, r => part(r.k1, 0) + ":" + part(r.k1, 1)), famName))}
 ${card("", `ธีม (${latestName})`, bars(group(live, r => part(r.k1, 2)), t => (t === "dark" ? "มืด" : "สว่าง")))}
 ${card("", `คำใน Parameter (${latestName})`, bars(group(live.flatMap(r => part(r.k2, 2).split(".").map(p => ({ k: p, n: r.n }))), r => r.k), p => (p === "-" ? "ไม่ใส่" : p)), { note: "Widget ที่ใส่หลายคำนับทุกคำ" })}
-${card("", `เวอร์ชัน widget.js (${latestName})`, bars(group(live, r => part(r.k2, 0))))}
 ${card("", "อุปกรณ์ที่เปิดหน้าติดตั้ง", bars(group(visits, r => r.k2), d => DEV[d] || d))}
+${card("", `เวอร์ชัน widget.js (${latestName})`, bars(group(live, r => part(r.k2, 0))))}
 ${card("", "เปิดดูเพิ่ม", bars(extra))}
-</div>
+</div><div class="grid" style="margin-bottom:14px">${quota}</div>`)}
 </section>
 <section class="view" id="v-links"${view === "links" ? "" : " hidden"}>
 <h1>หน้ารวมลิงก์</h1>${lead}
-${linksView({ of, perDay, prevSum, dayList, today, days, kpi, quota })}
+${linksView({ of, perDay, prevSum, dayList, today, days, quota, warn })}
 </section>
 <p class="foot">ไม่มีรหัสเครื่อง ไม่มี IP ไม่มี cookie · เก็บเป็นตัวเลขรวมรายวันเท่านั้น</p>`);
 }

@@ -104,7 +104,7 @@ node test/check-loader.js   # loader
    - Production เลือก `bwy-stats` · Preview เลือก `bwy-stats-test`
 3. Settings → **Variables and Secrets** → Add → ชนิด Secret → ชื่อ **`STATS_KEY`** ค่า = รหัสลับยาว 16 ตัวขึ้นไป (ตั้งทั้ง Production และ Preview)
 4. ให้ deploy ใหม่หนึ่งรอบ (การผูกจะมีผลกับ deploy ถัดไป) → Deployments → Retry deployment หรือ push อะไรก็ได้
-5. ดูสถิติ: `https://bwy-widget.pages.dev/stats?k=รหัสลับ` (เว็บทดสอบ: `https://test.bwy-widget.pages.dev/stats?k=...`) เลือก 7 / 14 / 30 วันได้
+5. ดูสถิติ (หน้าแต่ละแท็บเรียง: แถบดำ = ตัวเลขสำคัญ 3 ตัว → รายละเอียดสำคัญ (การ์ดขาว) → เครื่องมือ Copy ลิงก์ (การ์ดเทา) → "รายละเอียดเพิ่มเติม" พับไว้ล่างสุด · ถ้าใช้โควตาเกิน 70% จะเตือนในแถบดำ): `https://bwy-widget.pages.dev/stats?k=รหัสลับ` (เว็บทดสอบ: `https://test.bwy-widget.pages.dev/stats?k=...`) เลือก 7 / 14 / 30 วันได้
 - ยังไม่ได้ผูก D1: ทุกอย่างทำงานปกติ แค่ไม่นับ · ไม่ได้ตั้ง STATS_KEY: หน้า /stats ขึ้น 404
 - ตาราง `daily` สร้างเองตอนนับครั้งแรก
 
